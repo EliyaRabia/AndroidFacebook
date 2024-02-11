@@ -4,4 +4,10 @@
     <string name="loginPassword">password</string>
     <string name="signInBtn">sign in</string>
     <string name="signUpBtn">sign up</string>
+    <string name="facebook_icon_name">facebook_icon</string>
+    <string name="LoginInput">email or phone number</string>
+    <string name="LoginPassword">password</string>
+    <string name="loginBtn">Log in</string>
+    <string name="LoginSignUp">Sign up for facebook</string>
+    <string name="forgetPassword">Forget password?</string>
 </resources>
