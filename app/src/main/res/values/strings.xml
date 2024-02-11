@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">AndroidFacebook</string>
+    <string name="loginUsername">enter a mail or phone number</string>
+    <string name="loginPassword">password</string>
+    <string name="signInBtn">sign in</string>
+    <string name="signUpBtn">sign up</string>
 </resources>
