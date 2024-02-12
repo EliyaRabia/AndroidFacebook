@@ -1,9 +1,10 @@
-package com.example.androidfacebook;
+package com.example.androidfacebook.pid;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.User;
 
