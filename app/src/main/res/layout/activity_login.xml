@@ -32,11 +32,13 @@
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/colorAccentDark"
             android:hint="@string/LoginInput"
+            android:minHeight="48dp"
             android:textColor="@color/colorAccentDark"
             android:textColorHint="@color/colorAccentDark"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            android:inputType="text"/>
 
 
         <EditText
@@ -46,12 +48,13 @@
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/colorAccentDark"
             android:hint="@string/LoginPassword"
+            android:minHeight="48dp"
             android:textColor="@color/colorAccentDark"
             android:textColorHint="@color/colorAccentDark"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/editText"
-             />
+            android:inputType="textPassword"/>
 
         <Button
             android:id="@+id/button"
