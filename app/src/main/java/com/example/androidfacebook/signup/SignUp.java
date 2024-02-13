@@ -6,7 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,7 +23,6 @@ import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.login.Login;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -36,17 +34,29 @@ public class SignUp extends AppCompatActivity {
     private EditText confirmPassword;
     private EditText displayName;
     private byte[] selectedImageByteArray; // Variable to hold the selected image's byte array
-    private Uri imageUri;
     // Declare two ActivityResultLaunchers for picking from gallery and capturing from camera
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            this::handleImage);
-
-    private final ActivityResultLauncher<Uri> mCaptureImage = registerForActivityResult(new ActivityResultContracts.TakePicture(),
-            result -> {
-                if (result) {
-                    handleImage(imageUri);
+            uri -> {
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                    handleImage(bitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
+
+    private final ActivityResultLauncher<Void> mCaptureImage = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(),
+            result -> {
+                if (result != null) {
+                    handleImage(result);
+                }
+            });
+
+    private void handleImage(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        selectedImageByteArray = stream.toByteArray();
+    }
 
 
 
@@ -94,13 +104,13 @@ public class SignUp extends AppCompatActivity {
                                 mGetContent.launch("image/*");
                             } else {
                                 // From Camera
-                                imageUri = Uri.fromFile(new File(getExternalFilesDir(null), "temp.jpg"));
-                                mCaptureImage.launch(imageUri);
+                                mCaptureImage.launch(null);
                             }
                         })
                         .show();
             }
         });
+
 
         btnSignUp.setOnClickListener(v -> {
             // sign up the user.
@@ -145,15 +155,5 @@ public class SignUp extends AppCompatActivity {
             startActivity(i);
 
         });
-    }
-    private void handleImage(Uri uri) {
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            selectedImageByteArray = stream.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
