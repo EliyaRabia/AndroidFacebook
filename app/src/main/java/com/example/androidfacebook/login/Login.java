@@ -32,12 +32,12 @@ public class Login extends AppCompatActivity {
         }
 
 
-        /* userList.add(new User("user1","pass1",
-                "Eliya Rabia",R.drawable.picture1));
+        userList.add(new User("user1","pass1",
+                "Eliya Rabia",null));
         userList.add(new User("user2","pass2",
-                "Or Shmuel",R.drawable.picture1));
+                "Or Shmuel",null));
         userList.add(new User("user3","pass3",
-                "Ofek Yemini",R.drawable.picture1));*/
+                "Ofek Yemini",null));
 
 
         EditText emailOrPhoneEditText = findViewById(R.id.editText);
