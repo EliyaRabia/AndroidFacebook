@@ -1,6 +1,7 @@
 package com.example.androidfacebook.entities;
+import java.io.Serializable;
 import java.util.*;
-public class User {
+public class User implements Serializable {
     private String username;
     private String password;
     private String displayName;

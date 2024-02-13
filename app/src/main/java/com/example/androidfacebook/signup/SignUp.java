@@ -9,7 +9,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.login.Login;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class SignUp extends AppCompatActivity {
     private EditText username;
@@ -17,10 +21,19 @@ public class SignUp extends AppCompatActivity {
     private EditText confirmPassword;
     private EditText displayName;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        Intent LoginIntent = getIntent();
+        List<User> userList=(List<User>) LoginIntent.getSerializableExtra("LIST");
+        if(userList==null){
+            return;
+        }
+        /*now you have users in userlist*/
+
         username = findViewById(R.id.textView3);
         password = findViewById(R.id.editTextTextPassword2);
         confirmPassword = findViewById(R.id.editTextTextPassword4);
@@ -55,9 +68,16 @@ public class SignUp extends AppCompatActivity {
             // Check if the passwords and confirm password match
             if (!passwordStr.equals(confirmPasswordStr)) {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
-                return;
             }
+
+
             // sign up the user.
+            User newU = new User(usernameStr,passwordStr,displayNameStr,R.drawable.picture1);
+            userList.add(newU);
+            Intent i = new Intent(this, Login.class);
+            i.putExtra("LIST", (Serializable) userList); /*adding the list to the intent*/
+            startActivity(i);
+
         });
     }
 }

@@ -11,20 +11,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.androidfacebook.pid.Pid;
 import com.example.androidfacebook.signup.SignUp;
 import com.example.androidfacebook.R;
-/*import com.example.androidfacebook.users.User;*/
 import com.example.androidfacebook.entities.User;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
 public class Login extends AppCompatActivity {
-    private List<User> userList;
+    @SuppressWarnings("unchecked")
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-          setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login);
+        Intent mainIntent = getIntent();
+        List<User>userList=(List<User>) mainIntent.getSerializableExtra("LIST");
+        if(userList==null){
+            return;
+        }
 
-        userList = new ArrayList<>();
 
         /* eliya's code before ofek change the user class:
         userList.add(new User("user1@example.com",
@@ -52,10 +57,12 @@ public class Login extends AppCompatActivity {
             String password = passwordEditText.getText().toString();
 
             boolean isAuthenticated = false;
+            User u= null;
             for (User user : userList) {
                 if (user.getUsername().equals(emailOrPhone)
                         && user.getPassword().equals(password)) {
                     isAuthenticated = true;
+                    u=user; /* save the user details in u*/
                     break;
                 }
             }
@@ -63,6 +70,7 @@ public class Login extends AppCompatActivity {
             if (isAuthenticated) {
                 // Successful login, need to change to Pid
                 Intent i = new Intent(this, Pid.class);
+                i.putExtra("USER", u);
                 startActivity(i);
                 // Add your logic to proceed after successful login
             } else {
@@ -76,6 +84,7 @@ public class Login extends AppCompatActivity {
         btnSignUp.setOnClickListener(v -> {
             // go to the sign up page.
             Intent i = new Intent(this, SignUp.class);
+            i.putExtra("LIST", (Serializable) userList);
             startActivity(i);
         });
     }
