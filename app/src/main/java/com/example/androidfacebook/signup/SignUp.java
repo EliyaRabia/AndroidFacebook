@@ -1,26 +1,58 @@
 package com.example.androidfacebook.signup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import android.Manifest;
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.login.Login;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 public class SignUp extends AppCompatActivity {
     private EditText username;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     private EditText password;
     private EditText confirmPassword;
     private EditText displayName;
+    private byte[] selectedImageByteArray; // Variable to hold the selected image's byte array
+    private Uri imageUri;
+    // Declare two ActivityResultLaunchers for picking from gallery and capturing from camera
+    private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            this::handleImage);
 
+    private final ActivityResultLauncher<Uri> mCaptureImage = registerForActivityResult(new ActivityResultContracts.TakePicture(),
+            result -> {
+                if (result) {
+                    handleImage(imageUri);
+                }
+            });
+
+
+
+    // ActivityResultLauncher to get the image from the gallery
+
+    @SuppressLint("WrongThread")
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +80,35 @@ public class SignUp extends AppCompatActivity {
             i.putExtra("LIST", (Serializable) userList);
             startActivity(i);
         });
+        btnUploadImage.setOnClickListener(v -> {
+            // Check for camera permission
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+            } else {
+                // Permission has already been granted
+                new AlertDialog.Builder(this)
+                        .setTitle("Select Image")
+                        .setItems(new String[]{"From Gallery", "From Camera"}, (dialog, which) -> {
+                            if (which == 0) {
+                                // From Gallery
+                                mGetContent.launch("image/*");
+                            } else {
+                                // From Camera
+                                imageUri = Uri.fromFile(new File(getExternalFilesDir(null), "temp.jpg"));
+                                mCaptureImage.launch(imageUri);
+                            }
+                        })
+                        .show();
+            }
+        });
+
         btnSignUp.setOnClickListener(v -> {
             // sign up the user.
             String usernameStr = username.getText().toString();
             String passwordStr = password.getText().toString();
             String confirmPasswordStr = confirmPassword.getText().toString();
             String displayNameStr = displayName.getText().toString();
-            if (usernameStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty() || displayNameStr.isEmpty()) {
+            if (usernameStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty() || displayNameStr.isEmpty() || selectedImageByteArray == null) {
                 // show error message.
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
@@ -83,7 +137,7 @@ public class SignUp extends AppCompatActivity {
 
 
             // sign up the user.
-            User newU = new User(usernameStr,passwordStr,displayNameStr,R.drawable.picture1);
+            User newU = new User(usernameStr,passwordStr,displayNameStr,selectedImageByteArray);
             userList.add(newU);
             Intent i = new Intent(this, Login.class);
             i.putExtra("LIST", (Serializable) userList); /*adding the list to the intent*/
@@ -91,5 +145,15 @@ public class SignUp extends AppCompatActivity {
             startActivity(i);
 
         });
+    }
+    private void handleImage(Uri uri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            selectedImageByteArray = stream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

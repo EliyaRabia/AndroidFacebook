@@ -31,7 +31,7 @@ public class Pid extends AppCompatActivity {
         final PostsListAdapter adapter = new PostsListAdapter(this);
         lstPosts.setAdapter(adapter);
         lstPosts.setLayoutManager(new LinearLayoutManager(this));
-        User a = new User("foobar","foo123","foo bar",R.drawable.ic_facebook);
+        User a = new User("foobar","foo123","foo bar",null);
         Post p1 = new Post(1,a,"Hello There","12.2.2024",R.drawable.picture1);
         Post p2 = new Post(2,a,"Hey Facebook","13.2.2024",R.drawable.picture1);
         Post p3 = new Post(2,user,"Hey Facebook","13.2.2024",R.drawable.picture1);
