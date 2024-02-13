@@ -1,4 +1,4 @@
-package com.example.users;
+package com.example.androidfacebook.users;
 
 public class User {
     private final String emailOrPhone;
