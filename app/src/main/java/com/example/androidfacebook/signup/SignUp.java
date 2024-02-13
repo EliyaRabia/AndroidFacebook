@@ -32,6 +32,7 @@ public class SignUp extends AppCompatActivity {
         if(userList==null){
             return;
         }
+
         /*now you have users in userlist*/
 
         username = findViewById(R.id.textView3);
@@ -44,6 +45,7 @@ public class SignUp extends AppCompatActivity {
         btnGoBack.setOnClickListener(v -> {
             // go to the sign up page.
             Intent i = new Intent(this, Login.class);
+            i.putExtra("LIST", (Serializable) userList);
             startActivity(i);
         });
         btnSignUp.setOnClickListener(v -> {
@@ -57,6 +59,15 @@ public class SignUp extends AppCompatActivity {
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            /* check if user already exists in the list*/
+            for (User user : userList){
+                if(usernameStr.equals(user.getUsername())){
+                    Toast.makeText(this,"User already exists",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
             // Check if the password meets the criteria
             String passwordPattern = "^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
             if (!passwordStr.matches(passwordPattern)) {
@@ -76,6 +87,7 @@ public class SignUp extends AppCompatActivity {
             userList.add(newU);
             Intent i = new Intent(this, Login.class);
             i.putExtra("LIST", (Serializable) userList); /*adding the list to the intent*/
+            Toast.makeText(this, "User created successfully", Toast.LENGTH_SHORT).show();
             startActivity(i);
 
         });

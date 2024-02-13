@@ -27,24 +27,17 @@ public class Login extends AppCompatActivity {
         Intent mainIntent = getIntent();
         List<User>userList=(List<User>) mainIntent.getSerializableExtra("LIST");
         if(userList==null){
+            finish();
             return;
         }
 
 
-        /* eliya's code before ofek change the user class:
-        userList.add(new User("user1@example.com",
-                "password1","Eliya Rabia"));
-        userList.add(new User("1234567890",
-                "password2", "Or Shmuel"));
-        userList.add(new User("ofekyemini87@gmail.com",
-                "password3", "Ofek Yemini")); */
-
-        userList.add(new User("user1","pass1",
+        /* userList.add(new User("user1","pass1",
                 "Eliya Rabia",R.drawable.picture1));
         userList.add(new User("user2","pass2",
                 "Or Shmuel",R.drawable.picture1));
         userList.add(new User("user3","pass3",
-                "Ofek Yemini",R.drawable.picture1));
+                "Ofek Yemini",R.drawable.picture1));*/
 
 
         EditText emailOrPhoneEditText = findViewById(R.id.editText);
