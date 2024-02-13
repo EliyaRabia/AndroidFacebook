@@ -5,9 +5,9 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String displayName;
-    private int photo;
+    private byte[] photo;
 
-    public User(String username, String password,String displayName, int photo){
+    public User(String username, String password,String displayName, byte[] photo){
         this.username=username;
         this.password=password;
         this.displayName=displayName;
@@ -38,11 +38,11 @@ public class User implements Serializable {
         this.displayName = displayName;
     }
 
-    public int getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public void setPhoto(int photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 }
