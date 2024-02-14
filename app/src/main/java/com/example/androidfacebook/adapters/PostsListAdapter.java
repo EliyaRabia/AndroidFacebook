@@ -22,6 +22,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         private final TextView tvContent;
         private final ImageView ivPic;
         private final ImageButton btnLike;
+        private final ImageButton btnShare;
 
         private PostViewHolder(View itemView){
             super(itemView);
@@ -29,30 +30,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             tvContent=itemView.findViewById(R.id.tvContent);
             ivPic=itemView.findViewById(R.id.ivPic);
             btnLike = itemView.findViewById(R.id.likeButton);
+            btnShare = itemView.findViewById(R.id.shareButton);
         }
         private void showPopupMenu(View view) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.getMenuInflater().inflate(R.menu.share_menu, popupMenu.getMenu());
 
-            // Set a listener for menu item clicks
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    // Handle menu item clicks here
-                    switch (menuItem.getItemId()) {
-                        case R.id.action_share_facebook:
-                            // Handle Facebook share action
-                            break;
-                        case R.id.action_share_twitter:
-                            // Handle Twitter share action
-                            break;
-                        case R.id.action_share_email:
-                            // Handle Email share action
-                            break;
-                    }
-                    return true;
-                }
-            });
 
             // Show the popup menu
             popupMenu.show();
@@ -91,6 +74,13 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 //                 Increase the number of likes
 //                post.setLikes(post.getLikes() + 1);
             }
+            });
+            holder.btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Show the popup menu when the share button is clicked
+                    holder.showPopupMenu(view);
+                }
             });
         }
     }
