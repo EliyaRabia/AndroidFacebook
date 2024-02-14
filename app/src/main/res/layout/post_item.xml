@@ -34,7 +34,7 @@
     <ImageView
         android:id="@+id/ivPic"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
         app:layout_constraintTop_toBottomOf="@+id/tvContent"
         app:layout_constraintVertical_bias="0.324"
@@ -43,13 +43,14 @@
     <LinearLayout
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:orientation="horizontal"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivPic">
+        app:layout_constraintTop_toBottomOf="@+id/ivPic"
+        tools:layout_editor_absoluteX="-16dp">
 
         <ImageButton
             android:id="@+id/likeButton"
@@ -82,10 +83,6 @@
             android:background="@android:color/transparent"
             android:src="@drawable/segment_icon" />
     </LinearLayout>
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
