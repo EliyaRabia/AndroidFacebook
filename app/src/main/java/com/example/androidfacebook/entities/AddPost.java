@@ -15,13 +15,14 @@ public class AddPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-        Intent addPostIntent = getIntent();
+        ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
 
         Button btnDelete = findViewById(R.id.btnDelete);
 
         btnDelete.setOnClickListener(v -> {
         // Navigate to addPost activity
         Intent intent = new Intent(this, Pid.class);
+        intent.putExtra("USER", user);
         startActivity(intent);
         });
     }
