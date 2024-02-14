@@ -33,4 +33,11 @@
     <string name="add_post">Add post</string>
     <string name="post">post</string>
     <string name="delete">delete</string>
+    <string name="delete_post">Delete Post</string>
+    <string name="edit_post">Edit Post</string>
+    <string name="share_on_facebook">Share on Facebook</string>
+    <string name="share_on_twitter">Share on Twitter</string>
+    <string name="share_via_email">Share via Email</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="log_out">Log Out</string>
 </resources>
