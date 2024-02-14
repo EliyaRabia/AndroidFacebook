@@ -1,5 +1,5 @@
 package com.example.androidfacebook.entities;
-import java.util.*;
+
 public class Post {
     private int id;
 
@@ -7,6 +7,7 @@ public class Post {
     private String initialText;
     private String time;
     private int likes;
+    private boolean liked;
     private int commentsNumber;
     private int pictures;
     private Comment[] comments;
@@ -18,6 +19,7 @@ public class Post {
         this.time=time;
         this.pictures=pictures;
         this.likes=0;
+        this.liked = false;
         this.commentsNumber=0;
         this.comments=null;
 
@@ -30,6 +32,7 @@ public class Post {
         this.time=time;
         this.pictures=0;
         this.likes=0;
+        this.liked = false;
         this.commentsNumber=0;
         this.comments=null;
 
@@ -88,5 +91,14 @@ public class Post {
     public void setComments(Comment[] comments) {
         this.comments = comments;
     }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
 }
 
