@@ -3,7 +3,8 @@ package com.example.androidfacebook.entities;
 public class Post {
     private int id;
 
-    private User user;
+    private String fullname;
+    private byte[] icon;
     private String initialText;
     private String time;
     private int likes;
@@ -12,9 +13,10 @@ public class Post {
     private int pictures;
     private Comment[] comments;
 
-    public Post(int id,User user,String initialText,String time,int pictures){
+    public Post(int id,String fullname,byte[] icon,String initialText,String time,int pictures){
         this.id=id;
-        this.user=user;
+        this.fullname=fullname;
+        this.icon=icon;
         this.initialText=initialText;
         this.time=time;
         this.pictures=pictures;
@@ -25,9 +27,10 @@ public class Post {
 
     }
     /* A constructor when there is no pic in the post*/
-    public Post(int id,User user,String initialText,String time){
+    public Post(int id,String fullname,byte[] icon,String initialText,String time){
         this.id=id;
-        this.user=user;
+        this.fullname=fullname;
+        this.icon=icon;
         this.initialText=initialText;
         this.time=time;
         this.pictures=0;
@@ -40,13 +43,13 @@ public class Post {
     public int getId(){
         return this.id;
     }
-    public User getUser() {
-        return user;
+    public String getFullname() {
+        return fullname;
+    }
+    public byte[] getIcon() {
+        return icon;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public String getInitialText() {
         return initialText;
