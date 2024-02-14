@@ -64,7 +64,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                     holder.btnLike.setImageResource(R.drawable.like_svgrepo_com);
                 // Set liked to false
                 current.setLiked(false);
-//                 Decrease the number of likes
+//                 Decrease the number of likes here
 //                post.setLikes(post.getLikes() - 1);
             } else {
                 // Change the icon to icon2
