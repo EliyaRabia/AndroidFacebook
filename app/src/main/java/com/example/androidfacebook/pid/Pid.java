@@ -15,6 +15,7 @@ import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.PostsListAdapter;
 import com.example.androidfacebook.entities.AddPost;
 import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 
 import java.io.ByteArrayOutputStream;
@@ -34,10 +35,7 @@ public class Pid extends AppCompatActivity {
         if(user==null){
             return;
         }
-        List <Post> posts = (List<Post>)getIntent().getSerializableExtra("POSTS");
-        if(posts==null){
-            return;
-        }
+        List<Post> postList = DataHolder.getInstance().getPostList();
         //the user that is in the pid now
 
         RecyclerView lstPosts = findViewById(R.id.lstPosts);
@@ -59,7 +57,7 @@ public class Pid extends AppCompatActivity {
         //posts.add(p1);
         //posts.add(p2);
         //posts.add(p3);
-        adapter.setPosts(posts);
+        adapter.setPosts(postList);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         btnAddPost.setOnClickListener(v->{
