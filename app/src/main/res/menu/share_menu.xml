@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_share_facebook"
-        android:title="Share on Facebook"/>
+        android:title="@string/share_on_facebook"/>
     <item
         android:id="@+id/action_share_twitter"
-        android:title="Share on Twitter"/>
+        android:title="@string/share_on_twitter"/>
     <item
         android:id="@+id/action_share_email"
-        android:title="Share via Email"/>
+        android:title="@string/share_via_email"/>
 </menu>

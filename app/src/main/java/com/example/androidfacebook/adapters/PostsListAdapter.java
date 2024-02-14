@@ -23,6 +23,8 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         private final ImageButton btnLike;
         private final ImageButton btnShare;
 
+        private final ImageButton btnOption;
+
         private PostViewHolder(View itemView){
             super(itemView);
             tvAuthor=itemView.findViewById(R.id.tvAuthor);
@@ -30,12 +32,17 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             ivPic=itemView.findViewById(R.id.ivPic);
             btnLike = itemView.findViewById(R.id.likeButton);
             btnShare = itemView.findViewById(R.id.shareButton);
+            btnOption= itemView.findViewById(R.id.optionButton);
         }
-        private void showPopupMenu(View view) {
+        private void showPopupShareMenu(View view) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.getMenuInflater().inflate(R.menu.share_menu, popupMenu.getMenu());
-
-
+            // Show the popup menu
+            popupMenu.show();
+        }
+        private void showPopupOptionMenu(View view) {
+            PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+            popupMenu.getMenuInflater().inflate(R.menu.option_menu, popupMenu.getMenu());
             // Show the popup menu
             popupMenu.show();
         }
@@ -53,7 +60,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     public void onBindViewHolder(PostViewHolder holder,int position){
         if(posts!=null){
             final Post current = posts.get(position);
-            holder.tvAuthor.setText(current.getUser().getDisplayName());
+            holder.tvAuthor.setText(current.getFullname());
             holder.tvContent.setText(current.getInitialText());
             holder.ivPic.setImageResource(current.getPictures());
 
@@ -78,7 +85,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 @Override
                 public void onClick(View view) {
                     // Show the popup menu when the share button is clicked
-                    holder.showPopupMenu(view);
+                    holder.showPopupShareMenu(view);
+                }
+            });
+            holder.btnOption.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Show the popup menu when the share button is clicked
+                    holder.showPopupOptionMenu(view);
                 }
             });
         }
