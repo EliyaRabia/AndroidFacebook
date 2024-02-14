@@ -1,7 +1,9 @@
 package com.example.androidfacebook.pid;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.PostsListAdapter;
+import com.example.androidfacebook.entities.AddPost;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.User;
 
@@ -38,35 +41,14 @@ public class Pid extends AppCompatActivity {
         posts.add(p1);
         posts.add(p2);
         posts.add(p3);
-
         adapter.setPosts(posts);
 
+        Button btnAddPost = findViewById(R.id.btnAddPost);
 
-
-//        ImageButton likeButton;
-//        likeButton = findViewById(R.id.likeButton);
-//        likeButton.setOnClickListener(v -> {
-//            // Get the position of the post associated with this like button
-//            int position = lstPosts.getChildAdapterPosition((View) v.getParent().getParent());
-//            // Get the post at the given position
-//            Post post = adapter.getPosts().get(position);
-//
-//            // Check if the post is liked
-//            if (post.isLiked()) {
-//                // Change the icon to icon1
-//                likeButton.setImageResource(R.drawable.like_svgrepo_com);
-//                // Set liked to false
-//                post.setLiked(false);
-////                 Decrease the number of likes
-////                post.setLikes(post.getLikes() - 1);
-//            } else {
-//                // Change the icon to icon2
-//                likeButton.setImageResource(R.drawable.like_icon);
-//                // Set liked to true
-//                post.setLiked(true);
-////                 Increase the number of likes
-////                post.setLikes(post.getLikes() + 1);
-//            }
-//        });
+        btnAddPost.setOnClickListener(v -> {
+            // Navigate to addPost activity
+            Intent intent = new Intent(this, AddPost.class);
+            startActivity(intent);
+        });
     }
 }
