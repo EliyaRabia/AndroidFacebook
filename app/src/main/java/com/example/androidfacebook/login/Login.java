@@ -2,6 +2,7 @@ package com.example.androidfacebook.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,12 +14,76 @@ import com.example.androidfacebook.pid.Pid;
 import com.example.androidfacebook.signup.SignUp;
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.User;
+import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.Comment;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
-
 public class Login extends AppCompatActivity {
+    private String loadJSONFromAsset() {
+        String json;
+        try {
+            InputStream is = getAssets().open("db.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
     @SuppressWarnings("unchecked")
+    public class PostDeserializer implements JsonDeserializer<Post> {
+
+        @Override
+        public Post deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+
+            int id = jsonObject.get("id").getAsInt();
+            String fullname = jsonObject.get("fullname").getAsString();
+            byte[] icon = null;
+            if (jsonObject.get("icon") != null && !jsonObject.get("icon").isJsonNull()) {
+                icon = convertImageToBytes(jsonObject.get("icon").getAsString());
+            }
+            String initialText = jsonObject.get("initialText").getAsString();
+            byte[] pictures = null;
+            if (jsonObject.get("pictures") != null && !jsonObject.get("pictures").isJsonNull()) {
+                pictures = convertImageToBytes(jsonObject.get("pictures").getAsString());
+            }
+            String time = jsonObject.get("time").getAsString();
+            int likes = jsonObject.get("likes").getAsInt();
+            int commentsNumber = jsonObject.get("commentsNumber").getAsInt();
+            Comment[] comments = context.deserialize(jsonObject.get("comments"), Comment[].class);
+
+            return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber, comments);
+        }
+
+        private byte[] convertImageToBytes(String imagePath) {
+            try {
+                File file = new File(imagePath);
+                FileInputStream fis = new FileInputStream(file);
+                byte[] data = new byte[(int) file.length()];
+                fis.read(data);
+                fis.close();
+                return data;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
 
 
     @Override
@@ -39,7 +104,15 @@ public class Login extends AppCompatActivity {
                 "Or Shmuel",null));
         userList.add(new User("user3","pass3",
                 "Ofek Yemini",null));
+        String dbJson = loadJSONFromAsset();
 
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Post.class, new PostDeserializer());
+        Gson gson = gsonBuilder.create();
+
+        Type type = new TypeToken<List<Post>>(){}.getType();
+        List<Post> postList = gson.fromJson(dbJson, type);
+        Log.d("Login", "postList: " + postList);
 
         EditText emailOrPhoneEditText = findViewById(R.id.editText);
         EditText passwordEditText = findViewById(R.id.editText2);
@@ -66,6 +139,7 @@ public class Login extends AppCompatActivity {
                 Intent i = new Intent(this, Pid.class);
 
                 i.putExtra("USER", u);
+                i.putExtra("POSTS", (Serializable) postList);
                 startActivity(i);
                 // Add your logic to proceed after successful login
             } else {

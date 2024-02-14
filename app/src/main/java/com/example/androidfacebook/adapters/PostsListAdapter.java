@@ -19,8 +19,13 @@ import com.example.androidfacebook.entities.Post;
 import java.util.List;
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostViewHolder>{
     public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-        imageView.setImageBitmap(bitmap);
+        if (imageBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            // Set a default image or leave it empty
+            imageView.setImageDrawable(null);
+        }
     }
     class PostViewHolder extends RecyclerView.ViewHolder{
         private final TextView tvAuthor;

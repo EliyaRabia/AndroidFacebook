@@ -2,6 +2,8 @@ package com.example.androidfacebook.pid;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -15,13 +17,15 @@ import com.example.androidfacebook.entities.AddPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Post;
 
+import java.io.ByteArrayOutputStream;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Pid extends AppCompatActivity {
 
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "WrongThread"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,19 +34,28 @@ public class Pid extends AppCompatActivity {
         if(user==null){
             return;
         }
+        List <Post> posts = (List<Post>)getIntent().getSerializableExtra("POSTS");
+        if(posts==null){
+            return;
+        }
         //the user that is in the pid now
 
         RecyclerView lstPosts = findViewById(R.id.lstPosts);
         final PostsListAdapter adapter = new PostsListAdapter(this);
         lstPosts.setAdapter(adapter);
         lstPosts.setLayoutManager(new LinearLayoutManager(this));
-        Post p1 = new Post(1,"user1",null,"HEYY",null,"12.2.2024",0,0,null);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture1);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        //Post p2 = new Post(2,"user1",null,"HEYY",null,"12.2.2024",0,0,null);
+        //Post p1 = new Post(1,"user1",null,"HEYY",byteArray,"12.2.2024",0,0,null);
         //Post p1 = new Post(1,"user1",null,"Hello There","12.2.2024",R.drawable.picture1);
         //Post p2 = new Post(2,"user2",null,"Hey Facebook","13.2.2024",R.drawable.picture1);
         //Post p3 = new Post(2,user.getDisplayName(), user.getPhoto(), "Hey Facebook","13.2.2024",R.drawable.picture1);
-        List <Post> posts;
-        posts = new ArrayList<>();
-        posts.add(p1);
+        //posts = new ArrayList<>();
+        //posts.add(p1);
+        //posts.add(p2);
         //posts.add(p1);
         //posts.add(p2);
         //posts.add(p3);
