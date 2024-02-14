@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.pid.Pid;
 import com.example.androidfacebook.signup.SignUp;
 import com.example.androidfacebook.R;
@@ -50,12 +51,12 @@ public class Login extends AppCompatActivity {
             String password = passwordEditText.getText().toString();
 
             boolean isAuthenticated = false;
-            User u= null;
+            ClientUser u=null;
             for (User user : userList) {
                 if (user.getUsername().equals(emailOrPhone)
                         && user.getPassword().equals(password)) {
                     isAuthenticated = true;
-                    u=user; /* save the user details in u*/
+                    u=new ClientUser(user.getUsername(),user.getDisplayName(),user.getPhoto()); /* save the user details in u*/
                     break;
                 }
             }
@@ -63,6 +64,7 @@ public class Login extends AppCompatActivity {
             if (isAuthenticated) {
                 // Successful login, need to change to Pid
                 Intent i = new Intent(this, Pid.class);
+
                 i.putExtra("USER", u);
                 startActivity(i);
                 // Add your logic to proceed after successful login
