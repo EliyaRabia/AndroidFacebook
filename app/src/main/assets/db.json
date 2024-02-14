@@ -195,7 +195,7 @@
     "fullname": "Ofek Yemini",
     "icon": "/faviconPerson3.ico",
     "initialText": "Hello my friends,I wanted to share with you that I started training, I will share the results with you later :)",
-    "pictures": "",
+    "pictures": null,
     "time": "17/07/2020 18:23",
     "likes": 32,
     "commentsNumber": 1,

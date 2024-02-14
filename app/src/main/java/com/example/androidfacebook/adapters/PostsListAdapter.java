@@ -1,6 +1,8 @@
 package com.example.androidfacebook.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,10 @@ import com.example.androidfacebook.entities.Post;
 
 import java.util.List;
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostViewHolder>{
+    public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        imageView.setImageBitmap(bitmap);
+    }
     class PostViewHolder extends RecyclerView.ViewHolder{
         private final TextView tvAuthor;
         private final TextView tvContent;
@@ -62,25 +68,26 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             final Post current = posts.get(position);
             holder.tvAuthor.setText(current.getFullname());
             holder.tvContent.setText(current.getInitialText());
-            holder.ivPic.setImageResource(current.getPictures());
+            byte[] pictureBytes = current.getPictures();
+            setImageViewWithBytes(holder.ivPic, pictureBytes);
 
-            holder.btnLike.setOnClickListener(v -> {
-                if (current.isLiked()) {
+            //holder.btnLike.setOnClickListener(v -> {
+                //if (current.isLiked()) {
                     // Change the icon to icon1
-                    holder.btnLike.setImageResource(R.drawable.like_svgrepo_com);
+                    //holder.btnLike.setImageResource(R.drawable.like_svgrepo_com);
                     // Set liked to false
-                    current.setLiked(false);
+                    //current.setLiked(false);
 //                 Decrease the number of likes here
 //                post.setLikes(post.getLikes() - 1);
-                } else {
+                //} else {
                     // Change the icon to icon2
-                    holder.btnLike.setImageResource(R.drawable.like_icon);
+                    //holder.btnLike.setImageResource(R.drawable.like_icon);
                     // Set liked to true
-                    current.setLiked(true);
+                    //current.setLiked(true);
 //                 Increase the number of likes
 //                post.setLikes(post.getLikes() + 1);
-                }
-            });
+                //}
+            //});
             holder.btnShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
