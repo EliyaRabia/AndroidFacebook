@@ -22,4 +22,15 @@
     <string name="people_icon">people icon</string>
     <string name="home_icon">home icon</string>
     <string name="videos_icon">videos icon</string>
+    <string name="add_post_edit_text">What do you want to share?</string>
+    <string name="picture_icon_content">picture icon</string>
+    <string name="picutre_or_video">picutre or video</string>
+    <string name="tag_people">Tag people</string>
+    <string name="live_icon">Live icon</string>
+    <string name="live">Live</string>
+    <string name="Aa">Aa</string>
+    <string name="background_color">Background color</string>
+    <string name="add_post">Add post</string>
+    <string name="post">post</string>
+    <string name="delete">delete</string>
 </resources>

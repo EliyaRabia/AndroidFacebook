@@ -2,7 +2,6 @@ package com.example.androidfacebook.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -60,20 +59,20 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
             holder.btnLike.setOnClickListener(v -> {
                 if (current.isLiked()) {
-                // Change the icon to icon1
+                    // Change the icon to icon1
                     holder.btnLike.setImageResource(R.drawable.like_svgrepo_com);
-                // Set liked to false
-                current.setLiked(false);
+                    // Set liked to false
+                    current.setLiked(false);
 //                 Decrease the number of likes here
 //                post.setLikes(post.getLikes() - 1);
-            } else {
-                // Change the icon to icon2
+                } else {
+                    // Change the icon to icon2
                     holder.btnLike.setImageResource(R.drawable.like_icon);
-                // Set liked to true
-                current.setLiked(true);
+                    // Set liked to true
+                    current.setLiked(true);
 //                 Increase the number of likes
 //                post.setLikes(post.getLikes() + 1);
-            }
+                }
             });
             holder.btnShare.setOnClickListener(new View.OnClickListener() {
                 @Override
