@@ -1,6 +1,7 @@
 package com.example.androidfacebook.pid;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.PostsListAdapter;
+import com.example.androidfacebook.entities.AddPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Post;
 
@@ -41,9 +43,15 @@ public class Pid extends AppCompatActivity {
         posts.add(p1);
         posts.add(p2);
         posts.add(p3);
-
         adapter.setPosts(posts);
 
+        Button btnAddPost = findViewById(R.id.btnAddPost);
+        btnAddPost.setOnClickListener(v->{
+            Intent i = new Intent(this, AddPost.class);
+            i.putExtra("USER", user);
+            startActivity(i);
+
+        });
 
     }
 }
