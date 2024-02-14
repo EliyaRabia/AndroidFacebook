@@ -8,36 +8,33 @@ public class Post {
     private String initialText;
     private String time;
     private int likes;
-    private boolean liked;
     private int commentsNumber;
-    private int pictures;
+    private byte[] pictures;
     private Comment[] comments;
 
-    public Post(int id,String fullname,byte[] icon,String initialText,String time,int pictures){
+    public Post(int id,String fullname,byte[] icon,String initialText,byte[] pictures,String time ,int likes, int commentsNumber,Comment[] comments){
         this.id=id;
         this.fullname=fullname;
         this.icon=icon;
         this.initialText=initialText;
         this.time=time;
         this.pictures=pictures;
-        this.likes=0;
-        this.liked = false;
-        this.commentsNumber=0;
-        this.comments=null;
+        this.likes=likes;
+        this.commentsNumber=commentsNumber;
+        this.comments=comments;
 
     }
     /* A constructor when there is no pic in the post*/
-    public Post(int id,String fullname,byte[] icon,String initialText,String time){
+    public Post(int id,String fullname,byte[] icon,String initialText,String time ,int likes, int commentsNumber,Comment[] comments){
         this.id=id;
         this.fullname=fullname;
         this.icon=icon;
         this.initialText=initialText;
         this.time=time;
-        this.pictures=0;
-        this.likes=0;
-        this.liked = false;
-        this.commentsNumber=0;
-        this.comments=null;
+        this.pictures=null;
+        this.likes=likes;
+        this.commentsNumber=commentsNumber;
+        this.comments=comments;
 
     }
     public int getId(){
@@ -71,11 +68,11 @@ public class Post {
         return time;
     }
 
-    public int getPictures() {
+    public byte[] getPictures() {
         return pictures;
     }
 
-    public void setPictures(int pictures) {
+    public void setPictures(byte[] pictures) {
         this.pictures = pictures;
     }
 
@@ -95,13 +92,6 @@ public class Post {
         this.comments = comments;
     }
 
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-    }
 
 }
 

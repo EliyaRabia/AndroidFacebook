@@ -20,6 +20,7 @@ import java.util.List;
 
 public class Pid extends AppCompatActivity {
 
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +36,16 @@ public class Pid extends AppCompatActivity {
         final PostsListAdapter adapter = new PostsListAdapter(this);
         lstPosts.setAdapter(adapter);
         lstPosts.setLayoutManager(new LinearLayoutManager(this));
-        Post p1 = new Post(1,"user1",null,"Hello There","12.2.2024",R.drawable.picture1);
-        Post p2 = new Post(2,"user2",null,"Hey Facebook","13.2.2024",R.drawable.picture1);
-        Post p3 = new Post(2,user.getDisplayName(), user.getPhoto(), "Hey Facebook","13.2.2024",R.drawable.picture1);
+        Post p1 = new Post(1,"user1",null,"HEYY",null,"12.2.2024",0,0,null);
+        //Post p1 = new Post(1,"user1",null,"Hello There","12.2.2024",R.drawable.picture1);
+        //Post p2 = new Post(2,"user2",null,"Hey Facebook","13.2.2024",R.drawable.picture1);
+        //Post p3 = new Post(2,user.getDisplayName(), user.getPhoto(), "Hey Facebook","13.2.2024",R.drawable.picture1);
         List <Post> posts;
         posts = new ArrayList<>();
         posts.add(p1);
-        posts.add(p2);
-        posts.add(p3);
+        //posts.add(p1);
+        //posts.add(p2);
+        //posts.add(p3);
         adapter.setPosts(posts);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);

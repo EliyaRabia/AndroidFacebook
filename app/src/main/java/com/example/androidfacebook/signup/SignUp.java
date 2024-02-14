@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Button;
@@ -59,9 +58,6 @@ public class SignUp extends AppCompatActivity {
     }
 
 
-
-    // ActivityResultLauncher to get the image from the gallery
-
     @SuppressLint("WrongThread")
     @SuppressWarnings("unchecked")
     @Override
@@ -76,7 +72,6 @@ public class SignUp extends AppCompatActivity {
         }
 
         /*now you have users in userlist*/
-
         username = findViewById(R.id.textView3);
         password = findViewById(R.id.editTextTextPassword2);
         confirmPassword = findViewById(R.id.editTextTextPassword4);
@@ -143,6 +138,7 @@ public class SignUp extends AppCompatActivity {
             // Check if the passwords and confirm password match
             if (!passwordStr.equals(confirmPasswordStr)) {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                return;
             }
 
 
