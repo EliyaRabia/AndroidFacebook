@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.example.androidfacebook.entities.DataHolder;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -65,19 +66,18 @@ public class Login extends AppCompatActivity {
             String time = jsonObject.get("time").getAsString();
             int likes = jsonObject.get("likes").getAsInt();
             int commentsNumber = jsonObject.get("commentsNumber").getAsInt();
-            Comment[] comments = context.deserialize(jsonObject.get("comments"), Comment[].class);
+            Comment[] comments = null;
 
             return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber, comments);
         }
 
         private byte[] convertImageToBytes(String imagePath) {
             try {
-                File file = new File(imagePath);
-                FileInputStream fis = new FileInputStream(file);
-                byte[] data = new byte[(int) file.length()];
-                fis.read(data);
-                fis.close();
-                return data;
+                InputStream is = getAssets().open(imagePath);
+                byte[] bytes = new byte[is.available()];
+                is.read(bytes);
+                is.close();
+                return bytes;
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -110,6 +110,7 @@ public class Login extends AppCompatActivity {
         gsonBuilder.registerTypeAdapter(Post.class, new PostDeserializer());
         Gson gson = gsonBuilder.create();
 
+
         Type type = new TypeToken<List<Post>>(){}.getType();
         List<Post> postList = gson.fromJson(dbJson, type);
         Log.d("Login", "postList: " + postList);
@@ -137,9 +138,8 @@ public class Login extends AppCompatActivity {
             if (isAuthenticated) {
                 // Successful login, need to change to Pid
                 Intent i = new Intent(this, Pid.class);
-
+                DataHolder.getInstance().setPostList(postList);
                 i.putExtra("USER", u);
-                i.putExtra("POSTS", (Serializable) postList);
                 startActivity(i);
                 // Add your logic to proceed after successful login
             } else {
