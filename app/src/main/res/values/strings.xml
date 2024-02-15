@@ -40,4 +40,13 @@
     <string name="share_via_email">Share via Email</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="log_out">Log Out</string>
+    <string name="share">Share</string>
+    <string name="comment">Comment</string>
+    <string name="like">Like</string>
+    <string name="icon_representing_the_user">Icon representing the user</string>
+    <string name="icon_representing_the_pic">Icon representing the pic</string>
+    <string name="icon_representing_the_like">Icon representing the like</string>
+    <string name="icon_representing_comment">Icon representing comment</string>
+    <string name="icon_representing_share">Icon representing share</string>
+    <string name="icon_representing_line" />
 </resources>

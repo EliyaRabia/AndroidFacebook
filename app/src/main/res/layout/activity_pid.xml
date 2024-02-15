@@ -137,15 +137,19 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_marginTop="70dp"
-        android:layout_height="0dp"
+        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content"
+
         app:layout_constraintTop_toBottomOf="@id/topBar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/lstPosts"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true"
+            app:layout_dodgeInsetEdges="bottom"
             android:background="@color/darker_gray"
+            app:layout_behavior="900dp"
             tools:ignore="MissingClass" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

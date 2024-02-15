@@ -1,5 +1,7 @@
 package com.example.androidfacebook.entities;
 import java.io.Serializable;
+import java.util.List;
+
 public class Post implements Serializable {
     private int id;
 
@@ -10,9 +12,9 @@ public class Post implements Serializable {
     private int likes;
     private int commentsNumber;
     private byte[] pictures;
-    private Comment[] comments;
+    private List<Comment> comments;
 
-    public Post(int id,String fullname,byte[] icon,String initialText,byte[] pictures,String time ,int likes, int commentsNumber,Comment[] comments){
+    public Post(int id,String fullname,byte[] icon,String initialText,byte[] pictures,String time ,int likes, int commentsNumber,List<Comment> comments){
         this.id=id;
         this.fullname=fullname;
         this.icon=icon;
@@ -24,8 +26,7 @@ public class Post implements Serializable {
         this.comments=comments;
 
     }
-    /* A constructor when there is no pic in the post*/
-    public Post(int id,String fullname,byte[] icon,String initialText,String time ,int likes, int commentsNumber,Comment[] comments){
+    public Post(int id,String fullname,byte[] icon,String initialText,String time ,int likes, int commentsNumber,List<Comment> comments){
         this.id=id;
         this.fullname=fullname;
         this.icon=icon;
@@ -37,6 +38,7 @@ public class Post implements Serializable {
         this.comments=comments;
 
     }
+
     public int getId(){
         return this.id;
     }
@@ -84,11 +86,11 @@ public class Post implements Serializable {
         this.commentsNumber = commentsNumber;
     }
 
-    public Comment[] getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(Comment[] comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 

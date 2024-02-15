@@ -34,6 +34,7 @@ public class SignUp extends AppCompatActivity {
     private EditText displayName;
     private byte[] selectedImageByteArray; // Variable to hold the selected image's byte array
     // Declare two ActivityResultLaunchers for picking from gallery and capturing from camera
+
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
                 try {
