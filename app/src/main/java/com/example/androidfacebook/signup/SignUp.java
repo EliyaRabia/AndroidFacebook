@@ -153,4 +153,8 @@ public class SignUp extends AppCompatActivity {
 
         });
     }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
+    }
 }

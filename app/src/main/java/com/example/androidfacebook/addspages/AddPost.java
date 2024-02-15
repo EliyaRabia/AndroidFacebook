@@ -1,6 +1,7 @@
-package com.example.androidfacebook.entities;
+package com.example.androidfacebook.addspages;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -19,6 +20,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.DataHolder;
+import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
@@ -108,6 +112,10 @@ public class AddPost extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
     }
 
 

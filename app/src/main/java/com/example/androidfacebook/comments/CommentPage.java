@@ -1,5 +1,6 @@
-package com.example.androidfacebook.Comments;
+package com.example.androidfacebook.comments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -44,5 +45,9 @@ public class CommentPage extends AppCompatActivity {
             i.putExtra("USER", user);
             startActivity(i);
         });
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
     }
 }
