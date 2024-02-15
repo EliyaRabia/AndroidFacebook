@@ -1,17 +1,19 @@
 package com.example.androidfacebook.entities;
-import java.util.*;
+
 public class Comment {
     private int id;
     private String fullname;
     private String text;
     private byte[] icon;
+    private boolean editMode;
+
 
     public Comment(int id,String fullname,String text,byte[] icon){
         this.id=id;
         this.fullname=fullname;
         this.text=text;
         this.icon=icon;
-
+        this.editMode=false;
     }
 
     public int getId() {
@@ -44,5 +46,12 @@ public class Comment {
 
     public void setIcon(byte[] icon) {
         this.icon = icon;
+    }
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 }

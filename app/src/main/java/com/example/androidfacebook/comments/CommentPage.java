@@ -34,7 +34,7 @@ public class CommentPage extends AppCompatActivity {
         final CommentListAdapter adapter = new CommentListAdapter(this);
         lstComments.setAdapter(adapter);
         lstComments.setLayoutManager(new LinearLayoutManager(this));
-        adapter.setComments(CommentList);
+        adapter.setComments(CommentList, user, currentPost, postList);
 
         Button btnGoBackToPid = findViewById(R.id.btnGoBackToPid);
         btnGoBackToPid.setOnClickListener(v ->{
@@ -45,6 +45,7 @@ public class CommentPage extends AppCompatActivity {
             i.putExtra("USER", user);
             startActivity(i);
         });
+
     }
     @SuppressLint("MissingSuperCall")
     @Override
