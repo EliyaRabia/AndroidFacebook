@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.androidfacebook.Comments.CommentPage;
+import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;

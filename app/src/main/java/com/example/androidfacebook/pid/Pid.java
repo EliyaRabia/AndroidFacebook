@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.PostsListAdapter;
-import com.example.androidfacebook.entities.AddPost;
+import com.example.androidfacebook.addspages.AddPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
@@ -55,5 +55,9 @@ public class Pid extends AppCompatActivity {
 
         });
 
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
     }
 }

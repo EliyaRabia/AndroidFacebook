@@ -19,13 +19,13 @@
         android:theme="@style/Theme.AndroidFacebook"
         tools:targetApi="31">
         <activity
-            android:name=".Comments.CommentPage"
+            android:name=".comments.CommentPage"
             android:exported="false" />
         <activity
             android:name=".adapters.CommentListAdapter"
             android:exported="false" />
         <activity
-            android:name=".entities.AddPost"
+            android:name=".addspages.AddPost"
             android:exported="false" />
 
         <provider

@@ -1,5 +1,6 @@
 package com.example.androidfacebook.login;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -169,5 +170,9 @@ public class Login extends AppCompatActivity {
             i.putExtra("LIST", (Serializable) userList);
             startActivity(i);
         });
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onBackPressed() {
     }
 }
