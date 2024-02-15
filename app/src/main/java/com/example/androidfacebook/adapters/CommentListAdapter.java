@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.login.Login;
 
 import java.util.List;
 
@@ -126,47 +128,44 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             holder.CommentButtonOption.setOnClickListener(view -> {
                 holder.showPopupOptionMenu(view, current);
             });
+            holder.btnSaveComment.setOnClickListener(v -> {
+                String editedComment = holder.editCommentTextView.getText().toString();
+                if(editedComment.length()==0){
+                    Toast.makeText(v.getContext(), "Comment can't be blank!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Save the edited comment
+                current.setText(editedComment);
+                current.setEditMode(false);
+                comments.set(comments.indexOf(current),current);
+                Context context = v.getContext();
+                Intent intent = new Intent(context, CommentPage.class);
+                DataHolder.getInstance().setComments(comments);
+                DataHolder.getInstance().setPostList(postList);
+                DataHolder.getInstance().setCurrentPost(currentPost);
+                intent.putExtra("USER", user);
+                context.startActivity(intent);
+            });
+            holder.btnCancelEdit.setOnClickListener(v -> {
+                // Hide the EditText and show the TextView
+                holder.tvContent.setVisibility(View.VISIBLE);
+                holder.editCommentTextView.setVisibility(View.GONE);
+                // Reset EditText to the original comment text
+                holder.editCommentTextView.setText(current.getText());
+                current.setEditMode(false);
+            });
 
             if (current.isEditMode()) {
                 holder.tvContent.setVisibility(View.GONE);
                 holder.editCommentTextView.setVisibility(View.VISIBLE);
                 holder.editCommentTextView.setText(current.getText());
-
                 // Set OnClickListener for save button
-                holder.btnSaveComment.setOnClickListener(v -> {
-                    String editedComment = holder.editCommentTextView.getText().toString();
-                    // Save the edited comment
-                    current.setText(editedComment);
-                    current.setEditMode(false);
-                    comments.set(comments.indexOf(current),current);
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, CommentPage.class);
-                    DataHolder.getInstance().setComments(comments);
-                    DataHolder.getInstance().setPostList(postList);
-                    DataHolder.getInstance().setCurrentPost(currentPost);
-                    intent.putExtra("USER", user);
-                    context.startActivity(intent);
-                });
-
-                // Set OnClickListener for cancel button
-                holder.btnCancelEdit.setOnClickListener(v -> {
-                    // Hide the EditText and show the TextView
-                    holder.tvContent.setVisibility(View.VISIBLE);
-                    holder.editCommentTextView.setVisibility(View.GONE);
-                    // Reset EditText to the original comment text
-                    holder.editCommentTextView.setText(current.getText());
-                    current.setEditMode(false);
-                });
+                // Set OnClickListener for cancel butto
             } else {
                 holder.tvContent.setVisibility(View.VISIBLE);
                 holder.editCommentTextView.setVisibility(View.GONE);
             }
 
-            // Set OnClickListener for TextView to enter edit mode
-            holder.tvContent.setOnClickListener(v -> {
-                current.setEditMode(true);
-                notifyDataSetChanged(); // Refresh the adapter to reflect the change
-            });
         }
     }
 

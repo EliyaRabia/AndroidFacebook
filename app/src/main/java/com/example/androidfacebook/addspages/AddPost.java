@@ -21,12 +21,14 @@ import androidx.core.content.ContextCompat;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddPost extends AppCompatActivity {
@@ -81,7 +83,8 @@ public class AddPost extends AppCompatActivity {
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,"Posted on " + "14.2.2024",0,0,null);
+            List<Comment> l = new ArrayList<>();
+            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,"Posted on " + "14.2.2024",0,0,l);
             if(selectedImageByteArray!=null){
                 p.setPictures(selectedImageByteArray);
             }
