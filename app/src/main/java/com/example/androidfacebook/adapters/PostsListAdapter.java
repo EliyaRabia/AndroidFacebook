@@ -1,6 +1,7 @@
 package com.example.androidfacebook.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.Comments.CommentPage;
+import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 
 import java.util.List;
@@ -32,24 +35,28 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         private final TextView tvContent;
         private final TextView tvDate;
         private final ImageView ivPic;
-        private final ImageButton btnLike;
+        private final ImageButton likeButton;
         private final ImageButton btnShare;
-
-
-        //private final ImageButton btnOption;
+        private final TextView tvNumLike;
+        private final TextView tvNumComment;
+        private final ImageButton dotsButton;
         private final ImageView iconUser;
+        private final ImageButton commentButton;
 
         private PostViewHolder(View itemView){
             super(itemView);
             tvAuthor=itemView.findViewById(R.id.tvAuthor);
             tvContent=itemView.findViewById(R.id.tvContent);
             ivPic=itemView.findViewById(R.id.ivPic);
-            btnLike = itemView.findViewById(R.id.likeButton);
+            likeButton = itemView.findViewById(R.id.likeButton);
             btnShare = itemView.findViewById(R.id.shareButton);
             //btnOption= itemView.findViewById(R.id.optionButton);
             iconUser=itemView.findViewById(R.id.iconUser);
             tvDate=itemView.findViewById(R.id.tvDate);
-
+            tvNumLike=itemView.findViewById(R.id.tvNumLike);
+            tvNumComment=itemView.findViewById(R.id.tvNumComment);
+            dotsButton=itemView.findViewById(R.id.dotsButton);
+            commentButton=itemView.findViewById(R.id.commentButton);
         }
         private void showPopupShareMenu(View view) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
@@ -60,9 +67,25 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         private void showPopupOptionMenu(View view) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.getMenuInflater().inflate(R.menu.option_menu, popupMenu.getMenu());
+//            popupMenu.setOnMenuItemClickListener(item -> {
+//                int id = item.getItemId();
+//                switch (id) {
+//                    case R.id.action_edit_post:
+//                        // Handle edit post action
+//                        // Implement the logic to edit the post here
+//                        return true;
+//                    case R.id.action_delete_post:
+//                        // Handle delete post action
+//                        // Implement the logic to delete the post here
+//                        return true;
+//                    default:
+//                        return false;
+//                }
+//            });
             // Show the popup menu
             popupMenu.show();
         }
+
     }
     private final LayoutInflater mInflater;
     private List<Post> posts;
@@ -77,6 +100,8 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     public void onBindViewHolder(PostViewHolder holder,int position){
         if(posts!=null){
             final Post current = posts.get(position);
+            holder.tvNumComment.setText("comments: "+String.valueOf(current.getCommentsNumber()));
+            holder.tvNumLike.setText(String.valueOf(current.getLikes()));
             holder.tvAuthor.setText(current.getFullname());
             holder.tvDate.setText(current.getTime());
             holder.tvContent.setText(current.getInitialText());
@@ -85,39 +110,44 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             byte[] iconBytes= current.getIcon();
             setImageViewWithBytes(holder.iconUser,iconBytes);
 
+            holder.commentButton.setOnClickListener(view -> {
+                Context context = view.getContext();
+                Intent intent = new Intent(context, CommentPage.class);
+                DataHolder.getInstance().setComments(current.getComments());
+                context.startActivity(intent);
+            });
 
 
-            //holder.btnLike.setOnClickListener(v -> {
-                //if (current.isLiked()) {
-                    //Change the icon to icon1
-                    //holder.btnLike.setImageResource(R.drawable.like_svgrepo_com);
-                    // Set liked to false
-                    //current.setLiked(false);
-//                 Decrease the number of likes here
-//                post.setLikes(post.getLikes() - 1);
-                //} else {
-                    // Change the icon to icon2
-                    //holder.btnLike.setImageResource(R.drawable.like_icon);
-                    // Set liked to true
-                    //current.setLiked(true);
-//                 Increase the number of likes
-//                post.setLikes(post.getLikes() + 1);
-                //}
-            //});
-            holder.btnShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Show the popup menu when the share button is clicked
-                    holder.showPopupShareMenu(view);
+            holder.likeButton.setOnClickListener(view -> {
+                if(current.isLiked()){
+                    // Decrease the number of likes by 1
+                    current.setLikes(current.getLikes() - 1);
+                    // Update the number of likes in the TextView
+                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
+                    // Set the liked status of the post to false
+                    current.setLiked(false);
+                    // Change the image of the like button to the default one
+                    holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
+                } else {
+                    // Increase the number of likes by 1
+                    current.setLikes(current.getLikes() + 1);
+                    // Update the number of likes in the TextView
+                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
+                    // Set the liked status of the post to true
+                    current.setLiked(true);
+                    // Change the image of the like button to the liked one
+                    holder.likeButton.setImageResource(R.drawable.like_icon);
                 }
             });
-            /*holder.btnOption.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Show the popup menu when the share button is clicked
-                    holder.showPopupOptionMenu(view);
-                }
-            });*/
+            holder.btnShare.setOnClickListener(view -> {
+                // Show the popup menu when the share button is clicked
+                holder.showPopupShareMenu(view);
+            });
+
+            holder.dotsButton.setOnClickListener(view -> {
+                // Show the popup menu when the option button is clicked
+                holder.showPopupOptionMenu(view);
+            });
         }
     }
     public void setPosts(List<Post> s){

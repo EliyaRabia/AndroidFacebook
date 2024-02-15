@@ -13,38 +13,42 @@ public class Post implements Serializable {
     private int commentsNumber;
     private byte[] pictures;
     private List<Comment> comments;
+    private boolean liked;
 
-    public Post(int id,String fullname,byte[] icon,String initialText,byte[] pictures,String time ,int likes, int commentsNumber,List<Comment> comments){
-        this.id=id;
-        this.fullname=fullname;
-        this.icon=icon;
-        this.initialText=initialText;
-        this.time=time;
-        this.pictures=pictures;
-        this.likes=likes;
-        this.commentsNumber=commentsNumber;
-        this.comments=comments;
-
-    }
-    public Post(int id,String fullname,byte[] icon,String initialText,String time ,int likes, int commentsNumber,List<Comment> comments){
-        this.id=id;
-        this.fullname=fullname;
-        this.icon=icon;
-        this.initialText=initialText;
-        this.time=time;
-        this.pictures=null;
-        this.likes=likes;
-        this.commentsNumber=commentsNumber;
-        this.comments=comments;
-
+    public Post(int id, String fullname, byte[] icon, String initialText, byte[] pictures, String time, int likes, int commentsNumber, List<Comment> comments) {
+        this.id = id;
+        this.fullname = fullname;
+        this.icon = icon;
+        this.initialText = initialText;
+        this.time = time;
+        this.pictures = pictures;
+        this.likes = likes;
+        this.commentsNumber = commentsNumber;
+        this.comments = comments;
+        this.liked = false;
     }
 
-    public int getId(){
+    public Post(int id, String fullname, byte[] icon, String initialText, String time, int likes, int commentsNumber, List<Comment> comments) {
+        this.id = id;
+        this.fullname = fullname;
+        this.icon = icon;
+        this.initialText = initialText;
+        this.time = time;
+        this.pictures = null;
+        this.likes = likes;
+        this.commentsNumber = commentsNumber;
+        this.comments = comments;
+        this.liked = false;
+    }
+
+    public int getId() {
         return this.id;
     }
+
     public String getFullname() {
         return fullname;
     }
+
     public byte[] getIcon() {
         return icon;
     }
@@ -94,6 +98,13 @@ public class Post implements Serializable {
         this.comments = comments;
     }
 
+    public boolean isLiked() {
+        return liked;
 
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+
+    }
 }
-

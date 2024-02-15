@@ -12,12 +12,18 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:supportsRtl="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="false"
         android:theme="@style/Theme.AndroidFacebook"
         tools:targetApi="31">
+        <activity
+            android:name=".Comments.CommentPage"
+            android:exported="false" />
+        <activity
+            android:name=".adapters.CommentListAdapter"
+            android:exported="false" />
         <activity
             android:name=".entities.AddPost"
             android:exported="false" />

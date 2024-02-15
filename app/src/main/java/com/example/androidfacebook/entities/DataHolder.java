@@ -5,8 +5,10 @@ import java.util.List;
 public class DataHolder {
     private static DataHolder instance;
     private List<Post> postList;
+    private List<Comment> comments;
 
-    private DataHolder() {}
+    private DataHolder() {
+    }
 
     public static synchronized DataHolder getInstance() {
         if (instance == null) {
@@ -22,4 +24,12 @@ public class DataHolder {
     public List<Post> getPostList() {
         return postList;
     }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+    public List<Comment> getComments() {
+        return comments;
+    }
+
 }
