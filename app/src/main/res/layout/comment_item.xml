@@ -90,6 +90,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_alignParentEnd="true"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:textColor="@color/colorAccentDark"
         android:text="Save" />
 
     <Button
@@ -100,6 +102,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_toStartOf="@id/btnSaveComment"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:textColor="@color/colorAccentDark"
         android:text="Cancel" />
 
 </RelativeLayout>
