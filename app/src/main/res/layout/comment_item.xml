@@ -70,4 +70,36 @@
         android:textSize="16sp"
         android:visibility="visible" />
 
+    <EditText
+        android:id="@+id/editCommentTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentLayout"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnSaveComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editCommentTextView"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_alignParentEnd="true"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/btnCancelEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editCommentTextView"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/btnSaveComment"
+        android:text="Cancel" />
+
 </RelativeLayout>
