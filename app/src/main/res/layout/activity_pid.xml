@@ -112,7 +112,6 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:text="What do you want to share?"
-        app:layout_constraintBottom_toTopOf="@+id/refreshLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topBar" />
