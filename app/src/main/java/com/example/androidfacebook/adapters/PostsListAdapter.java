@@ -30,11 +30,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     class PostViewHolder extends RecyclerView.ViewHolder{
         private final TextView tvAuthor;
         private final TextView tvContent;
+        private final TextView tvDate;
         private final ImageView ivPic;
         private final ImageButton btnLike;
         private final ImageButton btnShare;
 
-        private final ImageButton btnOption;
+
+        //private final ImageButton btnOption;
+        private final ImageView iconUser;
 
         private PostViewHolder(View itemView){
             super(itemView);
@@ -43,7 +46,10 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             ivPic=itemView.findViewById(R.id.ivPic);
             btnLike = itemView.findViewById(R.id.likeButton);
             btnShare = itemView.findViewById(R.id.shareButton);
-            btnOption= itemView.findViewById(R.id.optionButton);
+            //btnOption= itemView.findViewById(R.id.optionButton);
+            iconUser=itemView.findViewById(R.id.iconUser);
+            tvDate=itemView.findViewById(R.id.tvDate);
+
         }
         private void showPopupShareMenu(View view) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
@@ -65,20 +71,25 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
-        View itemView = mInflater.inflate(R.layout.post_item,parent,false);
+        View itemView = mInflater.inflate(R.layout.test_item,parent,false);
         return new PostViewHolder(itemView);
     }
     public void onBindViewHolder(PostViewHolder holder,int position){
         if(posts!=null){
             final Post current = posts.get(position);
             holder.tvAuthor.setText(current.getFullname());
+            holder.tvDate.setText(current.getTime());
             holder.tvContent.setText(current.getInitialText());
             byte[] pictureBytes = current.getPictures();
             setImageViewWithBytes(holder.ivPic, pictureBytes);
+            byte[] iconBytes= current.getIcon();
+            setImageViewWithBytes(holder.iconUser,iconBytes);
+
+
 
             //holder.btnLike.setOnClickListener(v -> {
                 //if (current.isLiked()) {
-                    // Change the icon to icon1
+                    //Change the icon to icon1
                     //holder.btnLike.setImageResource(R.drawable.like_svgrepo_com);
                     // Set liked to false
                     //current.setLiked(false);
@@ -100,13 +111,13 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                     holder.showPopupShareMenu(view);
                 }
             });
-            holder.btnOption.setOnClickListener(new View.OnClickListener() {
+            /*holder.btnOption.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // Show the popup menu when the share button is clicked
                     holder.showPopupOptionMenu(view);
                 }
-            });
+            });*/
         }
     }
     public void setPosts(List<Post> s){

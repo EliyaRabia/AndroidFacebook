@@ -46,23 +46,13 @@ public class Pid extends AppCompatActivity {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
-        //Post p2 = new Post(2,"user1",null,"HEYY",null,"12.2.2024",0,0,null);
-        //Post p1 = new Post(1,"user1",null,"HEYY",byteArray,"12.2.2024",0,0,null);
-        //Post p1 = new Post(1,"user1",null,"Hello There","12.2.2024",R.drawable.picture1);
-        //Post p2 = new Post(2,"user2",null,"Hey Facebook","13.2.2024",R.drawable.picture1);
-        //Post p3 = new Post(2,user.getDisplayName(), user.getPhoto(), "Hey Facebook","13.2.2024",R.drawable.picture1);
-        //posts = new ArrayList<>();
-        //posts.add(p1);
-        //posts.add(p2);
-        //posts.add(p1);
-        //posts.add(p2);
-        //posts.add(p3);
         adapter.setPosts(postList);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         btnAddPost.setOnClickListener(v->{
             Intent i = new Intent(this, AddPost.class);
             i.putExtra("USER", user);
+            DataHolder.getInstance().setPostList(postList);
             startActivity(i);
 
         });

@@ -17,8 +17,9 @@ import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.Comment;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
+//import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,9 +67,22 @@ public class Login extends AppCompatActivity {
             String time = jsonObject.get("time").getAsString();
             int likes = jsonObject.get("likes").getAsInt();
             int commentsNumber = jsonObject.get("commentsNumber").getAsInt();
-            Comment[] comments = null;
+            JsonArray commentsj = jsonObject.getAsJsonArray("comments");
+            List<Comment> comments = new ArrayList<>();
+            for (JsonElement c:commentsj){
+                JsonObject co = c.getAsJsonObject();
+                int commentId = co.get("id").getAsInt();
+                String commentFullname = co.get("fullname").getAsString();
+                String commentText = co.get("text").getAsString();
+                byte[] commentIcon = null;
+                if (co.get("icon") != null && !co.get("icon").isJsonNull()) {
+                    commentIcon = convertImageToBytes(co.get("icon").getAsString());
+                }
+                comments.add(new Comment(commentId,commentFullname,commentText,commentIcon));
+            }
 
-            return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber, comments);
+
+            return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber,comments);
         }
 
         private byte[] convertImageToBytes(String imagePath) {
@@ -141,7 +155,6 @@ public class Login extends AppCompatActivity {
                 DataHolder.getInstance().setPostList(postList);
                 i.putExtra("USER", u);
                 startActivity(i);
-                // Add your logic to proceed after successful login
             } else {
                 // Invalid inputs
                 Toast.makeText(Login.this,
