@@ -6,6 +6,7 @@ public class DataHolder {
     private static DataHolder instance;
     private List<Post> postList;
     private List<Comment> comments;
+    private Post currentPost;
 
     private DataHolder() {
     }
@@ -32,4 +33,11 @@ public class DataHolder {
         return comments;
     }
 
+    public Post getCurrentPost() {
+        return currentPost;
+    }
+
+    public void setCurrentPost(Post currentPost) {
+        this.currentPost = currentPost;
+    }
 }

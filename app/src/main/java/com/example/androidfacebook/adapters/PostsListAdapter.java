@@ -14,10 +14,12 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.androidfacebook.R;
 import com.example.androidfacebook.Comments.CommentPage;
+import com.example.androidfacebook.R;
+import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.pid.Pid;
 
 import java.util.List;
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostViewHolder>{
@@ -64,24 +66,33 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             // Show the popup menu
             popupMenu.show();
         }
-        private void showPopupOptionMenu(View view) {
+        private void showPopupOptionMenu(View view,Post current ) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.getMenuInflater().inflate(R.menu.option_menu, popupMenu.getMenu());
-//            popupMenu.setOnMenuItemClickListener(item -> {
-//                int id = item.getItemId();
-//                switch (id) {
-//                    case R.id.action_edit_post:
-//                        // Handle edit post action
-//                        // Implement the logic to edit the post here
-//                        return true;
-//                    case R.id.action_delete_post:
-//                        // Handle delete post action
-//                        // Implement the logic to delete the post here
-//                        return true;
-//                    default:
-//                        return false;
-//                }
-//            });
+            popupMenu.setOnMenuItemClickListener(item -> {
+                int id = item.getItemId();
+                // Handle delete post action
+                // Implement the logic to delete the post here
+
+                if (id == R.id.action_edit_post) {
+                    // Handle edit post action
+                    // Implement the logic to edit the post here
+
+                    return true;
+                }
+                if(id == R.id.action_delete_post){
+                    // Handle delete post action
+                    // Implement the logic to delete the post here
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, Pid.class);
+                    posts.remove(current);
+                    DataHolder.getInstance().setPostList(posts);
+                    intent.putExtra("USER", user);
+                    context.startActivity(intent);
+                    return true;
+                }
+                return false;
+            });
             // Show the popup menu
             popupMenu.show();
         }
@@ -89,6 +100,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     }
     private final LayoutInflater mInflater;
     private List<Post> posts;
+    private ClientUser user;
 
     public PostsListAdapter(Context context){mInflater=LayoutInflater.from(context);}
 
@@ -114,6 +126,9 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 Context context = view.getContext();
                 Intent intent = new Intent(context, CommentPage.class);
                 DataHolder.getInstance().setComments(current.getComments());
+                DataHolder.getInstance().setPostList(this.getPosts());
+                DataHolder.getInstance().setCurrentPost(current);
+                intent.putExtra("USER", user);
                 context.startActivity(intent);
             });
 
@@ -146,12 +161,13 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
             holder.dotsButton.setOnClickListener(view -> {
                 // Show the popup menu when the option button is clicked
-                holder.showPopupOptionMenu(view);
+                holder.showPopupOptionMenu(view, current);
             });
         }
     }
-    public void setPosts(List<Post> s){
+    public void setPosts(List<Post> s, ClientUser u){
         posts = s;
+        user = u;
         notifyDataSetChanged();
     }
     @Override

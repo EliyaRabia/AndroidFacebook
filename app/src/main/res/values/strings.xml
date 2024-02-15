@@ -50,4 +50,5 @@
     <string name="icon_representing_share">Icon representing share</string>
     <string name="icon_representing_line" />
     <string name="comment_icon">comment_icon</string>
+    <string name="go_back_to_pid">Go back</string>
 </resources>

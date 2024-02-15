@@ -19,8 +19,6 @@ import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 
 import java.io.ByteArrayOutputStream;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Pid extends AppCompatActivity {
@@ -46,7 +44,7 @@ public class Pid extends AppCompatActivity {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
-        adapter.setPosts(postList);
+        adapter.setPosts(postList, user);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         btnAddPost.setOnClickListener(v->{
