@@ -29,8 +29,11 @@ import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class AddPost extends AppCompatActivity {
     private byte[] selectedImageByteArray;
@@ -98,8 +101,12 @@ public class AddPost extends AppCompatActivity {
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
+            TimeZone israelTimeZone = TimeZone.getTimeZone("Israel");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            dateFormat.setTimeZone(israelTimeZone);
+            String currentDateTime = dateFormat.format(new Date());
             List<Comment> l = new ArrayList<>();
-            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,"Posted on " + "14.2.2024",0,0,l);
+            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,"Posted on " + currentDateTime,0,0,l);
             if(selectedImageByteArray!=null){
                 p.setPictures(selectedImageByteArray);
             }
