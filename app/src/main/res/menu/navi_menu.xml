@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_darkMode"
-        android:title="@string/dark_mode"/>
+        android:title="@string/dark_lightmode"/>
     <item
         android:id="@+id/action_logOut"
         android:title="@string/log_out"/>

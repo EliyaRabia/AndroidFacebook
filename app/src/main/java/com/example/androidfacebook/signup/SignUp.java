@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import android.Manifest;
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.login.Login;
 
@@ -66,11 +67,8 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        Intent LoginIntent = getIntent();
-        List<User> userList=(List<User>) LoginIntent.getSerializableExtra("LIST");
-        if(userList==null){
-            return;
-        }
+        //Intent LoginIntent = getIntent();
+        List<User> userList= DataHolder.getInstance().getUserList();
 
         /*now you have users in userlist*/
         username = findViewById(R.id.textView3);
@@ -83,7 +81,6 @@ public class SignUp extends AppCompatActivity {
         btnGoBack.setOnClickListener(v -> {
             // go to the sign up page.
             Intent i = new Intent(this, Login.class);
-            i.putExtra("LIST", (Serializable) userList);
             startActivity(i);
         });
         btnUploadImage.setOnClickListener(v -> {
@@ -147,7 +144,7 @@ public class SignUp extends AppCompatActivity {
             User newU = new User(usernameStr,passwordStr,displayNameStr,selectedImageByteArray);
             userList.add(newU);
             Intent i = new Intent(this, Login.class);
-            i.putExtra("LIST", (Serializable) userList); /*adding the list to the intent*/
+            DataHolder.getInstance().setUserList(userList);
             Toast.makeText(this, "User created successfully", Toast.LENGTH_SHORT).show();
             startActivity(i);
 

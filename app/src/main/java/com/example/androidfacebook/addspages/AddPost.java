@@ -76,6 +76,8 @@ public class AddPost extends AppCompatActivity {
         Button btnPost = findViewById(R.id.btnPost);
         selectedImageView= findViewById(R.id.selectedImage);
         EditText TextShare = findViewById(R.id.editTextShare);
+        String hint = user.getDisplayName() + ", " + getString(R.string.add_post_edit_text);
+        TextShare.setHint(hint);
         btnDeletePhoto = findViewById(R.id.btnPhotoDel);
         btnDeletePhoto.setOnClickListener(v -> {
             // Delete the photo

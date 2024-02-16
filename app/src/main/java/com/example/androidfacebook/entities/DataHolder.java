@@ -7,6 +7,7 @@ public class DataHolder {
     private List<Post> postList;
     private List<Comment> comments;
     private Post currentPost;
+    private List<User> userList;
 
     private DataHolder() {
     }
@@ -39,5 +40,11 @@ public class DataHolder {
 
     public void setCurrentPost(Post currentPost) {
         this.currentPost = currentPost;
+    }
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
+    public List<User> getUserList() {
+        return userList;
     }
 }
