@@ -1,5 +1,5 @@
 
-# Welcome to our facebook React project BIU Advanced Programming Course
+# Welcome to our facebook android app project BIU Advanced Programming Course
 
 to get started with the project, clone the repository.
 
@@ -36,3 +36,8 @@ Users can log out of their account by clicking on the "Logout" button in the nav
 
 if u didn't close the app u can login again with the same user! , and also u can create how many users u want,
 they will all be saved until u refresh the page or close the app!
+
+### In case of problem
+Problems do not suppose to happend by in case we are prepared :)
+click on the menu in the right top corner of android studio -> build -> clean project.
+then click again on the menu -> build -> rebuild project.
