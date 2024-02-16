@@ -7,6 +7,7 @@ public class DataHolder {
     private List<Post> postList;
     private List<Comment> comments;
     private Post currentPost;
+    private Post editposter;
     private List<User> userList;
 
     private DataHolder() {
@@ -46,5 +47,13 @@ public class DataHolder {
     }
     public List<User> getUserList() {
         return userList;
+    }
+
+    public Post getEditposter() {
+        return editposter;
+    }
+
+    public void setEditposter(Post editposter) {
+        this.editposter = editposter;
     }
 }

@@ -14,8 +14,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.androidfacebook.comments.CommentPage;
+import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
@@ -75,8 +76,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 // Implement the logic to delete the post here
 
                 if (id == R.id.action_edit_post) {
-                    // Handle edit post action
-                    // Implement the logic to edit the post here
+                    Context context = view.getContext();
+                    Intent intent = new Intent(context, EditPost.class);
+                    DataHolder.getInstance().setPostList(posts);
+                    DataHolder.getInstance().setEditposter(current);
+                    intent.putExtra("USER", user);
+                    context.startActivity(intent);
 
                     return true;
                 }
