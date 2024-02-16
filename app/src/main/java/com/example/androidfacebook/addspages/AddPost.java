@@ -102,11 +102,11 @@ public class AddPost extends AppCompatActivity {
                 return;
             }
             TimeZone israelTimeZone = TimeZone.getTimeZone("Israel");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             dateFormat.setTimeZone(israelTimeZone);
             String currentDateTime = dateFormat.format(new Date());
             List<Comment> l = new ArrayList<>();
-            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,"Posted on " + currentDateTime,0,0,l);
+            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,currentDateTime,0,0,l);
             if(selectedImageByteArray!=null){
                 p.setPictures(selectedImageByteArray);
             }

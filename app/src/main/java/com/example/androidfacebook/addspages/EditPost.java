@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -41,6 +42,7 @@ public class EditPost extends AppCompatActivity {
     private byte[] selectedImageByteArray;
     private ImageView selectedImageView;
     private Button btnDeletePhoto;
+    private byte[] pic;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
@@ -82,14 +84,23 @@ public class EditPost extends AppCompatActivity {
         Button btnPostEditPost = findViewById(R.id.btnPostEdit);
         selectedImageView= findViewById(R.id.selectedImageEditPost);
         EditText TextShare = findViewById(R.id.editTextShareEditPost);
+        setImageViewWithBytes(selectedImageView, p.getPictures());
         //selectedImageView.setImageBitmap();
         TextShare.setText(p.getInitialText());
+        pic = p.getPictures();
         btnDeletePhoto = findViewById(R.id.btnPhotoDelEditPost);
+        if(p.getPictures()==null){
+            btnDeletePhoto.setVisibility(View.GONE);
+        }
+        else{
+            btnDeletePhoto.setVisibility(View.VISIBLE);
+        }
         btnDeletePhoto.setOnClickListener(v -> {
             // Delete the photo
             selectedImageByteArray = null;
             selectedImageView.setImageBitmap(null);
             btnDeletePhoto.setVisibility(View.GONE);
+            pic=null;
         });
         btnDeleteEditPost.setOnClickListener(v -> {
             // Navigate to addPost activity
@@ -104,9 +115,12 @@ public class EditPost extends AppCompatActivity {
                 return;
             }
 
-            Post t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
-            if(selectedImageByteArray!=null){
-                t.setPictures(selectedImageByteArray);
+            Post t;
+            if(selectedImageByteArray==null){
+                t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+            }
+            else{
+                t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
             }
             posts.set(posts.indexOf(p),t);
             Intent inte = new Intent(this, Pid.class);
@@ -134,6 +148,15 @@ public class EditPost extends AppCompatActivity {
                         }
                     })
                     .show();
+        }
+    }
+    public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
+        if (imageBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            // Set a default image or leave it empty
+            imageView.setImageDrawable(null);
         }
     }
     @SuppressLint("MissingSuperCall")

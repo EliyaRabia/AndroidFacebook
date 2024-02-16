@@ -32,73 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 public class Login extends AppCompatActivity {
-    private String loadJSONFromAsset() {
-        String json;
-        try {
-            InputStream is = getAssets().open("db.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-    @SuppressWarnings("unchecked")
-    public class PostDeserializer implements JsonDeserializer<Post> {
 
-        @Override
-        public Post deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-
-            int id = jsonObject.get("id").getAsInt();
-            String fullname = jsonObject.get("fullname").getAsString();
-            byte[] icon = null;
-            if (jsonObject.get("icon") != null && !jsonObject.get("icon").isJsonNull()) {
-                icon = convertImageToBytes(jsonObject.get("icon").getAsString());
-            }
-            String initialText = jsonObject.get("initialText").getAsString();
-            byte[] pictures = null;
-            if (jsonObject.get("pictures") != null && !jsonObject.get("pictures").isJsonNull()) {
-                pictures = convertImageToBytes(jsonObject.get("pictures").getAsString());
-            }
-            String time = jsonObject.get("time").getAsString();
-            int likes = jsonObject.get("likes").getAsInt();
-            int commentsNumber = jsonObject.get("commentsNumber").getAsInt();
-            JsonArray commentsj = jsonObject.getAsJsonArray("comments");
-            List<Comment> comments = new ArrayList<>();
-            for (JsonElement c:commentsj){
-                JsonObject co = c.getAsJsonObject();
-                int commentId = co.get("id").getAsInt();
-                String commentFullname = co.get("fullname").getAsString();
-                String commentText = co.get("text").getAsString();
-                byte[] commentIcon = null;
-                if (co.get("icon") != null && !co.get("icon").isJsonNull()) {
-                    commentIcon = convertImageToBytes(co.get("icon").getAsString());
-                }
-                comments.add(new Comment(commentId,commentFullname,commentText,commentIcon));
-            }
-
-
-            return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber,comments);
-        }
-
-        private byte[] convertImageToBytes(String imagePath) {
-            try {
-                InputStream is = getAssets().open(imagePath);
-                byte[] bytes = new byte[is.available()];
-                is.read(bytes);
-                is.close();
-                return bytes;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-    }
 
 
     @Override
@@ -108,16 +42,6 @@ public class Login extends AppCompatActivity {
         //Intent mainIntent = getIntent();
         List<User>userList=DataHolder.getInstance().getUserList();
 
-        String dbJson = loadJSONFromAsset();
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Post.class, new PostDeserializer());
-        Gson gson = gsonBuilder.create();
-
-
-        Type type = new TypeToken<List<Post>>(){}.getType();
-        List<Post> postList = gson.fromJson(dbJson, type);
-        Log.d("Login", "postList: " + postList);
 
         EditText emailOrPhoneEditText = findViewById(R.id.editText);
         EditText passwordEditText = findViewById(R.id.editText2);
@@ -142,7 +66,7 @@ public class Login extends AppCompatActivity {
             if (isAuthenticated) {
                 // Successful login, need to change to Pid
                 Intent i = new Intent(this, Pid.class);
-                DataHolder.getInstance().setPostList(postList);
+
                 i.putExtra("USER", u);
                 startActivity(i);
             } else {
