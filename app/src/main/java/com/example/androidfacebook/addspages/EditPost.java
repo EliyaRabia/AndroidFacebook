@@ -5,7 +5,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -35,10 +37,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class AddPost extends AppCompatActivity {
+public class EditPost extends AppCompatActivity {
+
     private byte[] selectedImageByteArray;
     private ImageView selectedImageView;
     private Button btnDeletePhoto;
+    private byte[] pic;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
@@ -68,57 +72,65 @@ public class AddPost extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_post);
+        setContentView(R.layout.activity_edit_post);
+        List<Post> posts= DataHolder.getInstance().getPostList();
         ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
-        List<Post> postList = DataHolder.getInstance().getPostList();
+        Post p = DataHolder.getInstance().getEditposter();
         if(user==null){
             return;
         }
 
-        Button btnDelete = findViewById(R.id.btnDelete);
-        Button btnPost = findViewById(R.id.btnPost);
-        selectedImageView= findViewById(R.id.selectedImage);
-        EditText TextShare = findViewById(R.id.editTextShare);
-        String hint = user.getDisplayName() + ", " + getString(R.string.add_post_edit_text);
-        TextShare.setHint(hint);
-        btnDeletePhoto = findViewById(R.id.btnPhotoDel);
+        Button btnDeleteEditPost = findViewById(R.id.btnDeleteEditPost);
+        Button btnPostEditPost = findViewById(R.id.btnPostEdit);
+        selectedImageView= findViewById(R.id.selectedImageEditPost);
+        EditText TextShare = findViewById(R.id.editTextShareEditPost);
+        setImageViewWithBytes(selectedImageView, p.getPictures());
+        //selectedImageView.setImageBitmap();
+        TextShare.setText(p.getInitialText());
+        pic = p.getPictures();
+        btnDeletePhoto = findViewById(R.id.btnPhotoDelEditPost);
+        if(p.getPictures()==null){
+            btnDeletePhoto.setVisibility(View.GONE);
+        }
+        else{
+            btnDeletePhoto.setVisibility(View.VISIBLE);
+        }
         btnDeletePhoto.setOnClickListener(v -> {
             // Delete the photo
             selectedImageByteArray = null;
             selectedImageView.setImageBitmap(null);
             btnDeletePhoto.setVisibility(View.GONE);
+            pic=null;
         });
-
-        btnDelete.setOnClickListener(v -> {
-        // Navigate to addPost activity
-        Intent intent = new Intent(this, Pid.class);
-        intent.putExtra("USER", user);
-        startActivity(intent);
+        btnDeleteEditPost.setOnClickListener(v -> {
+            // Navigate to addPost activity
+            Intent intent = new Intent(this, Pid.class);
+            intent.putExtra("USER", user);
+            startActivity(intent);
         });
-        btnPost.setOnClickListener(v -> {
+        btnPostEditPost.setOnClickListener(v -> {
             String textString = TextShare.getText().toString();
             if(textString.length()==0){
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            TimeZone israelTimeZone = TimeZone.getTimeZone("Israel");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            dateFormat.setTimeZone(israelTimeZone);
-            String currentDateTime = dateFormat.format(new Date());
-            List<Comment> l = new ArrayList<>();
-            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,currentDateTime,0,0,l);
-            if(selectedImageByteArray!=null){
-                p.setPictures(selectedImageByteArray);
+
+            Post t;
+            if(selectedImageByteArray==null){
+                t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
             }
-            postList.add(p);
+            else{
+                t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+            }
+            posts.set(posts.indexOf(p),t);
             Intent inte = new Intent(this, Pid.class);
             inte.putExtra("USER", user);
-            DataHolder.getInstance().setPostList(postList);
+            DataHolder.getInstance().setPostList(posts);
             startActivity(inte);
         });
 
     }
-    public void onAddPicToPostClick(View view) {
+    public void onAddPicToPostClickEditPost(View view) {
         // Handle the click event here
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
@@ -138,13 +150,18 @@ public class AddPost extends AppCompatActivity {
                     .show();
         }
     }
+    public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
+        if (imageBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            // Set a default image or leave it empty
+            imageView.setImageDrawable(null);
+        }
+    }
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
-
-
-
-
 
 }

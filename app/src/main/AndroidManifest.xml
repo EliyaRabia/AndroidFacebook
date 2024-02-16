@@ -22,6 +22,9 @@
             android:name=".comments.CommentPage"
             android:exported="false" />
         <activity
+            android:name=".addspages.EditPost"
+            android:exported="false" />
+        <activity
             android:name=".adapters.CommentListAdapter"
             android:exported="false" />
         <activity
