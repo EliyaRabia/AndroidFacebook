@@ -28,6 +28,7 @@ public class CommentPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_page);
+        // Get the current user and the current post from the intent and the DataHolder
         List<Comment> CommentList = DataHolder.getInstance().getComments();
         List<Post> postList = DataHolder.getInstance().getPostList();
         ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
@@ -41,24 +42,28 @@ public class CommentPage extends AppCompatActivity {
 
         Button btnGoBackToPid = findViewById(R.id.btnGoBackToPid);
         Button btnAddComment = findViewById(R.id.addCommentButton);
-
+        // Set the onClickListeners for the buttons
         btnGoBackToPid.setOnClickListener(v ->{
             Intent i = new Intent(this, Pid.class);
+            // Set the user and the post in the DataHolder and start the activity
             int postIndex = postList.indexOf(currentPost);
             postList.get(postIndex).setComments(CommentList);
             DataHolder.getInstance().setPostList(postList);
             i.putExtra("USER", user);
             startActivity(i);
         });
+        // Set the onClickListener for the add comment button
         btnAddComment.setOnClickListener(v->{
             EditText e = findViewById(R.id.commentTextView);
             String s = e.getText().toString();
+            // Check if the comment is empty
             if(s.length()==0){
                 Toast.makeText(CommentPage.this,
                         "You can't add a blank comment!",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
+            // Add the comment to the list and start the activity
             Comment newC= new Comment(CommentList.size()+1,user.getDisplayName(),s,user.getPhoto());
             CommentList.add(newC);
             postList.get(postList.indexOf(currentPost)).setComments(CommentList);

@@ -40,6 +40,7 @@ public class AddPost extends AppCompatActivity {
     private ImageView selectedImageView;
     private Button btnDeletePhoto;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
+    // ActivityResultLauncher for selecting an image from the gallery
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
                 try {
@@ -49,14 +50,14 @@ public class AddPost extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
-
+    // ActivityResultLauncher for capturing an image from the camera
     private final ActivityResultLauncher<Void> mCaptureImage = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(),
             result -> {
                 if (result != null) {
                     handleImage(result);
                 }
             });
-
+    // Handle the selected image
     private void handleImage(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -67,6 +68,7 @@ public class AddPost extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // create the activity and get the user and post list
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
         ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
@@ -74,37 +76,42 @@ public class AddPost extends AppCompatActivity {
         if(user==null){
             return;
         }
-
+        // get the views and set the listeners
         Button btnDelete = findViewById(R.id.btnDelete);
         Button btnPost = findViewById(R.id.btnPost);
         selectedImageView= findViewById(R.id.selectedImage);
         EditText TextShare = findViewById(R.id.editTextShare);
+        // set the hint for the text view to include the user's name
         String hint = user.getDisplayName() + ", " + getString(R.string.add_post_edit_text);
         TextShare.setHint(hint);
         btnDeletePhoto = findViewById(R.id.btnPhotoDel);
+        // set the listeners
         btnDeletePhoto.setOnClickListener(v -> {
             // Delete the photo
             selectedImageByteArray = null;
             selectedImageView.setImageBitmap(null);
             btnDeletePhoto.setVisibility(View.GONE);
         });
-
+        // set the btnDelete listener to navigate to the pid activity
         btnDelete.setOnClickListener(v -> {
         // Navigate to addPost activity
         Intent intent = new Intent(this, Pid.class);
         intent.putExtra("USER", user);
         startActivity(intent);
         });
+        // set the btnPost listener to post the post
         btnPost.setOnClickListener(v -> {
             String textString = TextShare.getText().toString();
             if(textString.length()==0){
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
+            // get the current date and time
             TimeZone israelTimeZone = TimeZone.getTimeZone("Israel");
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             dateFormat.setTimeZone(israelTimeZone);
             String currentDateTime = dateFormat.format(new Date());
+            // create the post and navigate to the pid activity
             List<Comment> l = new ArrayList<>();
             Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,currentDateTime,0,0,l);
             if(selectedImageByteArray!=null){
@@ -118,6 +125,7 @@ public class AddPost extends AppCompatActivity {
         });
 
     }
+    // Handle the click event of the "Add Picture" button
     public void onAddPicToPostClick(View view) {
         // Handle the click event here
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

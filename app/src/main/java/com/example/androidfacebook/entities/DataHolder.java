@@ -1,7 +1,10 @@
 package com.example.androidfacebook.entities;
 
 import java.util.List;
-
+/*
+this class is used to store the data that is used in the application
+like the posts, comments, and the current post and the user list
+ */
 public class DataHolder {
     private static DataHolder instance;
     private List<Post> postList;

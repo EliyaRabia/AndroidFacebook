@@ -1,6 +1,9 @@
 package com.example.androidfacebook.entities;
 import java.io.Serializable;
 import java.util.*;
+/*
+  This class is used to store the user information
+ */
 public class User implements Serializable {
     private String username;
     private String password;

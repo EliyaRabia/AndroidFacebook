@@ -27,35 +27,33 @@ import com.example.androidfacebook.login.Login;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
-
+/*
+    Pid class is the main class for the user to see posts and add new posts
+ */
 public class Pid extends AppCompatActivity {
-    private List<User> userList;
-
-
-
     @SuppressLint({"MissingInflatedId", "WrongThread"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pid);
+        // Get the user that is in the pid now
         ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
         if(user==null){
             return;
         }
+        // Get the posts from the data holder
         List<Post> postList = DataHolder.getInstance().getPostList();
-        //the user that is in the pid now
-
         RecyclerView lstPosts = findViewById(R.id.lstPosts);
+        // Set the adapter for the recycler view
         final PostsListAdapter adapter = new PostsListAdapter(this);
         lstPosts.setAdapter(adapter);
         lstPosts.setLayoutManager(new LinearLayoutManager(this));
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture1);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
+        // Set the posts and the user to the adapter
         adapter.setPosts(postList, user);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
+        // When the user clicks on the add post button,
+        // the user will be redirected to the add post page
         btnAddPost.setOnClickListener(v->{
             Intent i = new Intent(this, AddPost.class);
             i.putExtra("USER", user);
@@ -72,7 +70,7 @@ public class Pid extends AppCompatActivity {
     @Override
     public void onBackPressed() {
     }
-
+    // Show the popup menu
     private void showPopupMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.inflate(R.menu.navi_menu);
@@ -84,6 +82,7 @@ public class Pid extends AppCompatActivity {
                 if(nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 } else {
+                    // Change to dark mode
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
                 return true;

@@ -8,7 +8,9 @@ public class ClientUser implements Serializable {
     private byte[] photo;
 
 
-
+    /*
+    this class is used to store the user's information
+     */
     public ClientUser(String username, String displayName, byte[] photo){
         this.username=username;
         this.displayName=displayName;
