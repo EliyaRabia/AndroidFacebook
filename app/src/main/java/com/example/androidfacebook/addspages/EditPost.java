@@ -44,7 +44,9 @@ public class EditPost extends AppCompatActivity {
     private Button btnDeletePhoto;
     private byte[] pic;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
+    // ActivityResultLauncher for selecting an image from the gallery
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+            // The callback is called when the user has selected an image
             uri -> {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
@@ -53,15 +55,16 @@ public class EditPost extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
-
+    // ActivityResultLauncher for capturing an image from the camera
     private final ActivityResultLauncher<Void> mCaptureImage = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(),
             result -> {
                 if (result != null) {
                     handleImage(result);
                 }
             });
-
+    // Handle the image
     private void handleImage(Bitmap bitmap) {
+        // Convert the bitmap to a byte array
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         selectedImageByteArray = stream.toByteArray();
@@ -73,28 +76,31 @@ public class EditPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
+        // Get the user object from the intent and check if it is null
+        // also get the post from the Dataholder
         List<Post> posts= DataHolder.getInstance().getPostList();
         ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
         Post p = DataHolder.getInstance().getEditposter();
         if(user==null){
             return;
         }
-
+        // Get the views and set button click listeners
         Button btnDeleteEditPost = findViewById(R.id.btnDeleteEditPost);
         Button btnPostEditPost = findViewById(R.id.btnPostEdit);
         selectedImageView= findViewById(R.id.selectedImageEditPost);
         EditText TextShare = findViewById(R.id.editTextShareEditPost);
         setImageViewWithBytes(selectedImageView, p.getPictures());
-        //selectedImageView.setImageBitmap();
         TextShare.setText(p.getInitialText());
         pic = p.getPictures();
         btnDeletePhoto = findViewById(R.id.btnPhotoDelEditPost);
+        // Check if the post has a picture
         if(p.getPictures()==null){
             btnDeletePhoto.setVisibility(View.GONE);
         }
         else{
             btnDeletePhoto.setVisibility(View.VISIBLE);
         }
+        // Set the button click listeners
         btnDeletePhoto.setOnClickListener(v -> {
             // Delete the photo
             selectedImageByteArray = null;
@@ -103,18 +109,20 @@ public class EditPost extends AppCompatActivity {
             pic=null;
         });
         btnDeleteEditPost.setOnClickListener(v -> {
-            // Navigate to addPost activity
+            // remain the post and go back to the previous activity
             Intent intent = new Intent(this, Pid.class);
             intent.putExtra("USER", user);
             startActivity(intent);
         });
+        // Set the button click listener
         btnPostEditPost.setOnClickListener(v -> {
             String textString = TextShare.getText().toString();
+            // Check if the text is empty
             if(textString.length()==0){
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            // Update the post and go back to the previous activity
             Post t;
             if(selectedImageByteArray==null){
                 t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
@@ -130,6 +138,7 @@ public class EditPost extends AppCompatActivity {
         });
 
     }
+    // Handle the permission request result
     public void onAddPicToPostClickEditPost(View view) {
         // Handle the click event here
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -150,6 +159,7 @@ public class EditPost extends AppCompatActivity {
                     .show();
         }
     }
+    // Set the image view with the byte array
     public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
         if (imageBytes != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);

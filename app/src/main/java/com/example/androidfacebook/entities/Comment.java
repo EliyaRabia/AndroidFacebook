@@ -7,7 +7,9 @@ public class Comment {
     private byte[] icon;
     private boolean editMode;
 
-
+    /*
+    this class is used to store the comment's information
+     */
     public Comment(int id,String fullname,String text,byte[] icon){
         this.id=id;
         this.fullname=fullname;

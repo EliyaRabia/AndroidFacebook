@@ -14,7 +14,10 @@ public class Post implements Serializable {
     private byte[] pictures;
     private List<Comment> comments;
     private boolean liked;
-
+    /*
+    this class is used to store the post's information
+     */
+    // Constructor for posts with pictures
     public Post(int id, String fullname, byte[] icon, String initialText, byte[] pictures, String time, int likes, int commentsNumber, List<Comment> comments) {
         this.id = id;
         this.fullname = fullname;
@@ -27,7 +30,7 @@ public class Post implements Serializable {
         this.comments = comments;
         this.liked = false;
     }
-
+    // Constructor for posts without pictures
     public Post(int id, String fullname, byte[] icon, String initialText, String time, int likes, int commentsNumber, List<Comment> comments) {
         this.id = id;
         this.fullname = fullname;
