@@ -71,12 +71,12 @@
 
         <Button
             android:id="@+id/button2"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="200dp"
             android:text="@string/LoginSignUp"
-            android:textColor="@color/colorAccent"
+            android:backgroundTint="@color/colorPrimaryLight"
+            android:textColor="@color/colorAccentDark"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -84,11 +84,11 @@
 
         <Button
             android:id="@+id/button3"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/forgetPassword"
-            android:textColor="@color/colorAccent"
+            android:backgroundTint="@color/colorPrimaryLight"
+            android:textColor="@color/colorAccentDark"
 
             app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="@+id/guideline"

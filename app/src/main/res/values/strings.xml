@@ -55,4 +55,6 @@
     <string name="enter_your_comment">Enter your comment</string>
     <string name="edit_comment">edit comment</string>
     <string name="delete_comment">delete comment</string>
+    <string name="selected_image">selected_image</string>
+    <string name="delete_photo">Delete photo</string>
 </resources>

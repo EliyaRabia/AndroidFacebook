@@ -106,7 +106,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     @Override
     public PostViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
-        View itemView = mInflater.inflate(R.layout.test_item,parent,false);
+        View itemView = mInflater.inflate(R.layout.post_item,parent,false);
         return new PostViewHolder(itemView);
     }
     public void onBindViewHolder(PostViewHolder holder,int position){
