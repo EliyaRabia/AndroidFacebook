@@ -36,3 +36,8 @@ Users can log out of their account by clicking on the "Logout" button in the nav
 
 if u didn't close the app u can login again with the same user! , and also u can create how many users u want,
 they will all be saved until u refresh the page or close the app!
+
+### In case of error
+* this do not suppose to happened by in case of problem :)
+click on the android studio menu (four lines on the top in the right side of the app) -> build - >clean project.
+Then click again on android studio menu -> build -> rebuild project.
