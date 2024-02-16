@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -26,7 +27,7 @@
             android:text="@string/add_post"
             android:textSize="18sp"
             android:gravity="center"
-            android:textColor="#000000" />
+            android:textColor="@color/textColor" />
 
         <Button
             android:id="@+id/btnDelete"
@@ -41,12 +42,27 @@
     <EditText
         android:id="@+id/editTextShare"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_height="30dp"
+        android:layout_weight="1"
         android:hint="@string/add_post_edit_text"
         android:inputType="textMultiLine"
         android:gravity="top|start"
+        android:textColor="@color/textColor"
         android:importantForAutofill="no" />
+
+    <ImageView
+        android:id="@+id/selectedImage"
+        android:layout_width="match_parent"
+        android:layout_height="286dp"
+        android:contentDescription="@string/selected_image" />
+    <Button
+        android:id="@+id/btnPhotoDel"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:textColor="@color/colorAccentDark"
+        android:text="@string/delete_photo" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -85,6 +101,7 @@
                 android:background="@null"
                 tools:ignore="RtlSymmetry"
                 android:inputType="text"
+                android:textColor="@color/textColor"
                 android:autofillHints="" />
 
         </LinearLayout>
@@ -98,6 +115,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:tint="@color/textColor"
                 android:src="@drawable/people_svgrepo_com"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@string/people_icon" />
@@ -117,6 +135,7 @@
                 android:background="@null"
                 android:autofillHints=""
                 android:inputType="text"
+                android:textColor="@color/textColor"
                 tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
@@ -131,6 +150,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/video_camera_963_svgrepo_com"
                 android:layout_gravity="center_vertical"
+                app:tint="@color/textColor"
                 android:contentDescription="@string/live_icon" />
 
             <EditText
@@ -148,6 +168,7 @@
                 android:background="@null"
                 tools:ignore="RtlSymmetry"
                 android:autofillHints=""
+                android:textColor="@color/textColor"
                 android:inputType="text" />
 
         </LinearLayout>
@@ -162,6 +183,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                app:tint="@color/textColor"
                 android:src="@drawable/letter_aa_large_svgrepo_com"
                 android:contentDescription="@string/Aa" />
 
@@ -179,6 +201,7 @@
                 android:paddingStart="8dp"
                 android:text="@string/background_color"
                 tools:ignore="RtlSymmetry"
+                android:textColor="@color/textColor"
                 android:autofillHints=""
                 android:inputType="text" />
         </LinearLayout>

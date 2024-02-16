@@ -18,6 +18,7 @@
             android:id="@+id/addCommentButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/light_grey"
             android:layout_marginStart="20dp"
             android:backgroundTint="@color/colorPrimaryLight"
             android:text="@string/add_comment" />
@@ -30,6 +31,7 @@
         <Button
             android:id="@+id/btnGoBackToPid"
             android:layout_width="wrap_content"
+            android:textColor="@color/light_grey"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/colorPrimaryLight"
@@ -50,6 +52,7 @@
             android:id="@+id/commentTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/textColor"
             android:layout_marginTop="8dp"
             android:hint="@string/enter_your_comment"
             android:padding="8dp"

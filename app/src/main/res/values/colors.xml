@@ -2,6 +2,8 @@
 <resources>
 
     <color name="white">#FFFFFFFF</color>
+    <color name="backroundcolor">#FFFFFFFF</color>
+    <color name="textColor">#000000</color>
     <color name="colorPrimaryLight">#8b9dc3</color>
     <color name="colorAccentDark">#dfe3ee</color>
     <color name="darker_gray">#626262</color>

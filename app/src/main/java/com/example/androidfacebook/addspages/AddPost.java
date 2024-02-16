@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,6 +34,8 @@ import java.util.List;
 
 public class AddPost extends AppCompatActivity {
     private byte[] selectedImageByteArray;
+    private ImageView selectedImageView;
+    private Button btnDeletePhoto;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             uri -> {
@@ -55,6 +58,8 @@ public class AddPost extends AppCompatActivity {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         selectedImageByteArray = stream.toByteArray();
+        selectedImageView.setImageBitmap(bitmap);
+        btnDeletePhoto.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -69,7 +74,15 @@ public class AddPost extends AppCompatActivity {
 
         Button btnDelete = findViewById(R.id.btnDelete);
         Button btnPost = findViewById(R.id.btnPost);
+        selectedImageView= findViewById(R.id.selectedImage);
         EditText TextShare = findViewById(R.id.editTextShare);
+        btnDeletePhoto = findViewById(R.id.btnPhotoDel);
+        btnDeletePhoto.setOnClickListener(v -> {
+            // Delete the photo
+            selectedImageByteArray = null;
+            selectedImageView.setImageBitmap(null);
+            btnDeletePhoto.setVisibility(View.GONE);
+        });
 
         btnDelete.setOnClickListener(v -> {
         // Navigate to addPost activity
