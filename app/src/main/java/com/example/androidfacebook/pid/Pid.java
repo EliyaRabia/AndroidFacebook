@@ -6,9 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,11 +22,14 @@ import com.example.androidfacebook.addspages.AddPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.User;
+import com.example.androidfacebook.login.Login;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class Pid extends AppCompatActivity {
+    private List<User> userList;
 
 
 
@@ -54,8 +61,9 @@ public class Pid extends AppCompatActivity {
             i.putExtra("USER", user);
             DataHolder.getInstance().setPostList(postList);
             startActivity(i);
-
         });
+        ImageButton menuIcon = findViewById(R.id.menuIcon);
+        menuIcon.setOnClickListener(v -> showPopupMenu(v));
 
 
 
@@ -65,4 +73,29 @@ public class Pid extends AppCompatActivity {
     public void onBackPressed() {
     }
 
+    private void showPopupMenu(View v) {
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        popupMenu.inflate(R.menu.navi_menu);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if(id == R.id.action_darkMode) {
+                // Handle dark mode action
+                int nightMode = AppCompatDelegate.getDefaultNightMode();
+                if(nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+                return true;
+            }
+            if(id == R.id.action_logOut) {
+                // Handle logout action
+                Intent intent = new Intent(this, Login.class);
+                startActivity(intent);
+                return true;
+            }
+            return false;
+        });
+        popupMenu.show();
+    }
 }

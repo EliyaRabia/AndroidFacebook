@@ -18,8 +18,8 @@ import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.Comment;
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 //import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -105,20 +105,9 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Intent mainIntent = getIntent();
-        List<User>userList=(List<User>) mainIntent.getSerializableExtra("LIST");
-        if(userList==null){
-            finish();
-            return;
-        }
+        //Intent mainIntent = getIntent();
+        List<User>userList=DataHolder.getInstance().getUserList();
 
-
-        userList.add(new User("user1","pass1",
-                "Eliya Rabia",null));
-        userList.add(new User("user2","pass2",
-                "Or Shmuel",null));
-        userList.add(new User("user3","pass3",
-                "Ofek Yemini",null));
         String dbJson = loadJSONFromAsset();
 
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -167,7 +156,6 @@ public class Login extends AppCompatActivity {
         btnSignUp.setOnClickListener(v -> {
             // go to the sign up page.
             Intent i = new Intent(this, SignUp.class);
-            i.putExtra("LIST", (Serializable) userList);
             startActivity(i);
         });
     }
