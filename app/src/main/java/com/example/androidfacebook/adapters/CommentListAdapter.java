@@ -22,7 +22,6 @@ import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.login.Login;
 
 import java.util.List;
 
@@ -70,6 +69,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         tvContent.setVisibility(View.GONE);
                         editCommentTextView.setVisibility(View.VISIBLE);
                         editCommentTextView.setText(tvContent.getText());
+                        btnCancelEdit.setVisibility(View.VISIBLE);
+                        btnSaveComment.setVisibility(View.VISIBLE);
                         current.setEditMode(true);
                     } else {
                         tvContent.setVisibility(View.VISIBLE);
@@ -144,6 +145,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 DataHolder.getInstance().setPostList(postList);
                 DataHolder.getInstance().setCurrentPost(currentPost);
                 intent.putExtra("USER", user);
+                holder.btnCancelEdit.setVisibility(View.GONE);
+                holder.btnSaveComment.setVisibility(View.GONE);
                 context.startActivity(intent);
             });
             holder.btnCancelEdit.setOnClickListener(v -> {
@@ -152,6 +155,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 holder.editCommentTextView.setVisibility(View.GONE);
                 // Reset EditText to the original comment text
                 holder.editCommentTextView.setText(current.getText());
+                holder.btnCancelEdit.setVisibility(View.GONE);
+                holder.btnSaveComment.setVisibility(View.GONE);
                 current.setEditMode(false);
             });
 
