@@ -117,7 +117,7 @@ public class AddPost extends AppCompatActivity {
             if(selectedImageByteArray!=null){
                 p.setPictures(selectedImageByteArray);
             }
-            postList.add(p);
+            postList.add(0,p);
             Intent inte = new Intent(this, Pid.class);
             inte.putExtra("USER", user);
             DataHolder.getInstance().setPostList(postList);
