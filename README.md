@@ -24,7 +24,7 @@ and then regret it, u can delete the photo and upload the new post! post must co
 Users can interact with posts by liking them by like icon and adding comments by clicking on the comments icon.
 also every user can edit the posts, u can change the text, delete photo, add new photo. by clicking in the 3 dots
 near the information of the user that created the post.
-P.S: when you want to choose an option like: "like,comment,share,add photo and more" click on the icon itself and not on the text near it!!!!
+### when you want to choose an option like: "like,comment,share,add photo and more" click on the icon itself and not on the text near it!
 u can do the same in comments, delete and edit them!
 You can also click on share icon to show the share options.
 
