@@ -1,3 +1,4 @@
+This branch is for Step 3 of the project. if you want to see Part 2 go to the main branch
 
 # Welcome to our facebook android app project BIU Advanced Programming Course
 
