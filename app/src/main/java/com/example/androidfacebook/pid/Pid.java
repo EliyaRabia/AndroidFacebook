@@ -37,7 +37,7 @@ public class Pid extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pid);
         // Get the user that is in the pid now
-        ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
+        ClientUser user = DataHolder.getInstance().getUserLoggedIn();
         if(user==null){
             return;
         }
@@ -56,7 +56,6 @@ public class Pid extends AppCompatActivity {
         // the user will be redirected to the add post page
         btnAddPost.setOnClickListener(v->{
             Intent i = new Intent(this, AddPost.class);
-            i.putExtra("USER", user);
             DataHolder.getInstance().setPostList(postList);
             startActivity(i);
         });

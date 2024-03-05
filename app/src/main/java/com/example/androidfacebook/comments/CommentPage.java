@@ -64,7 +64,7 @@ public class CommentPage extends AppCompatActivity {
                 return;
             }
             // Add the comment to the list and start the activity
-            Comment newC= new Comment(CommentList.size()+1,user.getDisplayName(),s,user.getPhoto());
+            Comment newC= new Comment(CommentList.size()+1,user.getDisplayName(),s,null);
             CommentList.add(newC);
             postList.get(postList.indexOf(currentPost)).setComments(CommentList);
             postList.get(postList.indexOf(currentPost)).setCommentsNumber(postList.get(postList.indexOf(currentPost)).getCommentsNumber()+1);

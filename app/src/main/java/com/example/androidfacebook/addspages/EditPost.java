@@ -125,10 +125,10 @@ public class EditPost extends AppCompatActivity {
             // Update the post and go back to the previous activity
             Post t;
             if(selectedImageByteArray==null){
-                t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
             }
             else{
-                t = new Post(posts.size()+1,user.getDisplayName(),user.getPhoto(),textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
             }
             posts.set(posts.indexOf(p),t);
             Intent inte = new Intent(this, Pid.class);

@@ -11,6 +11,8 @@ public class DataHolder {
     private List<Comment> comments;
     private Post currentPost;
     private Post editposter;
+
+    private ClientUser userLoggedIn;
     private List<User> userList;
 
     private DataHolder() {
@@ -21,6 +23,14 @@ public class DataHolder {
             instance = new DataHolder();
         }
         return instance;
+    }
+
+    public ClientUser getUserLoggedIn() {
+        return userLoggedIn;
+    }
+
+    public void setUserLoggedIn(ClientUser userLoggedIn) {
+        this.userLoggedIn = userLoggedIn;
     }
 
     public void setPostList(List<Post> postList) {
