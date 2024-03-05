@@ -7,7 +7,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.AndroidFacebook"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".comments.CommentPage"

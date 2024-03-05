@@ -71,7 +71,7 @@ public class AddPost extends AppCompatActivity {
         // create the activity and get the user and post list
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-        ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
+        ClientUser user = DataHolder.getInstance().getUserLoggedIn();
         List<Post> postList = DataHolder.getInstance().getPostList();
         if(user==null){
             return;
@@ -96,7 +96,6 @@ public class AddPost extends AppCompatActivity {
         btnDelete.setOnClickListener(v -> {
         // Navigate to addPost activity
         Intent intent = new Intent(this, Pid.class);
-        intent.putExtra("USER", user);
         startActivity(intent);
         });
         // set the btnPost listener to post the post
@@ -113,13 +112,12 @@ public class AddPost extends AppCompatActivity {
             String currentDateTime = dateFormat.format(new Date());
             // create the post and navigate to the pid activity
             List<Comment> l = new ArrayList<>();
-            Post p = new Post(postList.size()+1,user.getDisplayName(),user.getPhoto(),textString,currentDateTime,0,0,l);
+            Post p = new Post(postList.size()+1,user.getDisplayName(),null,textString,currentDateTime,0,0,l);
             if(selectedImageByteArray!=null){
                 p.setPictures(selectedImageByteArray);
             }
             postList.add(0,p);
             Intent inte = new Intent(this, Pid.class);
-            inte.putExtra("USER", user);
             DataHolder.getInstance().setPostList(postList);
             startActivity(inte);
         });
