@@ -11,8 +11,39 @@ public class DataHolder {
     private List<Comment> comments;
     private Post currentPost;
     private Post editposter;
+    private String token;
+
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     private ClientUser userLoggedIn;
+
+    private String userLoggedInID;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getUserLoggedInID() {
+        return userLoggedInID;
+    }
+
+    public void setUserLoggedInID(String userLoggedInID) {
+        this.userLoggedInID = userLoggedInID;
+    }
+
+
     private List<User> userList;
 
     private DataHolder() {

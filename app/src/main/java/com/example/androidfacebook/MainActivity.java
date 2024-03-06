@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.*;
+
+import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;

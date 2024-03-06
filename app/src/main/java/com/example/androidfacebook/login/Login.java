@@ -3,6 +3,7 @@ package com.example.androidfacebook.login;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,10 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.UserAPI;
+import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.DataHolder;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.pid.Pid;
@@ -52,13 +56,15 @@ import retrofit2.Response;
  */
 public class Login extends AppCompatActivity {
     public static String ServerIP = "10.0.2.2";
+    private AppDB appDB;
+    private UserDao userDao;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        List<User>userList=DataHolder.getInstance().getUserList();
+        //List<User>userList=DataHolder.getInstance().getUserList();
 
         // get what the user has entered in the email and password fields
         EditText emailOrPhoneEditText = findViewById(R.id.editText);
@@ -69,6 +75,9 @@ public class Login extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             String emailOrPhone = emailOrPhoneEditText.getText().toString();
             String password = passwordEditText.getText().toString();
+            if(emailOrPhone.length()==0 || password.length()==0){
+                showCustomToast("You must fill all the boxes");
+            }
             UserAPI usersApi = new UserAPI(ServerIP);
             Intent intent2 = new Intent(this, Pid.class);
             usersApi.loginServer(emailOrPhone, password, new Callback<ResponseBody>() {
@@ -98,9 +107,21 @@ public class Login extends AppCompatActivity {
                                     public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
                                         if(response.isSuccessful()){
                                             ClientUser currectUser = response.body();
+//                                            appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
+//                                                    .allowMainThreadQueries()
+//                                                    .fallbackToDestructiveMigration()
+//                                                    .build();
+//                                            userDao= appDB.userDao();
+//                                                new Thread(() -> {
+//                                                    userDao.insert(currectUser);
+//
+//                                                }).start();
+
+                                            DataHolder.getInstance().setToken(finalToken);
                                             DataHolder.getInstance().setUserLoggedIn(currectUser);
-                                            intent2.putExtra("token", finalToken);
+                                            DataHolder.getInstance().setUserLoggedInID(currectUser.getId());
                                             startActivity(intent2);
+
                                         }
                                     }
 
@@ -161,9 +182,15 @@ public class Login extends AppCompatActivity {
         // when the user clicks the sign up button
         btnSignUp.setOnClickListener(v -> {
             // go to the sign up page.
-            Intent i = new Intent(this, SignUp.class);
-            startActivity(i);
+            Intent intent1 = new Intent(this, SignUp.class);
+            startActivity(intent1);
         });
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Clear Room database when the app is closing
+        appDB.clearAllTables();
     }
     public void showCustomToast(String message) {
         LayoutInflater inflater = getLayoutInflater();

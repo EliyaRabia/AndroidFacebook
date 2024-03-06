@@ -1,7 +1,10 @@
 package com.example.androidfacebook.signup;
 
+import static com.example.androidfacebook.login.Login.ServerIP;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -12,12 +15,19 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.Manifest;
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.login.Login;
@@ -26,6 +36,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUp extends AppCompatActivity {
     private EditText username;
@@ -58,6 +73,14 @@ public class SignUp extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         selectedImageByteArray = stream.toByteArray();
     }
+    public String convertByteArrayToBase64(byte[] byteArray) {
+        String base64Image = "";
+        if (byteArray != null && byteArray.length > 0) {
+            String base64EncodedImage = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            base64Image = "data:image/jpeg;base64," + base64EncodedImage;
+        }
+        return base64Image;
+    }
 
 
     @SuppressLint("WrongThread")
@@ -77,8 +100,7 @@ public class SignUp extends AppCompatActivity {
         Button btnUploadImage = findViewById(R.id.btnSelectPhoto);
         // Go back to the login page
         btnGoBack.setOnClickListener(v -> {
-            Intent i = new Intent(this, Login.class);
-            startActivity(i);
+            finish();
         });
         btnUploadImage.setOnClickListener(v -> {
             // Check for camera permission
@@ -113,20 +135,11 @@ public class SignUp extends AppCompatActivity {
                 Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            // Check if the username already exists
-            for (User user : userList){
-                if(usernameStr.equals(user.getUsername())){
-                    Toast.makeText(this,"User already exists",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
             // Check if the password meets the criteria
             String passwordPattern = "^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
             if (!passwordStr.matches(passwordPattern)) {
                 Toast.makeText(this, "Password must be at least 8 characters long," +
-                        " include a capital letter and a special character",
+                                " include a capital letter and a special character",
                         Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -135,6 +148,39 @@ public class SignUp extends AppCompatActivity {
                 Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                 return;
             }
+            UserAPI reigsterUserAPI = new UserAPI(ServerIP);
+            String base64String = convertByteArrayToBase64(selectedImageByteArray);
+            User request =  new User(usernameStr,passwordStr,displayNameStr,base64String);
+            reigsterUserAPI.registerServer(request, new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    int statusCode = response.code();
+                    if (statusCode == 200) {
+                        finish();
+                    }
+                    else {
+                        showCustomToast("User already exist");
+
+                    }
+                }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    showCustomToast("Failed to connect to server");
+                }
+            });
+
+        });
+
+            /*
+            // Check if the username already exists
+            for (User user : userList){
+                if(usernameStr.equals(user.getUsername())){
+                    Toast.makeText(this,"User already exists",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+
 
 
             // sign up the user.
@@ -146,9 +192,25 @@ public class SignUp extends AppCompatActivity {
             DataHolder.getInstance().setUserList(userList);
             Toast.makeText(this, "User created successfully", Toast.LENGTH_SHORT).show();
             startActivity(i);
+            */
 
-        });
+
+    };
+    public void showCustomToast(String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_warning,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.toast_text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.TOP, 0, 32);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
     }
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
