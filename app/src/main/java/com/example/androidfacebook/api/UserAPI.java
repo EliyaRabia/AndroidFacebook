@@ -70,5 +70,12 @@ public class UserAPI {
         call.enqueue(callback);
 
     }
+    public void deletePost(String token,String userId,String postId,Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call= webServiceAPI.deletePost(token,userId,postId);
+        call.enqueue(callback);
+    }
 
 }

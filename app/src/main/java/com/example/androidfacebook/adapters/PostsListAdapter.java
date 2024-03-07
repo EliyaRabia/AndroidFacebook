@@ -30,6 +30,7 @@ import com.example.androidfacebook.pid.Pid;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -109,12 +110,29 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 // Handle delete post action
                 if(id == R.id.action_delete_post){
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, Pid.class);
-                    posts.remove(current);
-                    // Set the updated post list to the DataHolder
-                    DataHolder.getInstance().setPostList(posts);
-                    intent.putExtra("USER", user);
-                    context.startActivity(intent);
+                    String token = DataHolder.getInstance().getToken();
+                    UserAPI userAPI = new UserAPI(ServerIP);
+                    userAPI.deletePost(token, user.getId(), current.getId(), new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if(response.isSuccessful()) {
+                                posts.remove(current);
+                                Toast.makeText(context, "Post deleted successfully", Toast.LENGTH_LONG).show();
+                                notifyDataSetChanged();
+
+                            }
+                            else{
+                                Toast.makeText(context, "Can't delete this post", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Toast.makeText(context, "Something got wrong!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                     return true;
                 }
                 return false;
@@ -208,34 +226,13 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 });
 
             });
-            // Set the onClickListener for the like button
-//            holder.likeButton.setOnClickListener(view -> {
-//                if(current.isLiked()){
-//                    // Decrease the number of likes by 1
-//                    current.setLikes(current.getLikes() - 1);
-//                    // Update the number of likes in the TextView
-//                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
-//                    // Set the liked status of the post to false
-//                    current.setLiked(false);
-//                    // Change the image of the like button to the default one
-//                    holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
-//                    // Set the liked status of the post to false
-//                } else {
-//                    // Increase the number of likes by 1
-//                    current.setLikes(current.getLikes() + 1);
-//                    // Update the number of likes in the TextView
-//                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
-//                    // Set the liked status of the post to true
-//                    current.setLiked(true);
-//                    // Change the image of the like button to the liked one
-//                    holder.likeButton.setImageResource(R.drawable.like_icon);
-//                }
-//            });
+
             // Set the onClickListener for the share button
             holder.btnShare.setOnClickListener(view -> {
                 // Show the popup menu when the share button is clicked
                 holder.showPopupShareMenu(view);
             });
+
             if (current.getIdUserName().equals(user.getId())) {
                 holder.dotsButton.setVisibility(View.VISIBLE);
                 // Set the onClickListener for the option button
@@ -246,6 +243,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             } else {
                 holder.dotsButton.setVisibility(View.GONE);
             }
+
         }
     }
     // Set the posts and the user
