@@ -3,6 +3,7 @@ package com.example.androidfacebook.api;
 import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.UpdateUser;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.UserNameAndPass;
 
@@ -60,6 +61,21 @@ public class UserAPI {
             token = token.substring(1, token.length() - 1);
         }
         Call<Post> call = webServiceAPI.createPost(token, post, id);
+        call.enqueue(callback);
+    }
+    public void updateUser(String token, UpdateUser user, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.updateUser(token, user, user.getId());
+        call.enqueue(callback);
+    }
+
+    public void deleteUser(String token, String id, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.deleteUser(token, id);
         call.enqueue(callback);
     }
 

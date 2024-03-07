@@ -3,6 +3,9 @@
         android:id="@+id/action_darkMode"
         android:title="@string/dark_lightmode"/>
     <item
+        android:id="@+id/edit_user"
+        android:title="@string/edit_user"/>
+    <item
         android:id="@+id/action_logOut"
         android:title="@string/log_out"/>
 </menu>
