@@ -82,9 +82,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/picture_svgrepo_com"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="@string/picture_icon_content" />
+                android:contentDescription="@string/picture_icon_content"
+                android:src="@drawable/picture_svgrepo_com" />
 
             <EditText
                 android:id="@+id/addPostContent1"

@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,6 +20,9 @@
         android:theme="@style/Theme.AndroidFacebook"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".addspages.EditUser"
+            android:exported="false" />
         <activity
             android:name=".comments.CommentPage"
             android:exported="false" />
