@@ -1,5 +1,7 @@
 package com.example.androidfacebook.addspages;
 
+import static com.example.androidfacebook.login.Login.ServerIP;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,10 +10,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,14 +29,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.UpdatePost;
 import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditPost extends AppCompatActivity {
 
@@ -65,6 +79,14 @@ public class EditPost extends AppCompatActivity {
         selectedImageView.setImageBitmap(bitmap);
         btnDeletePhoto.setVisibility(View.VISIBLE);
     }
+    public String convertByteArrayToBase64(byte[] byteArray) {
+        String base64Image = "";
+        if (byteArray != null && byteArray.length > 0) {
+            String base64EncodedImage = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            base64Image = "data:image/jpeg;base64," + base64EncodedImage;
+        }
+        return base64Image;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +94,18 @@ public class EditPost extends AppCompatActivity {
         setContentView(R.layout.activity_edit_post);
         // Get the user object from the intent and check if it is null
         // also get the post from the Dataholder
-        List<Post> posts= DataHolder.getInstance().getPostList();
-        ClientUser user = (ClientUser)getIntent().getSerializableExtra("USER");
-        Post p = DataHolder.getInstance().getEditposter();
-        if(user==null){
-            return;
-        }
+       String token = DataHolder.getInstance().getToken();
+       Post p = DataHolder.getInstance().getCurrentPost();
+       pic = convertBase64ToByteArray(p.getPictures());
+
+
         // Get the views and set button click listeners
+
         Button btnDeleteEditPost = findViewById(R.id.btnDeleteEditPost);
         Button btnPostEditPost = findViewById(R.id.btnPostEdit);
         selectedImageView= findViewById(R.id.selectedImageEditPost);
         EditText TextShare = findViewById(R.id.editTextShareEditPost);
-//        setImageViewWithBytes(selectedImageView, p.getPictures());
+        setImageViewWithBytes(selectedImageView, pic);
         TextShare.setText(p.getInitialText());
 //        pic = p.getPictures();
         btnDeletePhoto = findViewById(R.id.btnPhotoDelEditPost);
@@ -104,9 +126,7 @@ public class EditPost extends AppCompatActivity {
         });
         btnDeleteEditPost.setOnClickListener(v -> {
             // remain the post and go back to the previous activity
-            Intent intent = new Intent(this, Pid.class);
-            intent.putExtra("USER", user);
-            startActivity(intent);
+            finish();
         });
         // Set the button click listener
         btnPostEditPost.setOnClickListener(v -> {
@@ -117,18 +137,41 @@ public class EditPost extends AppCompatActivity {
                 return;
             }
             // Update the post and go back to the previous activity
-            Post t;
+
+            UserAPI userApi = new UserAPI(ServerIP);
+            UpdatePost up;
             if(selectedImageByteArray==null){
-//                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+                up = new UpdatePost(textString,null);
+
             }
             else{
-//                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+                up= new UpdatePost(textString,convertByteArrayToBase64(selectedImageByteArray));
+
             }
-//            posts.set(posts.indexOf(p),t);
-            Intent inte = new Intent(this, Pid.class);
-            inte.putExtra("USER", user);
-            DataHolder.getInstance().setPostList(posts);
-            startActivity(inte);
+            userApi.updatePost(token, up, p.getId(), p.getIdUserName(), new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    int statusCode = response.code();
+                    if(statusCode == 200){
+                        showCustomToast("Post updated successfully!");
+                        if(selectedImageByteArray!=null){
+                            p.setPictures(convertByteArrayToBase64(selectedImageByteArray));
+                        }
+                        p.setInitialText(textString);
+                        DataHolder.getInstance().setCurrentPost(p);
+                        finish();
+                    }else{
+                        Toast.makeText(EditPost.this, "Failed to update user!!!!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+
+
         });
 
     }
@@ -162,6 +205,27 @@ public class EditPost extends AppCompatActivity {
             // Set a default image or leave it empty
             imageView.setImageDrawable(null);
         }
+    }
+    public byte[] convertBase64ToByteArray(String base64Image) {
+        if (base64Image != null && base64Image.startsWith("data:image/jpeg;base64,")) {
+            String base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
+            return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+        }
+        return null;
+    }
+    public void showCustomToast(String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_warning,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.toast_text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.TOP, 0, 32);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
     }
     @SuppressLint("MissingSuperCall")
     @Override

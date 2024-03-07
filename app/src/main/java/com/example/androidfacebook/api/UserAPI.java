@@ -3,6 +3,7 @@ package com.example.androidfacebook.api;
 import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.UpdatePost;
 import com.example.androidfacebook.entities.UpdateUser;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.UserNameAndPass;
@@ -63,6 +64,21 @@ public class UserAPI {
         Call<Post> call = webServiceAPI.createPost(token, post, id);
         call.enqueue(callback);
     }
+    public void addOrRemoveLike(String token,String userId,String postId, Callback<Post> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<Post> call = webServiceAPI.addOrRemoveLike(token,userId,postId);
+        call.enqueue(callback);
+
+    }
+    public void deletePost(String token,String userId,String postId,Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call= webServiceAPI.deletePost(token,userId,postId);
+        call.enqueue(callback);
+    }
     public void updateUser(String token, UpdateUser user, Callback<ResponseBody> callback){
         if (token.startsWith("\"") && token.endsWith("\"")) {
             token = token.substring(1, token.length() - 1);
@@ -78,5 +94,11 @@ public class UserAPI {
         Call<ResponseBody> call = webServiceAPI.deleteUser(token, id);
         call.enqueue(callback);
     }
-
+    public void updatePost(String token, UpdatePost p,String postId, String userId, Callback<ResponseBody> callback) {
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.updatePost(token,p, postId, userId);
+        call.enqueue(callback);
+    }
 }

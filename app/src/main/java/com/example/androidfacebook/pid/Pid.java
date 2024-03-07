@@ -9,9 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -23,15 +27,18 @@ import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostAPI;
 import com.example.androidfacebook.api.PostDao;
+import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.login.Login;
+import com.example.androidfacebook.models.PostsViewModel;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,17 +52,21 @@ public class Pid extends AppCompatActivity {
     private ClientUser user;
     private List<Post> postList;
     private PostDao postDao;
+    private String token;
+
+    private PostsViewModel viewModel;
 
     @SuppressLint({"MissingInflatedId", "WrongThread"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pid);
+        viewModel= new ViewModelProvider(this).get(PostsViewModel.class);
         // Get the user that is in the pid now
 
         String userId = DataHolder.getInstance().getUserLoggedInID();
 //            user= DataHolder.getInstance().getUserLoggedIn();
-        String token = DataHolder.getInstance().getToken();
+        token = DataHolder.getInstance().getToken();
         appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
                 .fallbackToDestructiveMigration()
                 .build();
@@ -77,41 +88,7 @@ public class Pid extends AppCompatActivity {
         user = currentUser[0];
 
 
-        // Get the posts from the data holder
-//        List<Post> postList = DataHolder.getInstance().getPostList();
-        PostAPI postsApi = new PostAPI(ServerIP);
-        postsApi.getAllPosts(token, new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                postList = response.body();
-                postDao = appDB.postDao();
-                for(Post p:postList){
-                    new Thread(() -> {
-                        postDao.insert(p);
-                    }).start();
-                }
-                // Set the adapter for the recycler view
-                final PostsListAdapter adapter = new PostsListAdapter(Pid.this);
-                RecyclerView lstPosts = findViewById(R.id.lstPosts);
-                lstPosts.setAdapter(adapter);
-                lstPosts.setLayoutManager(new LinearLayoutManager(Pid.this));
-                // Set the posts and the user to the adapter
-                adapter.setPosts(postList, user);
-            }
 
-            @Override
-            public void onFailure(retrofit2.Call<List<Post>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-//        RecyclerView lstPosts = findViewById(R.id.lstPosts);
-//        // Set the adapter for the recycler view
-//        final PostsListAdapter adapter = new PostsListAdapter(this);
-//        lstPosts.setAdapter(adapter);
-//        lstPosts.setLayoutManager(new LinearLayoutManager(this));
-//        // Set the posts and the user to the adapter
-//        adapter.setPosts(postList, user);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         // When the user clicks on the add post button,
@@ -125,6 +102,68 @@ public class Pid extends AppCompatActivity {
         ImageButton menuIcon = findViewById(R.id.menuIcon);
         menuIcon.setOnClickListener(v -> showPopupMenu(v));
 
+
+    }
+    protected void onResume() {
+        super.onResume();
+
+        token = DataHolder.getInstance().getToken();
+        PostAPI postsApi = new PostAPI(ServerIP);
+        postsApi.getAllPosts(token, new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                postList = response.body();
+                postDao = appDB.postDao();
+                for(Post p:postList){
+                    new Thread(() -> {
+                        postDao.insert(p);
+                    }).start();
+                }
+                final PostsListAdapter adapter = new PostsListAdapter(Pid.this);
+                RecyclerView lstPosts = findViewById(R.id.lstPosts);
+                lstPosts.setAdapter(adapter);
+                lstPosts.setLayoutManager(new LinearLayoutManager(Pid.this));
+                viewModel.setPosts(postList);
+                viewModel.get().observe(Pid.this, posts -> {
+                    adapter.setPosts(posts, user);
+                });
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Post>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+        UserAPI usersApi = new UserAPI(ServerIP);
+        String userID = DataHolder.getInstance().getUserLoggedInID();
+
+        usersApi.getUserData(token,userID, new Callback<ClientUser>() {
+            @Override
+            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+                if(response.isSuccessful()){
+                    ClientUser currectUser = response.body();
+                    appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
+                            .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration()
+                            .build();
+                    userDao= appDB.userDao();
+                    new Thread(() -> {
+                        userDao.insert(currectUser);
+
+                    }).start();
+                    user=currectUser;
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClientUser> call, Throwable t) {
+                Toast.makeText(Pid.this,
+                        "failed to load this page",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -167,9 +206,38 @@ public class Pid extends AppCompatActivity {
             }
             if (id == R.id.action_logOut) {
                 // Handle logout action
-                Intent intent = new Intent(this, Login.class);
-                startActivity(intent);
+                new Thread(() -> {
+                    userDao.deleteAllUsers();
+                    postDao.deleteAllPosts();
+                }).start();
+                finish();
                 return true;
+            }
+            if(id == R.id.action_delUser){
+                UserAPI deleteUserAPI = new UserAPI(ServerIP);
+                deleteUserAPI.deleteUser(token, user.getId(), new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        int statusCode = response.code();
+                        if(statusCode == 200){
+                            Toast.makeText(Pid.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                            new Thread(() -> {
+                                userDao.deleteAllUsers();
+                                postDao.deleteAllPosts();
+                            }).start();
+                            finish();
+                        }else{
+                            Toast.makeText(Pid.this, "Failed to delete user!!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(Pid.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return true;
+
             }
             return false;
         });

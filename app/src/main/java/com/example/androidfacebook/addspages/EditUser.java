@@ -9,10 +9,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -127,7 +131,6 @@ public class EditUser extends AppCompatActivity {
         Button btnCancel = findViewById(R.id.btnCancel);
         selectedImageView= findViewById(R.id.selectedImage);
         btnDeletePhoto = findViewById(R.id.btnPhotoDel);
-        btnDeleteUser = findViewById(R.id.btnDelete);
         btnSubmit = findViewById(R.id.btnSubmit);
         // set the listeners
         btnDeletePhoto.setOnClickListener(v -> {
@@ -141,26 +144,7 @@ public class EditUser extends AppCompatActivity {
             finish();
         });
         //move to pid and delete the local data base also
-        btnDeleteUser.setOnClickListener(v ->{
-            UserAPI deleteUserAPI = new UserAPI(ServerIP);
-            deleteUserAPI.deleteUser(token, user.getId(), new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    int statusCode = response.code();
-                    if(statusCode == 200){
-                        Toast.makeText(EditUser.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
-                        finish();
-                    }else{
-                        Toast.makeText(EditUser.this, "Failed to delete user!!!!", Toast.LENGTH_SHORT).show();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(EditUser.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
 
 
         btnSubmit.setOnClickListener(v -> {
@@ -198,7 +182,7 @@ public class EditUser extends AppCompatActivity {
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 int statusCode = response.code();
                 if(statusCode == 200){
-                    Toast.makeText(EditUser.this, "User updated successfully", Toast.LENGTH_SHORT).show();
+                    showCustomToast("User updated successfully!");
                     finish();
                 }else{
                     Toast.makeText(EditUser.this, "Failed to update user!!!!", Toast.LENGTH_SHORT).show();
@@ -233,6 +217,20 @@ public class EditUser extends AppCompatActivity {
                     })
                     .show();
         }
+    }
+    public void showCustomToast(String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_warning,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        TextView text = layout.findViewById(R.id.toast_text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.TOP, 0, 32);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
     }
     @SuppressLint("MissingSuperCall")
     @Override

@@ -3,6 +3,7 @@ package com.example.androidfacebook.api;
 import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.UpdatePost;
 import com.example.androidfacebook.entities.UpdateUser;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.UserNameAndPass;
@@ -38,6 +39,15 @@ public interface WebServiceAPI {
     Call<ResponseBody> deleteUser(@Header("Authorization") String token, @Path("id") String id);
     @GET("posts")
     Call<List<Post>> getAllPosts(@Header("Authorization") String token);
+
+    @POST("users/{id}/posts/{pid}/likes")
+    Call<Post> addOrRemoveLike(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid);
+    @DELETE("users/{id}/posts/{pid}")
+    Call<ResponseBody> deletePost(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid);
+    @PUT ("users/{id}/posts/{pid}")
+    Call<ResponseBody> updatePost(@Header("Authorization") String token, @Body UpdatePost updatePost, @Path("pid") String pid, @Path("id") String id);
+
+
 
 
 

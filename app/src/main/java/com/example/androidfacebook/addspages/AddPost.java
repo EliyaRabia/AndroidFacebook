@@ -177,6 +177,7 @@ public class AddPost extends AppCompatActivity {
                 public void onResponse(Call<Post> call, Response<Post> response) {
                     if(response.isSuccessful()){
                         currentPost = response.body();
+
                         Toast.makeText(AddPost.this, "Post created successfully", Toast.LENGTH_SHORT).show();
                         new Thread(() -> {
                             appDB.postDao().insert(currentPost);
