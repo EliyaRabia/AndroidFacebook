@@ -3,8 +3,6 @@ package com.example.androidfacebook.login;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,37 +12,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.androidfacebook.api.AppDB;
-import com.example.androidfacebook.api.UserAPI;
-import com.example.androidfacebook.api.UserDao;
-import com.example.androidfacebook.entities.DataHolder;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.UserAPI;
+import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.pid.Pid;
 import com.example.androidfacebook.signup.SignUp;
-import com.example.androidfacebook.R;
-import com.example.androidfacebook.entities.User;
-import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.entities.Comment;
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-//import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -107,18 +90,18 @@ public class Login extends AppCompatActivity {
                                     public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
                                         if(response.isSuccessful()){
                                             ClientUser currectUser = response.body();
-//                                            appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
-//                                                    .allowMainThreadQueries()
-//                                                    .fallbackToDestructiveMigration()
-//                                                    .build();
-//                                            userDao= appDB.userDao();
-//                                                new Thread(() -> {
-//                                                    userDao.insert(currectUser);
-//
-//                                                }).start();
+                                            appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
+                                                    .allowMainThreadQueries()
+                                                    .fallbackToDestructiveMigration()
+                                                    .build();
+                                            userDao= appDB.userDao();
+                                                new Thread(() -> {
+                                                    userDao.insert(currectUser);
+
+                                                }).start();
 
                                             DataHolder.getInstance().setToken(finalToken);
-                                            DataHolder.getInstance().setUserLoggedIn(currectUser);
+//                                            DataHolder.getInstance().setUserLoggedIn(currectUser);
                                             DataHolder.getInstance().setUserLoggedInID(currectUser.getId());
                                             startActivity(intent2);
 
@@ -190,7 +173,9 @@ public class Login extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         // Clear Room database when the app is closing
-        appDB.clearAllTables();
+        new Thread(() -> {
+            userDao.deleteAllUsers();
+        }).start();
     }
     public void showCustomToast(String message) {
         LayoutInflater inflater = getLayoutInflater();

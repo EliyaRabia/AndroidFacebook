@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity(tableName = "users")
+@Entity
 public class ClientUser implements Serializable {
     @PrimaryKey
     @NonNull
@@ -19,11 +19,17 @@ public class ClientUser implements Serializable {
     private String displayName;
     @ColumnInfo(name = "photo")
     private String photo;
+    @ColumnInfo(name = "postList")
     private List<String> postList;
+    @ColumnInfo(name = "friendsList")
     private List<String> friendsList;
+    @ColumnInfo(name = "friendRequests")
     private List<String> friendRequests;
+    @ColumnInfo(name = "friendRequestsSent")
     private List<String> friendRequestsSent;
+    @ColumnInfo(name = "likes")
     private List<String> likes;
+    @ColumnInfo(name = "comments")
     private List<String> comments;
 
 

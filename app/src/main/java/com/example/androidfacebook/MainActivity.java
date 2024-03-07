@@ -1,13 +1,14 @@
 package com.example.androidfacebook;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.util.*;
+
+import androidx.room.Room;
 
 import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.PostDao;
+import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
@@ -23,8 +24,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends Activity {
+    private AppDB appDB;
+    private UserDao userDao;
+    private PostDao postDao;
     public List<User> userList;
     // Method to load the JSON file from the assets folder
     private String loadJSONFromAsset() {
@@ -84,7 +94,8 @@ public class MainActivity extends Activity {
                 comments.add(new Comment(commentId,commentFullname,commentText,commentIcon));
             }
             // Return the Post object
-            return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber,comments);
+//            return new Post(id, fullname, icon, initialText, pictures, time, likes, commentsNumber,comments);
+            return null;
         }
         // Method to convert the image to bytes
         private byte[] convertImageToBytes(String imagePath) {
@@ -104,6 +115,18 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
+        userDao = appDB.userDao();
+        postDao = appDB.postDao();
+
+        // Clear Room database when the app starts
+        new Thread(() -> {
+            userDao.deleteAllUsers();
+            postDao.deleteAllPosts();
+        }).start();
         // Create a new intent to start the Login activity
         userList = new ArrayList<>();
         Intent i = new Intent(this, Login.class);

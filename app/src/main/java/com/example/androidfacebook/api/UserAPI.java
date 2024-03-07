@@ -1,6 +1,8 @@
 package com.example.androidfacebook.api;
 
+import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.UserNameAndPass;
 
@@ -45,10 +47,19 @@ public class UserAPI {
     }
 
     public void getUserData(String token,String id, Callback<ClientUser> callback){
-        //make the string without the first and the last chars
-        token = token.substring(1, token.length() - 1);
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
         //UserName userStr = new UserName(username);
         Call<ClientUser> call = webServiceAPI.getUserById(token,id);
+        call.enqueue(callback);
+    }
+
+    public void createPost(String token, ClientPost post, String id, Callback<Post> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<Post> call = webServiceAPI.createPost(token, post, id);
         call.enqueue(callback);
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,15 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             imageView.setImageDrawable(null);
         }
     }
+
+    public byte[] convertBase64ToByteArray(String base64Image) {
+        if (base64Image != null && base64Image.startsWith("data:image/jpeg;base64,")) {
+            String base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
+            return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+        }
+        return null;
+    }
+
     // Create the view holder
     class PostViewHolder extends RecyclerView.ViewHolder{
         private final TextView tvAuthor;
@@ -123,47 +133,49 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             holder.tvNumComment.setText("comments: "+String.valueOf(current.getCommentsNumber()));
             holder.tvNumLike.setText(String.valueOf(current.getLikes()));
             holder.tvAuthor.setText(current.getFullname());
-            holder.tvDate.setText(current.getTime());
+//            holder.tvDate.setText(current.getTime());
             holder.tvContent.setText(current.getInitialText());
             // Set the image view with the bytes array
-            byte[] pictureBytes = current.getPictures();
+            byte[] pictureBytes = convertBase64ToByteArray(current.getPictures());
+//            byte[] pictureBytes = current.getPictures();
             setImageViewWithBytes(holder.ivPic, pictureBytes);
             // Set the image view with the bytes array
-            byte[] iconBytes= current.getIcon();
+            byte[] iconBytes = convertBase64ToByteArray(current.getIcon());
+//            byte[] iconBytes= current.getIcon();
             setImageViewWithBytes(holder.iconUser,iconBytes);
             // Set the onClickListener for the comment button
             holder.commentButton.setOnClickListener(view -> {
                 Context context = view.getContext();
                 Intent intent = new Intent(context, CommentPage.class);
-                DataHolder.getInstance().setComments(current.getComments());
+//                DataHolder.getInstance().setComments(current.getComments());
                 DataHolder.getInstance().setPostList(this.getPosts());
                 DataHolder.getInstance().setCurrentPost(current);
                 intent.putExtra("USER", user);
                 context.startActivity(intent);
             });
             // Set the onClickListener for the like button
-            holder.likeButton.setOnClickListener(view -> {
-                if(current.isLiked()){
-                    // Decrease the number of likes by 1
-                    current.setLikes(current.getLikes() - 1);
-                    // Update the number of likes in the TextView
-                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
-                    // Set the liked status of the post to false
-                    current.setLiked(false);
-                    // Change the image of the like button to the default one
-                    holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
-                    // Set the liked status of the post to false
-                } else {
-                    // Increase the number of likes by 1
-                    current.setLikes(current.getLikes() + 1);
-                    // Update the number of likes in the TextView
-                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
-                    // Set the liked status of the post to true
-                    current.setLiked(true);
-                    // Change the image of the like button to the liked one
-                    holder.likeButton.setImageResource(R.drawable.like_icon);
-                }
-            });
+//            holder.likeButton.setOnClickListener(view -> {
+//                if(current.isLiked()){
+//                    // Decrease the number of likes by 1
+//                    current.setLikes(current.getLikes() - 1);
+//                    // Update the number of likes in the TextView
+//                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
+//                    // Set the liked status of the post to false
+//                    current.setLiked(false);
+//                    // Change the image of the like button to the default one
+//                    holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
+//                    // Set the liked status of the post to false
+//                } else {
+//                    // Increase the number of likes by 1
+//                    current.setLikes(current.getLikes() + 1);
+//                    // Update the number of likes in the TextView
+//                    holder.tvNumLike.setText(String.valueOf(current.getLikes()));
+//                    // Set the liked status of the post to true
+//                    current.setLiked(true);
+//                    // Change the image of the like button to the liked one
+//                    holder.likeButton.setImageResource(R.drawable.like_icon);
+//                }
+//            });
             // Set the onClickListener for the share button
             holder.btnShare.setOnClickListener(view -> {
                 // Show the popup menu when the share button is clicked

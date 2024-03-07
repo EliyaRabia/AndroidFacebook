@@ -17,7 +17,6 @@ import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.login.Login;
 import com.example.androidfacebook.pid.Pid;
 
 import java.util.List;
@@ -47,7 +46,7 @@ public class CommentPage extends AppCompatActivity {
             Intent i = new Intent(this, Pid.class);
             // Set the user and the post in the DataHolder and start the activity
             int postIndex = postList.indexOf(currentPost);
-            postList.get(postIndex).setComments(CommentList);
+//            postList.get(postIndex).setComments(CommentList);
             DataHolder.getInstance().setPostList(postList);
             i.putExtra("USER", user);
             startActivity(i);
@@ -66,7 +65,7 @@ public class CommentPage extends AppCompatActivity {
             // Add the comment to the list and start the activity
             Comment newC= new Comment(CommentList.size()+1,user.getDisplayName(),s,null);
             CommentList.add(newC);
-            postList.get(postList.indexOf(currentPost)).setComments(CommentList);
+//            postList.get(postList.indexOf(currentPost)).setComments(CommentList);
             postList.get(postList.indexOf(currentPost)).setCommentsNumber(postList.get(postList.indexOf(currentPost)).getCommentsNumber()+1);
             Intent i = new Intent(this,CommentPage.class);
             DataHolder.getInstance().setComments(CommentList);
