@@ -106,7 +106,6 @@ public class Pid extends AppCompatActivity {
     }
     protected void onResume() {
         super.onResume();
-
         token = DataHolder.getInstance().getToken();
         PostAPI postsApi = new PostAPI(ServerIP);
         postsApi.getAllPosts(token, new Callback<List<Post>>() {
@@ -173,6 +172,7 @@ public class Pid extends AppCompatActivity {
         // Clear Room database when the app is closing
         new Thread(() -> {
             userDao.deleteAllUsers();
+            postDao.deleteAllPosts();
         }).start();
     }
 
