@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -24,18 +23,13 @@ import androidx.core.content.ContextCompat;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.entities.ClientUser;
-import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 public class EditPost extends AppCompatActivity {
 
@@ -89,9 +83,9 @@ public class EditPost extends AppCompatActivity {
         Button btnPostEditPost = findViewById(R.id.btnPostEdit);
         selectedImageView= findViewById(R.id.selectedImageEditPost);
         EditText TextShare = findViewById(R.id.editTextShareEditPost);
-        setImageViewWithBytes(selectedImageView, p.getPictures());
+//        setImageViewWithBytes(selectedImageView, p.getPictures());
         TextShare.setText(p.getInitialText());
-        pic = p.getPictures();
+//        pic = p.getPictures();
         btnDeletePhoto = findViewById(R.id.btnPhotoDelEditPost);
         // Check if the post has a picture
         if(p.getPictures()==null){
@@ -125,12 +119,12 @@ public class EditPost extends AppCompatActivity {
             // Update the post and go back to the previous activity
             Post t;
             if(selectedImageByteArray==null){
-                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+//                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,pic,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
             }
             else{
-                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
+//                t = new Post(posts.size()+1,user.getDisplayName(),null,textString,selectedImageByteArray,p.getTime(),p.getLikes(),p.getCommentsNumber(),p.getComments());
             }
-            posts.set(posts.indexOf(p),t);
+//            posts.set(posts.indexOf(p),t);
             Intent inte = new Intent(this, Pid.class);
             inte.putExtra("USER", user);
             DataHolder.getInstance().setPostList(posts);

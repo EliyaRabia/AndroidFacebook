@@ -1,12 +1,14 @@
 package com.example.androidfacebook.addspages;
 
+import static com.example.androidfacebook.login.Login.ServerIP;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,26 +21,39 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.room.Room;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.UserAPI;
+import com.example.androidfacebook.api.UserDao;
+import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
-import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.CountDownLatch;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddPost extends AppCompatActivity {
+    private AppDB appDB;
+    private UserDao userDao;
+    private ClientUser user;
     private byte[] selectedImageByteArray;
     private ImageView selectedImageView;
     private Button btnDeletePhoto;
+    private Post currentPost;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     // ActivityResultLauncher for selecting an image from the gallery
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -50,6 +65,7 @@ public class AddPost extends AppCompatActivity {
                     e.printStackTrace();
                 }
             });
+
     // ActivityResultLauncher for capturing an image from the camera
     private final ActivityResultLauncher<Void> mCaptureImage = registerForActivityResult(new ActivityResultContracts.TakePicturePreview(),
             result -> {
@@ -65,14 +81,41 @@ public class AddPost extends AppCompatActivity {
         selectedImageView.setImageBitmap(bitmap);
         btnDeletePhoto.setVisibility(View.VISIBLE);
     }
+    public String convertByteArrayToBase64(byte[] byteArray) {
+        String base64Image = "";
+        if (byteArray != null && byteArray.length > 0) {
+            String base64EncodedImage = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            base64Image = "data:image/jpeg;base64," + base64EncodedImage;
+        }
+        return base64Image;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // create the activity and get the user and post list
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-        ClientUser user = DataHolder.getInstance().getUserLoggedIn();
-        List<Post> postList = DataHolder.getInstance().getPostList();
+        String userId = DataHolder.getInstance().getUserLoggedInID();
+        String token = DataHolder.getInstance().getToken();
+        appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
+                .fallbackToDestructiveMigration()
+                .build();
+        userDao = appDB.userDao();
+        final ClientUser[] currentUser = new ClientUser[1];
+        CountDownLatch latch = new CountDownLatch(1); // Create a CountDownLatch with a count of 1
+
+        new Thread(() -> {
+            currentUser[0] = appDB.userDao().getUserById(userId);
+            latch.countDown(); // Decrease the count
+        }).start();
+
+        try {
+            latch.await(); // Main thread waits here until count reaches zero
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        user = currentUser[0];
         if(user==null){
             return;
         }
@@ -95,8 +138,7 @@ public class AddPost extends AppCompatActivity {
         // set the btnDelete listener to navigate to the pid activity
         btnDelete.setOnClickListener(v -> {
         // Navigate to addPost activity
-        Intent intent = new Intent(this, Pid.class);
-        startActivity(intent);
+        finish();
         });
         // set the btnPost listener to post the post
         btnPost.setOnClickListener(v -> {
@@ -110,16 +152,49 @@ public class AddPost extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             dateFormat.setTimeZone(israelTimeZone);
             String currentDateTime = dateFormat.format(new Date());
-            // create the post and navigate to the pid activity
-            List<Comment> l = new ArrayList<>();
-            Post p = new Post(postList.size()+1,user.getDisplayName(),null,textString,currentDateTime,0,0,l);
-            if(selectedImageByteArray!=null){
-                p.setPictures(selectedImageByteArray);
+            Date date = null;
+            try {
+                date = dateFormat.parse(currentDateTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            postList.add(0,p);
-            Intent inte = new Intent(this, Pid.class);
-            DataHolder.getInstance().setPostList(postList);
-            startActivity(inte);
+            // create the post and navigate to the pid activity
+            List<String> likes = new ArrayList<>();
+            List<String> comments = new ArrayList<>();
+            ClientPost p = new ClientPost(userId,user.getDisplayName(),user.getPhoto(),textString,null,date,0,likes,comments);
+            if(selectedImageByteArray!=null){
+                String image = convertByteArrayToBase64(selectedImageByteArray);
+                p.setPictures(image);
+            }
+//            Post p = new Post(userId,user.getDisplayName(),null,textString,currentDateTime,0,0,l);
+//            if(selectedImageByteArray!=null){
+//                p.setPictures(selectedImageByteArray);
+//            }
+//            postList.add(0,p);
+            UserAPI usersApi = new UserAPI(ServerIP);
+            usersApi.createPost(token, p, userId, new Callback<Post>() {
+                @Override
+                public void onResponse(Call<Post> call, Response<Post> response) {
+                    if(response.isSuccessful()){
+                        currentPost = response.body();
+                        Toast.makeText(AddPost.this, "Post created successfully", Toast.LENGTH_SHORT).show();
+                        new Thread(() -> {
+                            appDB.postDao().insert(currentPost);
+                        }).start();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Post> call, Throwable t) {
+                    Toast.makeText(AddPost.this, "Failed to create the post", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+//            Intent inte = new Intent(this, Pid.class);
+//            DataHolder.getInstance().setPostList(postList);
+//            startActivity(inte);
+            finish();
         });
 
     }

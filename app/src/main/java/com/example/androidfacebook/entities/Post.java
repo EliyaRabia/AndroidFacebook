@@ -1,25 +1,44 @@
 package com.example.androidfacebook.entities;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
+@Entity
 public class Post implements Serializable {
-    private int id;
-
+    @PrimaryKey
+    @NonNull
+    private String _id;
+    @ColumnInfo(name = "idUserName")
+    private String idUserName;
+    @ColumnInfo(name = "fullname")
     private String fullname;
-    private byte[] icon;
+    @ColumnInfo(name = "icon")
+    private String icon;
+    @ColumnInfo(name = "initialText")
     private String initialText;
-    private String time;
-    private int likes;
+    @ColumnInfo(name = "pictures")
+    private String pictures;
+    @ColumnInfo(name = "time")
+    private Date time;
+    @ColumnInfo(name = "commentsNumber")
     private int commentsNumber;
-    private byte[] pictures;
-    private List<Comment> comments;
-    private boolean liked;
+    @ColumnInfo(name = "likes")
+    private List<String> likes;
+    @ColumnInfo(name = "comments")
+    private List<String> comments;
     /*
     this class is used to store the post's information
      */
     // Constructor for posts with pictures
-    public Post(int id, String fullname, byte[] icon, String initialText, byte[] pictures, String time, int likes, int commentsNumber, List<Comment> comments) {
-        this.id = id;
+    public Post(String id,String idUserName ,String fullname, String icon, String initialText, String pictures, Date time,int commentsNumber, List<String> likes, List<String> comments) {
+        this._id = id;
+        this.idUserName = idUserName;
         this.fullname = fullname;
         this.icon = icon;
         this.initialText = initialText;
@@ -28,31 +47,50 @@ public class Post implements Serializable {
         this.likes = likes;
         this.commentsNumber = commentsNumber;
         this.comments = comments;
-        this.liked = false;
     }
     // Constructor for posts without pictures
-    public Post(int id, String fullname, byte[] icon, String initialText, String time, int likes, int commentsNumber, List<Comment> comments) {
-        this.id = id;
-        this.fullname = fullname;
-        this.icon = icon;
-        this.initialText = initialText;
-        this.time = time;
-        this.pictures = null;
-        this.likes = likes;
-        this.commentsNumber = commentsNumber;
-        this.comments = comments;
-        this.liked = false;
+//    public Post(String id,String idUserName ,String fullname, String icon, String initialText, Date time,int commentsNumber, List<String> likes, List<String> comments) {
+//        this._id = id;
+//        this.idUserName = idUserName;
+//        this.fullname = fullname;
+//        this.icon = icon;
+//        this.initialText = initialText;
+//        this.time = time;
+//        this.pictures = "";
+//        this.likes = likes;
+//        this.commentsNumber = commentsNumber;
+//        this.comments = comments;
+//    }
+    public void set_id(String id){
+        this._id=id;
+    }
+    public void setFullname(String fullname){
+        this.fullname=fullname;
+    }
+    public void setTime(Date time){
+        this.time=time;
     }
 
-    public int getId() {
-        return this.id;
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getIdUserName() {
+        return idUserName;
+    }
+    public void setIdUserName(String idUserName) {
+        this.idUserName = idUserName;
+    }
+
+    public String getId() {
+        return this._id;
     }
 
     public String getFullname() {
         return fullname;
     }
 
-    public byte[] getIcon() {
+    public String getIcon() {
         return icon;
     }
 
@@ -65,23 +103,23 @@ public class Post implements Serializable {
         this.initialText = initialText;
     }
 
-    public int getLikes() {
+    public List<String> getLikes() {
         return likes;
     }
 
-    public void setLikes(int likes) {
+    public void setLikes(List<String> likes) {
         this.likes = likes;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public byte[] getPictures() {
+    public String getPictures() {
         return pictures;
     }
 
-    public void setPictures(byte[] pictures) {
+    public void setPictures(String pictures) {
         this.pictures = pictures;
     }
 
@@ -93,21 +131,11 @@ public class Post implements Serializable {
         this.commentsNumber = commentsNumber;
     }
 
-    public List<Comment> getComments() {
+    public List<String> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(List<String> comments) {
         this.comments = comments;
-    }
-
-    public boolean isLiked() {
-        return liked;
-
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
-
     }
 }

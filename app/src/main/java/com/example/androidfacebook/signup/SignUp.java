@@ -2,15 +2,8 @@ package com.example.androidfacebook.signup;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -25,16 +18,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.Manifest;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.User;
-import com.example.androidfacebook.login.Login;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -81,6 +79,8 @@ public class SignUp extends AppCompatActivity {
         }
         return base64Image;
     }
+
+
 
 
     @SuppressLint("WrongThread")
