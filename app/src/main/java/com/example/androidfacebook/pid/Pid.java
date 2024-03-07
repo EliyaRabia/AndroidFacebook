@@ -21,6 +21,7 @@ import androidx.room.Room;
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.PostsListAdapter;
 import com.example.androidfacebook.addspages.AddPost;
+import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostAPI;
 import com.example.androidfacebook.api.PostDao;
@@ -159,6 +160,12 @@ public class Pid extends AppCompatActivity {
                     // Change to dark mode
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
+                return true;
+            }
+            if (id == R.id.edit_user) {
+                // Handle edit user action
+                Intent intent = new Intent(this, EditUser.class);
+                startActivity(intent);
                 return true;
             }
             if (id == R.id.action_logOut) {

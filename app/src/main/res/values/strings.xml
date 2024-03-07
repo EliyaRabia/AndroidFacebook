@@ -59,4 +59,7 @@
     <string name="delete_photo">Delete photo</string>
     <string name="dark_lightmode">Dark/Lightmode</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_user">delete user</string>
+    <string name="edit_user">edit User</string>
+    <string name="submit">submit</string>
 </resources>

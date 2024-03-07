@@ -77,5 +77,20 @@ public class UserAPI {
         Call<ResponseBody> call= webServiceAPI.deletePost(token,userId,postId);
         call.enqueue(callback);
     }
+    public void updateUser(String token, UpdateUser user, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.updateUser(token, user, user.getId());
+        call.enqueue(callback);
+    }
+
+    public void deleteUser(String token, String id, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.deleteUser(token, id);
+        call.enqueue(callback);
+    }
 
 }
