@@ -32,6 +32,10 @@ public interface WebServiceAPI {
     @GET("posts")
     Call<List<Post>> getAllPosts(@Header("Authorization") String token);
 
+    @POST("users/{id}/posts/{pid}/likes")
+    Call<Post> addOrRemoveLike(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid);
+
+
 
 
 

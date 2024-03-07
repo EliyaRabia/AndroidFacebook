@@ -12,6 +12,8 @@ import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -27,6 +29,7 @@ import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.login.Login;
+import com.example.androidfacebook.models.PostsViewModel;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -45,11 +48,14 @@ public class Pid extends AppCompatActivity {
     private List<Post> postList;
     private PostDao postDao;
 
+    private PostsViewModel viewModel;
+
     @SuppressLint({"MissingInflatedId", "WrongThread"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pid);
+        viewModel= new ViewModelProvider(this).get(PostsViewModel.class);
         // Get the user that is in the pid now
 
         String userId = DataHolder.getInstance().getUserLoggedInID();
@@ -76,41 +82,7 @@ public class Pid extends AppCompatActivity {
         user = currentUser[0];
 
 
-        // Get the posts from the data holder
-//        List<Post> postList = DataHolder.getInstance().getPostList();
-        PostAPI postsApi = new PostAPI(ServerIP);
-        postsApi.getAllPosts(token, new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                postList = response.body();
-                postDao = appDB.postDao();
-                for(Post p:postList){
-                    new Thread(() -> {
-                        postDao.insert(p);
-                    }).start();
-                }
-                // Set the adapter for the recycler view
-                final PostsListAdapter adapter = new PostsListAdapter(Pid.this);
-                RecyclerView lstPosts = findViewById(R.id.lstPosts);
-                lstPosts.setAdapter(adapter);
-                lstPosts.setLayoutManager(new LinearLayoutManager(Pid.this));
-                // Set the posts and the user to the adapter
-                adapter.setPosts(postList, user);
-            }
 
-            @Override
-            public void onFailure(retrofit2.Call<List<Post>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-//        RecyclerView lstPosts = findViewById(R.id.lstPosts);
-//        // Set the adapter for the recycler view
-//        final PostsListAdapter adapter = new PostsListAdapter(this);
-//        lstPosts.setAdapter(adapter);
-//        lstPosts.setLayoutManager(new LinearLayoutManager(this));
-//        // Set the posts and the user to the adapter
-//        adapter.setPosts(postList, user);
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         // When the user clicks on the add post button,
@@ -125,6 +97,37 @@ public class Pid extends AppCompatActivity {
         menuIcon.setOnClickListener(v -> showPopupMenu(v));
 
 
+    }
+    protected void onResume() {
+        super.onResume();
+
+        String token = DataHolder.getInstance().getToken();
+        PostAPI postsApi = new PostAPI(ServerIP);
+        postsApi.getAllPosts(token, new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                postList = response.body();
+                postDao = appDB.postDao();
+                for(Post p:postList){
+                    new Thread(() -> {
+                        postDao.insert(p);
+                    }).start();
+                }
+                final PostsListAdapter adapter = new PostsListAdapter(Pid.this);
+                RecyclerView lstPosts = findViewById(R.id.lstPosts);
+                lstPosts.setAdapter(adapter);
+                lstPosts.setLayoutManager(new LinearLayoutManager(Pid.this));
+                viewModel.setPosts(postList);
+                viewModel.get().observe(Pid.this, posts -> {
+                    adapter.setPosts(posts, user);
+                });
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<Post>> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 
     @Override
@@ -160,8 +163,11 @@ public class Pid extends AppCompatActivity {
             }
             if (id == R.id.action_logOut) {
                 // Handle logout action
-                Intent intent = new Intent(this, Login.class);
-                startActivity(intent);
+                new Thread(() -> {
+                    userDao.deleteAllUsers();
+                    postDao.deleteAllPosts();
+                }).start();
+                finish();
                 return true;
             }
             return false;

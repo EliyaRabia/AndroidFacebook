@@ -62,5 +62,13 @@ public class UserAPI {
         Call<Post> call = webServiceAPI.createPost(token, post, id);
         call.enqueue(callback);
     }
+    public void addOrRemoveLike(String token,String userId,String postId, Callback<Post> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<Post> call = webServiceAPI.addOrRemoveLike(token,userId,postId);
+        call.enqueue(callback);
+
+    }
 
 }

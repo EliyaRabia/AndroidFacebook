@@ -1,5 +1,7 @@
 package com.example.androidfacebook.adapters;
 
+import static com.example.androidfacebook.login.Login.ServerIP;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,11 +14,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.androidfacebook.addspages.AddPost;
 import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
@@ -24,6 +29,11 @@ import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.pid.Pid;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostViewHolder>{
     // Set the image view with the bytes array
     public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
@@ -130,11 +140,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         // Bind the data to the view holder
         if(posts!=null){
             final Post current = posts.get(position);
-            holder.tvNumComment.setText("comments: "+String.valueOf(current.getCommentsNumber()));
+            holder.tvNumComment.setText("comments: "+String.valueOf(current.getComments().size()));
             holder.tvNumLike.setText(String.valueOf(current.getLikes()));
             holder.tvAuthor.setText(current.getFullname());
 //            holder.tvDate.setText(current.getTime());
             holder.tvContent.setText(current.getInitialText());
+            holder.tvNumLike.setText(String.valueOf(current.getLikes().size()));
             // Set the image view with the bytes array
             byte[] pictureBytes = convertBase64ToByteArray(current.getPictures());
 //            byte[] pictureBytes = current.getPictures();
@@ -143,6 +154,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             byte[] iconBytes = convertBase64ToByteArray(current.getIcon());
 //            byte[] iconBytes= current.getIcon();
             setImageViewWithBytes(holder.iconUser,iconBytes);
+
+            if(current.getLikes().contains(user.getId())){
+                holder.likeButton.setImageResource(R.drawable.like_icon);
+
+            }
+            else{
+                holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
+            }
             // Set the onClickListener for the comment button
             holder.commentButton.setOnClickListener(view -> {
                 Context context = view.getContext();
@@ -152,6 +171,42 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 DataHolder.getInstance().setCurrentPost(current);
                 intent.putExtra("USER", user);
                 context.startActivity(intent);
+            });
+            holder.likeButton.setOnClickListener(view -> {
+                String token = DataHolder.getInstance().getToken();
+                UserAPI userAPI = new UserAPI(ServerIP);
+                userAPI.addOrRemoveLike(token, user.getId(), current.getId(), new Callback<Post>() {
+                    @Override
+                    public void onResponse(Call<Post> call, Response<Post> response) {
+                        Context context = view.getContext();
+                        if(response.isSuccessful()){
+                            Post likedP = response.body();
+                            int numOriginal = current.getLikes().size();
+                            current.setLikes(likedP.getLikes());
+                            int numNew = current.getLikes().size();
+                            if(numOriginal<numNew){
+                                holder.likeButton.setImageResource(R.drawable.like_icon);
+                            }
+                            else{
+                                holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
+                            }
+                            notifyDataSetChanged();
+
+                            //need to change on local DB
+                        }
+                        else{
+                            Toast.makeText(context, "something wrong with this like", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Post> call, Throwable t) {
+                        Context context = view.getContext();
+                        Toast.makeText(context, "something wrong with this like", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
             });
             // Set the onClickListener for the like button
 //            holder.likeButton.setOnClickListener(view -> {
@@ -181,11 +236,16 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 // Show the popup menu when the share button is clicked
                 holder.showPopupShareMenu(view);
             });
-            // Set the onClickListener for the option button
-            holder.dotsButton.setOnClickListener(view -> {
-                // Show the popup menu when the option button is clicked
-                holder.showPopupOptionMenu(view, current);
-            });
+            if (current.getIdUserName().equals(user.getId())) {
+                holder.dotsButton.setVisibility(View.VISIBLE);
+                // Set the onClickListener for the option button
+                holder.dotsButton.setOnClickListener(view -> {
+                    // Show the popup menu when the option button is clicked
+                    holder.showPopupOptionMenu(view, current);
+                });
+            } else {
+                holder.dotsButton.setVisibility(View.GONE);
+            }
         }
     }
     // Set the posts and the user
