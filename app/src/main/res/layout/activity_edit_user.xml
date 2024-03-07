@@ -80,7 +80,7 @@
         <ImageView
             android:id="@+id/selectedImage"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="250dp"
             android:contentDescription="@string/selected_image" />
 
         <Button
@@ -109,17 +109,6 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="340dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorPrimaryLight"
-        android:text="@string/delete_user"
-        android:textColor="@color/colorAccentDark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnSelectPhoto" />
 
     <Button
         android:id="@+id/btnCancel"
@@ -129,7 +118,7 @@
         android:backgroundTint="@color/colorPrimaryLight"
         android:text="@string/cancel"
         android:textColor="@color/colorAccentDark"
-        app:layout_constraintTop_toBottomOf="@id/btnDelete"
+        app:layout_constraintTop_toBottomOf="@id/btnSelectPhoto"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -99,11 +99,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 if (id == R.id.action_edit_post) {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, EditPost.class);
+                    int indexPost = posts.indexOf(current);
+                    DataHolder.getInstance().setCurrentPost(current);
                     // Set the post list and the current post to the DataHolder
-                    DataHolder.getInstance().setPostList(posts);
-                    DataHolder.getInstance().setEditposter(current);
-                    intent.putExtra("USER", user);
                     context.startActivity(intent);
+                    Post pNew = DataHolder.getInstance().getCurrentPost();
+                    posts.add(indexPost,pNew);
+                    Toast.makeText(context, "Post updated successfully", Toast.LENGTH_LONG).show();
+                    notifyDataSetChanged();
 
                     return true;
                 }

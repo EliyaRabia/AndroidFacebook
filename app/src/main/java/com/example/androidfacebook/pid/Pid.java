@@ -9,7 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Observer;
@@ -25,6 +27,7 @@ import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostAPI;
 import com.example.androidfacebook.api.PostDao;
+import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
@@ -35,6 +38,7 @@ import com.example.androidfacebook.models.PostsViewModel;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,6 +52,7 @@ public class Pid extends AppCompatActivity {
     private ClientUser user;
     private List<Post> postList;
     private PostDao postDao;
+    private String token;
 
     private PostsViewModel viewModel;
 
@@ -61,7 +66,7 @@ public class Pid extends AppCompatActivity {
 
         String userId = DataHolder.getInstance().getUserLoggedInID();
 //            user= DataHolder.getInstance().getUserLoggedIn();
-        String token = DataHolder.getInstance().getToken();
+        token = DataHolder.getInstance().getToken();
         appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
                 .fallbackToDestructiveMigration()
                 .build();
@@ -102,7 +107,7 @@ public class Pid extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        String token = DataHolder.getInstance().getToken();
+        token = DataHolder.getInstance().getToken();
         PostAPI postsApi = new PostAPI(ServerIP);
         postsApi.getAllPosts(token, new Callback<List<Post>>() {
             @Override
@@ -129,6 +134,37 @@ public class Pid extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
+        UserAPI usersApi = new UserAPI(ServerIP);
+        String userID = DataHolder.getInstance().getUserLoggedInID();
+
+        usersApi.getUserData(token,userID, new Callback<ClientUser>() {
+            @Override
+            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+                if(response.isSuccessful()){
+                    ClientUser currectUser = response.body();
+                    appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
+                            .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration()
+                            .build();
+                    userDao= appDB.userDao();
+                    new Thread(() -> {
+                        userDao.insert(currectUser);
+
+                    }).start();
+                    user=currectUser;
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ClientUser> call, Throwable t) {
+                Toast.makeText(Pid.this,
+                        "failed to load this page",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -176,6 +212,32 @@ public class Pid extends AppCompatActivity {
                 }).start();
                 finish();
                 return true;
+            }
+            if(id == R.id.action_delUser){
+                UserAPI deleteUserAPI = new UserAPI(ServerIP);
+                deleteUserAPI.deleteUser(token, user.getId(), new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        int statusCode = response.code();
+                        if(statusCode == 200){
+                            Toast.makeText(Pid.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                            new Thread(() -> {
+                                userDao.deleteAllUsers();
+                                postDao.deleteAllPosts();
+                            }).start();
+                            finish();
+                        }else{
+                            Toast.makeText(Pid.this, "Failed to delete user!!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(Pid.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return true;
+
             }
             return false;
         });

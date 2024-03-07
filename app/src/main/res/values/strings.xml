@@ -60,6 +60,7 @@
     <string name="dark_lightmode">Dark/Lightmode</string>
     <string name="cancel">Cancel</string>
     <string name="delete_user">delete user</string>
-    <string name="edit_user">edit User</string>
-    <string name="submit">submit</string>
+    <string name="edit_user">Edit User</string>
+    <string name="submit">Submit</string>
+    <string name="delete_user2">Delete User</string>
 </resources>
