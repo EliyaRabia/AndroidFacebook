@@ -1,6 +1,7 @@
 package com.example.androidfacebook.api;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -21,4 +22,7 @@ public interface PostDao {
 
     @Query("DELETE FROM Post")
     void deleteAllPosts();
+
+    @Delete
+    void delete(Post post);
 }

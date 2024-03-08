@@ -17,10 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.androidfacebook.addspages.AddPost;
 import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
@@ -122,6 +125,11 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                                 posts.remove(current);
                                 Toast.makeText(context, "Post deleted successfully", Toast.LENGTH_LONG).show();
                                 notifyDataSetChanged();
+                                new Thread(() -> {
+                                    AppDB appDB = Room.databaseBuilder(context, AppDB.class, "facebookDB").build();
+                                    PostDao postDao = appDB.postDao();
+                                    postDao.delete(current);
+                                }).start();
 
                             }
                             else{
@@ -213,7 +221,6 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                             }
                             notifyDataSetChanged();
 
-                            //need to change on local DB
                         }
                         else{
                             Toast.makeText(context, "something wrong with this like", Toast.LENGTH_SHORT).show();
