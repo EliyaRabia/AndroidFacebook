@@ -31,7 +31,7 @@ import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.entities.ProfilePage;
+import com.example.androidfacebook.friends.ProfilePage;
 import com.example.androidfacebook.models.PostsViewModel;
 import com.example.androidfacebook.notification.NotificationPage;
 

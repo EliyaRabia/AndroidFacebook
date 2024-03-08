@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".entities.ProfilePage">
+    tools:context=".friends.ProfilePage">
 
 
     <ImageView
@@ -47,6 +47,8 @@
         android:autofillHints=""
         android:hint="EditText 2"
         android:textSize="24sp"
+        android:clickable="true"
+        android:onClick="onMoveToFriendList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.861"
         app:layout_constraintStart_toStartOf="parent"

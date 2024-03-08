@@ -28,7 +28,7 @@ import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.entities.ProfilePage;
+import com.example.androidfacebook.friends.ProfilePage;
 
 import java.util.List;
 

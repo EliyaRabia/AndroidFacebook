@@ -1,8 +1,9 @@
-package com.example.androidfacebook.entities;
+package com.example.androidfacebook.friends;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -23,9 +24,12 @@ import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
+import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.DataHolder;
+import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.models.PostsViewModel;
+import com.example.androidfacebook.notification.NotificationPage;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -170,5 +174,10 @@ public class ProfilePage extends AppCompatActivity {
 
     public void goToPid(View view) {
         finish();
+    }
+
+    public void onMoveToFriendList(View view) {
+        Intent moveToFriendList = new Intent(this, FriendListPage.class);
+        startActivity(moveToFriendList);
     }
 }
