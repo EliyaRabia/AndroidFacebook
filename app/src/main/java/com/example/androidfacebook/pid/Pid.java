@@ -171,10 +171,10 @@ public class Pid extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         // Clear Room database when the app is closing
-        new Thread(() -> {
-            userDao.deleteAllUsers();
-            postDao.deleteAllPosts();
-        }).start();
+//        new Thread(() -> {
+//            userDao.deleteAllUsers();
+//            postDao.deleteAllPosts();
+//        }).start();
     }
 
     @SuppressLint("MissingSuperCall")
