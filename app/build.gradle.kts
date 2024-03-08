@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity:1.8.0")
     val roomVersion = "2.6.1"
     implementation ("com.squareup.okhttp3:okhttp:4.9.2")
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
