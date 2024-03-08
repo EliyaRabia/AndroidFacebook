@@ -58,13 +58,15 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/people_icon"
-        android:src="@drawable/people_svgrepo_com"
+        android:src="@drawable/profile_round_1342_svgrepo_com"
         app:layout_constraintBottom_toBottomOf="@+id/topBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/menuIcon"
         app:layout_constraintTop_toTopOf="@+id/topBar"
         app:tint="@color/textColor"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:clickable="true"
+        android:onClick="goToMyProfile"/>
 
     <ImageView
         android:id="@+id/marketIcon"

@@ -19,9 +19,8 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import com.example.androidfacebook.addspages.AddPost;
-import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
@@ -29,7 +28,6 @@ import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.pid.Pid;
 
 import java.util.List;
 
@@ -84,6 +82,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             tvNumComment=itemView.findViewById(R.id.tvNumComment);
             dotsButton=itemView.findViewById(R.id.dotsButton);
             commentButton=itemView.findViewById(R.id.commentButton);
+
         }
         // Show the popup menu when the share button is clicked
         private void showPopupShareMenu(View view) {

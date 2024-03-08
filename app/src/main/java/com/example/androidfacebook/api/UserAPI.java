@@ -8,6 +8,8 @@ import com.example.androidfacebook.entities.UpdateUser;
 import com.example.androidfacebook.entities.User;
 import com.example.androidfacebook.entities.UserNameAndPass;
 
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,6 +103,29 @@ public class UserAPI {
         Call<ResponseBody> call = webServiceAPI.updatePost(token,p, postId, userId);
         call.enqueue(callback);
     }
+    public void getPostsByUser(String token, String id, Callback<List<Post>> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<List<Post>> call = webServiceAPI.getPostsByUser(token, id);
+        call.enqueue(callback);
+    }
+
+    public void getFriends(String token, String id, Callback<List<ClientUser>> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<List<ClientUser>> call = webServiceAPI.getFriends(token, id);
+        call.enqueue(callback);
+    }
+    public void addFriend(String token, String id, String friendId, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.addFriend(token, id, friendId);
+        call.enqueue(callback);
+    }
+
     public void acceptFriendRequest(String token, String id, String friendId, Callback<ResponseBody> callback){
         if (token.startsWith("\"") && token.endsWith("\"")) {
             token = token.substring(1, token.length() - 1);

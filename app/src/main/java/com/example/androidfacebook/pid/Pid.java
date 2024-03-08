@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +31,7 @@ import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.login.Login;
+import com.example.androidfacebook.entities.ProfilePage;
 import com.example.androidfacebook.models.PostsViewModel;
 import com.example.androidfacebook.notification.NotificationPage;
 
@@ -66,7 +65,6 @@ public class Pid extends AppCompatActivity {
         // Get the user that is in the pid now
 
         String userId = DataHolder.getInstance().getUserLoggedInID();
-//            user= DataHolder.getInstance().getUserLoggedIn();
         token = DataHolder.getInstance().getToken();
         appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
                 .fallbackToDestructiveMigration()
@@ -107,8 +105,12 @@ public class Pid extends AppCompatActivity {
     }
     protected void onResume() {
         super.onResume();
+        postDao = appDB.postDao();
         token = DataHolder.getInstance().getToken();
         PostAPI postsApi = new PostAPI(ServerIP);
+        new Thread(() -> {
+            postDao.deleteAllPosts();
+        }).start();
         postsApi.getAllPosts(token, new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -247,5 +249,10 @@ public class Pid extends AppCompatActivity {
             return false;
         });
         popupMenu.show();
+    }
+
+    public void goToMyProfile(View view) {
+        Intent intent = new Intent(this, ProfilePage.class);
+        startActivity(intent);
     }
 }

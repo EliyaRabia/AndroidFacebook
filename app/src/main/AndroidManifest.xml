@@ -21,6 +21,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".entities.ProfilePage"
+            android:exported="false" />
+        <activity
             android:name=".notification.NotificationPage"
             android:exported="false" />
         <activity
