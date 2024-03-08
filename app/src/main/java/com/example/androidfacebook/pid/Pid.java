@@ -252,6 +252,7 @@ public class Pid extends AppCompatActivity {
     }
 
     public void goToMyProfile(View view) {
+        DataHolder.getInstance().setFriendProfileId(user.getId());
         Intent intent = new Intent(this, ProfilePage.class);
         startActivity(intent);
     }

@@ -28,6 +28,7 @@ import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
+import com.example.androidfacebook.entities.ProfilePage;
 
 import java.util.List;
 
@@ -182,6 +183,12 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             byte[] iconBytes = convertBase64ToByteArray(current.getIcon());
 //            byte[] iconBytes= current.getIcon();
             setImageViewWithBytes(holder.iconUser,iconBytes);
+            holder.iconUser.setOnClickListener(view -> {
+                Context context = view.getContext();
+                DataHolder.getInstance().setFriendProfileId(current.getIdUserName());
+                Intent intent = new Intent(context, ProfilePage.class);
+                context.startActivity(intent);
+            });
 
             if(current.getLikes().contains(user.getId())){
                 holder.likeButton.setImageResource(R.drawable.like_icon);
