@@ -7,6 +7,7 @@ like the posts, comments, and the current post and the user list
  */
 public class DataHolder {
     private static DataHolder instance;
+    private String friendProfileId;
     private List<Post> postList;
     private List<Comment> comments;
     private Post currentPost;
@@ -99,5 +100,11 @@ public class DataHolder {
 
     public void setEditposter(Post editposter) {
         this.editposter = editposter;
+    }
+    public String getFriendProfileId() {
+        return friendProfileId;
+    }
+    public void setFriendProfileId(String friendProfileId) {
+        this.friendProfileId = friendProfileId;
     }
 }

@@ -10,6 +10,7 @@ import com.example.androidfacebook.entities.Post;
 @Database(entities = {ClientUser.class, Post.class},version =2)
 @TypeConverters(Convertors.class)
 public abstract class AppDB extends RoomDatabase {
+
     public abstract PostDao postDao();
     public abstract UserDao userDao();
     public void clearAllTables() {
