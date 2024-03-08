@@ -24,4 +24,5 @@ public interface UserDao {
 
     @Query("DELETE FROM ClientUser")
     void deleteAllUsers();
+
 }

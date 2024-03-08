@@ -34,7 +34,9 @@
             android:adjustViewBounds="true"
             android:contentDescription="@string/icon_representing_the_user"
             android:scaleType="fitCenter"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:clickable="true"
+            android:onClick="goToFriendPage"/>
 
         <LinearLayout
             android:id="@+id/linearLayout"

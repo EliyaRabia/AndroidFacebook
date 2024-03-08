@@ -39,16 +39,19 @@ public interface WebServiceAPI {
     Call<ResponseBody> deleteUser(@Header("Authorization") String token, @Path("id") String id);
     @GET("posts")
     Call<List<Post>> getAllPosts(@Header("Authorization") String token);
-
     @POST("users/{id}/posts/{pid}/likes")
     Call<Post> addOrRemoveLike(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid);
     @DELETE("users/{id}/posts/{pid}")
     Call<ResponseBody> deletePost(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid);
+    @GET("users/{id}/posts")
+    Call<List<Post>> getPostsByUser(@Header("Authorization") String token, @Path("id") String id);
     @PUT ("users/{id}/posts/{pid}")
     Call<ResponseBody> updatePost(@Header("Authorization") String token, @Body UpdatePost updatePost, @Path("pid") String pid, @Path("id") String id);
-
-
-
+    @GET("users/{id}/friends")
+    Call<List<ClientUser>> getFriends(@Header("Authorization") String token, @Path("id") String id);
+    @POST("users/{id}/friends")
+    Call<ResponseBody> addFriend(@Header("Authorization") String token, @Path("id") String id, @Body String friendId);
+    
 
 
 
