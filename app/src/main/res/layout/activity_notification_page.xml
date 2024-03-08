@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pid.Pid">
+    tools:context=".notification.NotificationPage">
 
     <!-- Bar at the top -->
     <View
@@ -41,6 +41,8 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="34dp"
         android:contentDescription="@string/home_icon"
+        android:clickable="true"
+        android:onClick="onBackToPid"
         android:src="@drawable/home_2_svgrepo_com"
         app:layout_constraintBottom_toBottomOf="@+id/topBar"
         app:layout_constraintEnd_toEndOf="@+id/topBar"
@@ -58,15 +60,13 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/people_icon"
-        android:src="@drawable/profile_round_1342_svgrepo_com"
+        android:src="@drawable/people_svgrepo_com"
         app:layout_constraintBottom_toBottomOf="@+id/topBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/menuIcon"
         app:layout_constraintTop_toTopOf="@+id/topBar"
         app:tint="@color/textColor"
-        tools:ignore="MissingConstraints"
-        android:clickable="true"
-        android:onClick="goToMyProfile"/>
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/marketIcon"
@@ -87,8 +87,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:clickable="true"
-        android:onClick="onNotificationClick"
         android:contentDescription="@string/notification_icon"
         android:src="@drawable/notification_bell_1397_svgrepo_com"
         app:layout_constraintBottom_toBottomOf="@+id/topBar"
@@ -121,32 +119,16 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:text="What do you want to share?"
+        android:layout_height="40dp"
+        android:color="@color/textColor"
+        android:text="@string/notifications"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:color="@color/textColor"
         app:layout_constraintTop_toBottomOf="@+id/topBar" />
 
-    <Button
-        android:id="@+id/btnAddPost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="8dp"
-        android:backgroundTint="@color/colorPrimaryLight"
-        android:text="@string/add_post"
-        android:textColor="@color/colorAccentDark"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
-        app:layout_constraintHorizontal_bias="0.947"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="MissingConstraints" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lstPosts"
+        android:id="@+id/lstNotifications"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="110dp"
@@ -156,6 +138,5 @@
         android:background="@color/darker_gray"
         app:layout_behavior="YOUR_LAYOUT_BEHAVIOR_CLASS_NAME"
         tools:ignore="MissingClass" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

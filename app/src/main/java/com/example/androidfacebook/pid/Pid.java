@@ -33,6 +33,7 @@ import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.ProfilePage;
 import com.example.androidfacebook.models.PostsViewModel;
+import com.example.androidfacebook.notification.NotificationPage;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -181,6 +182,10 @@ public class Pid extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
+    }
+    public void onNotificationClick(View view){
+        Intent a = new Intent(this, NotificationPage.class);
+        startActivity(a);
     }
 
     // Show the popup menu
