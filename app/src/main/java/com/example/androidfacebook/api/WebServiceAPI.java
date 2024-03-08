@@ -47,7 +47,12 @@ public interface WebServiceAPI {
     @PUT ("users/{id}/posts/{pid}")
     Call<ResponseBody> updatePost(@Header("Authorization") String token, @Body UpdatePost updatePost, @Path("pid") String pid, @Path("id") String id);
 
-
+    @POST("users/{id}/friends")
+    Call<ResponseBody> addFriend(@Header("Authorization") String token, @Path("id") String id, @Body String friendId);
+    @PUT("users/{id}/friends/{fid}")
+    Call<ResponseBody> acceptFriendRequest(@Header("Authorization") String token, @Path("id") String id, @Path("fid") String fid);
+    @DELETE("users/{id}/friends/{fid}")
+    Call<ResponseBody> deleteFriendRequest(@Header("Authorization") String token, @Path("id") String id, @Path("fid") String fid);
 
 
 

@@ -101,4 +101,18 @@ public class UserAPI {
         Call<ResponseBody> call = webServiceAPI.updatePost(token,p, postId, userId);
         call.enqueue(callback);
     }
+    public void acceptFriendRequest(String token, String id, String friendId, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.acceptFriendRequest(token, id, friendId);
+        call.enqueue(callback);
+    }
+    public void deleteFriendRequest(String token, String id, String friendId, Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call = webServiceAPI.deleteFriendRequest(token, id, friendId);
+        call.enqueue(callback);
+    }
 }

@@ -88,13 +88,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editCommentTextView"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
-        android:layout_alignParentEnd="true"
         android:backgroundTint="@color/colorPrimaryLight"
+        android:text="Save"
         android:textColor="@color/colorAccentDark"
-        android:text="Save" />
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btnCancelEdit"
@@ -103,10 +103,10 @@
         android:layout_below="@+id/editCommentTextView"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
         android:layout_toStartOf="@id/btnSaveComment"
         android:backgroundTint="@color/colorPrimaryLight"
+        android:text="Cancel"
         android:textColor="@color/colorAccentDark"
-        android:text="Cancel" />
+        android:visibility="gone" />
 
 </RelativeLayout>
