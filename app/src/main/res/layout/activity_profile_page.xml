@@ -31,6 +31,7 @@
         android:layout_marginTop="52dp"
         android:autofillHints=""
         android:hint="EditText 1"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.861"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,28 +46,28 @@
         android:layout_marginTop="28dp"
         android:autofillHints=""
         android:hint="EditText 2"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.861"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText1"
         tools:ignore="MissingConstraints" />
 
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:backgroundTint="@color/colorPrimaryLight"
         android:text="Button"
+        android:textColor="@color/colorAccentDark"
         app:layout_constraintBottom_toTopOf="@+id/lstPosts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintHorizontal_bias="0.218"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editText2"
-        app:layout_constraintVertical_bias="0.166"
-        android:textColor="@color/colorAccentDark"
-        android:backgroundTint="@color/colorPrimaryLight"
-        />
-
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/button2"

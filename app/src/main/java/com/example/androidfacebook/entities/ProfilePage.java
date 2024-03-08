@@ -3,8 +3,12 @@ package com.example.androidfacebook.entities;
 import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +25,7 @@ import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.models.PostsViewModel;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -32,6 +37,7 @@ public class ProfilePage extends AppCompatActivity {
     private AppDB appDB;
     private UserDao userDao;
     private ClientUser friendUser;
+    private ImageView selectedImageView;
     private List<Post> FriendPostList;
     private PostDao postDao;
     private String token;
@@ -40,6 +46,23 @@ public class ProfilePage extends AppCompatActivity {
     private ClientUser user;
     private TextView editTextName;
     private TextView editTextFriendsCount;
+
+    public byte[] convertBase64ToByteArray(String base64Image) {
+        if (base64Image != null && base64Image.startsWith("data:image/jpeg;base64,")) {
+            String base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
+            return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+        }
+        return null;
+    }
+    public void setImageViewWithBytes(ImageView imageView, byte[] imageBytes) {
+        if (imageBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageView.setImageBitmap(bitmap);
+        } else {
+            // Set a default image or leave it empty
+            imageView.setImageDrawable(null);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +71,7 @@ public class ProfilePage extends AppCompatActivity {
         // Get the user that is in the pid now
         editTextName=findViewById(R.id.editText1);
         editTextFriendsCount=findViewById(R.id.editText2);
-//        editTextName.setText(friendUser.getDisplayName());
-//        editTextFriendsCount.setText("Friends " + String.valueOf(friendUser.getFriendsList().size()));
-
+        selectedImageView = findViewById(R.id.iconUser);
         String userId = DataHolder.getInstance().getUserLoggedInID();
         token = DataHolder.getInstance().getToken();
         appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
@@ -78,6 +99,10 @@ public class ProfilePage extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     protected void onResume() {
         super.onResume();
+        getUser();
+        getPosts();
+    }
+    public void getUser(){
         postDao = appDB.postDao();
         new Thread(() -> {
             postDao.deleteAllPosts();
@@ -92,6 +117,10 @@ public class ProfilePage extends AppCompatActivity {
             public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
                 if (response.isSuccessful()) {
                     friendUser = response.body();
+                    editTextName.setText(friendUser.getDisplayName());
+                    editTextFriendsCount.setText("Friends " + String.valueOf(friendUser.getFriendsList().size()));
+                    byte[] pictureBytes = convertBase64ToByteArray(friendUser.getPhoto());
+                    setImageViewWithBytes(selectedImageView, pictureBytes);
                 }
             }
 
@@ -99,7 +128,14 @@ public class ProfilePage extends AppCompatActivity {
             public void onFailure(Call<ClientUser> call, Throwable t) {
                 t.printStackTrace();
             }
+
         });
+    }
+
+    public void getPosts(){
+        UserAPI userAPI = new UserAPI(ServerIP);
+        token = DataHolder.getInstance().getToken();
+        String friendUserId = DataHolder.getInstance().getFriendProfileId();
 
         userAPI.getPostsByUser(token, friendUserId, new Callback<List<Post>>() {
             @Override
@@ -107,11 +143,11 @@ public class ProfilePage extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     FriendPostList = response.body();
                     if( FriendPostList != null){
-                    for(Post p:FriendPostList){
-                        new Thread(() -> {
-                            postDao.insert(p);
-                        }).start();
-                    }
+                        for(Post p:FriendPostList){
+                            new Thread(() -> {
+                                postDao.insert(p);
+                            }).start();
+                        }
                         final PostsListAdapter adapter = new PostsListAdapter(ProfilePage.this);
                         RecyclerView lstPosts = findViewById(R.id.lstPosts);
                         lstPosts.setAdapter(adapter);

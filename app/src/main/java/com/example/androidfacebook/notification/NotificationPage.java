@@ -59,6 +59,7 @@ public class NotificationPage extends AppCompatActivity {
                 .fallbackToDestructiveMigration()
                 .build();
         userDao = appDB.userDao();
+        postDao = appDB.postDao();
         final ClientUser[] currentUser = new ClientUser[1];
         CountDownLatch latch = new CountDownLatch(1); // Create a CountDownLatch with a count of 1
 
@@ -136,10 +137,10 @@ public class NotificationPage extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         // Clear Room database when the app is closing
-        new Thread(() -> {
-            userDao.deleteAllUsers();
-            postDao.deleteAllPosts();
-        }).start();
+//        new Thread(() -> {
+//            userDao.deleteAllUsers();
+//            postDao.deleteAllPosts();
+//        }).start();
     }
 
     @SuppressLint("MissingSuperCall")
@@ -148,6 +149,9 @@ public class NotificationPage extends AppCompatActivity {
     }
 
     public void onBackToPid(View view) {
+        new Thread(() -> {
+            postDao.deleteAllPosts();
+        }).start();
         finish();
     }
 }
