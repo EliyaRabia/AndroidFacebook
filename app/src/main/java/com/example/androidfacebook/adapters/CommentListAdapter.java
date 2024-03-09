@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.CommentDao;
 import com.example.androidfacebook.api.PostDao;
@@ -91,6 +92,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 // Implement the logic to delete the post here
                 if (id == R.id.action_edit_comment) {
                     // Toggle between view modes (read-only and edit)
+
                     if (tvContent.getVisibility() == View.VISIBLE) {
                         tvContent.setVisibility(View.GONE);
                         editCommentTextView.setVisibility(View.VISIBLE);
@@ -174,6 +176,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             holder.tvContent.setText(current.getText());
             byte[] iconBytes = convertBase64ToByteArray(current.getIcon());
             setImageViewWithBytes(holder.iconUser, iconBytes);
+            if((userLoggedIn.getId().equals(current.getIdUserName()))||(userLoggedIn.getId().equals(currentPost.getIdUserName()))){
+                holder.CommentButtonOption.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.CommentButtonOption.setVisibility(View.GONE);
+            }
             // Set OnClickListener for the option button
             holder.CommentButtonOption.setOnClickListener(view -> {
                 holder.showPopupOptionMenu(view, current);
@@ -186,19 +194,45 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     return;
                 }
                 // Save the edited comment
-                current.setText(editedComment);
-                comments.set(comments.indexOf(current),current);
+                Comment newC = new Comment(current.get_id(),current.getIdUserName(),current.getFullname(),current.getIcon(),current.getIdPost(),editedComment);
                 Context context = v.getContext();
-                Intent intent = new Intent(context, CommentPage.class);
-                // Set the updated comments list to the DataHolder
-                DataHolder.getInstance().setComments(comments);
-                //DataHolder.getInstance().setPostList(postList);
-                DataHolder.getInstance().setCurrentPost(currentPost);
-                //intent.putExtra("USER", user);
-                // Hide the EditText and show the TextView
+                String token = DataHolder.getInstance().getToken();
+                UserAPI userAPI = new UserAPI(ServerIP);
+
+                userAPI.updateComment(token, current.getIdUserName(), current.getIdPost(), current.get_id(), newC, new Callback<Comment>() {
+                    @Override
+                    public void onResponse(Call<Comment> call, Response<Comment> response) {
+                        int statusCode = response.code();
+                        if(statusCode == 200){
+                            List<String> lc = currentPost.getComments();
+                            int indexC = lc.indexOf(current.get_id());
+                            current.setText(editedComment);
+                            comments.set(comments.indexOf(current),current);
+                            holder.tvContent.setText(current.getText());
+                            lc.add(indexC,current.get_id());
+                            currentPost.setComments(lc);
+                            DataHolder.getInstance().setCurrentPost(currentPost);
+                            new Thread(() -> {
+                                AppDB appDB = Room.databaseBuilder(context, AppDB.class, "facebookDB").build();
+                                CommentDao commentDao = appDB.commentDao();
+                                commentDao.insert(current);
+                            }).start();
+                            notifyDataSetChanged();
+                        }else{
+                            Toast.makeText(context, "Failed to update comment!!!!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Comment> call, Throwable t) {
+                        Toast.makeText(context, "Invalid call from Server", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 holder.btnCancelEdit.setVisibility(View.GONE);
                 holder.btnSaveComment.setVisibility(View.GONE);
-                //context.startActivity(intent);
+                holder.editCommentTextView.setVisibility(View.GONE);
+                holder.tvContent.setVisibility(View.VISIBLE);
             });
             // Set OnClickListener for cancel edit button
             holder.btnCancelEdit.setOnClickListener(v -> {
@@ -211,8 +245,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 holder.btnSaveComment.setVisibility(View.GONE);
                 //current.setEditMode(false);
             });
-            // Set the visibility of the TextView and EditText based on the edit mode
-
 
         }
     }

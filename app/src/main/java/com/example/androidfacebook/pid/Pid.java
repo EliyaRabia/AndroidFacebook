@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ public class Pid extends AppCompatActivity {
     private PostDao postDao;
     private CommentDao commentDao;
     private String token;
+    private TextView redCircle;
 
     private PostsViewModel viewModel;
 
@@ -65,6 +67,7 @@ public class Pid extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pid);
+        redCircle=findViewById(R.id.notificationBadge);
         viewModel= new ViewModelProvider(this).get(PostsViewModel.class);
 
         // Get the user that is in the pid now
@@ -90,9 +93,13 @@ public class Pid extends AppCompatActivity {
         }
 
         user = currentUser[0];
-
-
-
+        if(user.getFriendRequests().size()!=0){
+            redCircle.setText(String.valueOf(user.getFriendRequests().size()));
+            redCircle.setVisibility(View.VISIBLE);
+        }
+        else{
+            redCircle.setVisibility(View.GONE);
+        }
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         // When the user clicks on the add post button,
@@ -163,6 +170,13 @@ public class Pid extends AppCompatActivity {
 
                     }).start();
                     user=currectUser;
+                    if(user.getFriendRequests().size()!=0){
+                        redCircle.setText(String.valueOf(user.getFriendRequests().size()));
+                        redCircle.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        redCircle.setVisibility(View.GONE);
+                    }
 
 
                 }

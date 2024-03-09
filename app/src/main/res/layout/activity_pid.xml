@@ -99,6 +99,22 @@
         app:layout_constraintVertical_bias="0.0"
         app:tint="@color/textColor"
         tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/notificationBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/notification_badge_background"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:text="3"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/notificationIcon"
+        app:layout_constraintEnd_toEndOf="@id/notificationIcon"
+        app:layout_constraintStart_toEndOf="@id/notificationIcon"
+        app:layout_constraintTop_toTopOf="@id/notificationIcon"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:ignore="HardcodedText" />
 
     <ImageButton
         android:id="@+id/menuIcon"

@@ -51,12 +51,16 @@ public class MainActivity extends Activity {
                 .build();
         userDao = appDB.userDao();
         postDao = appDB.postDao();
+        commentDao = appDB.commentDao();
 
         // Clear Room database when the app starts
         new Thread(() -> {
             userDao.deleteAllUsers();
             postDao.deleteAllPosts();
-            commentDao.deleteAllComments();
+            if(commentDao!=null){
+                commentDao.deleteAllComments();
+            }
+
         }).start();
         // Create a new intent to start the Login activity
         userList = new ArrayList<>();

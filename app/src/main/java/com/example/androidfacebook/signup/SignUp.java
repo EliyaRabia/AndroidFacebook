@@ -90,7 +90,6 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         // Get the user list from the DataHolder
-        List<User> userList= DataHolder.getInstance().getUserList();
         username = findViewById(R.id.textView3);
         password = findViewById(R.id.editTextTextPassword2);
         confirmPassword = findViewById(R.id.editTextTextPassword4);

@@ -4,6 +4,7 @@ import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.CommentNoID;
+import com.example.androidfacebook.entities.FriendID;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.UpdatePost;
 import com.example.androidfacebook.entities.UpdateUser;
@@ -120,7 +121,7 @@ public class UserAPI {
         Call<List<ClientUser>> call = webServiceAPI.getFriends(token, id);
         call.enqueue(callback);
     }
-    public void addFriend(String token, String id, String friendId, Callback<ResponseBody> callback){
+    public void addFriend(String token, String id, FriendID friendId, Callback<ResponseBody> callback){
         if (token.startsWith("\"") && token.endsWith("\"")) {
             token = token.substring(1, token.length() - 1);
         }
@@ -154,6 +155,13 @@ public class UserAPI {
             token = token.substring(1, token.length() - 1);
         }
         Call<ResponseBody> call= webServiceAPI.deleteComment(token,writerOfCommentId,postId,cid);
+        call.enqueue(callback);
+    }
+    public void updateComment(String token,String writerOfCommentId,String postId,String cid,Comment c,Callback<Comment> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<Comment> call= webServiceAPI.updateComment(token,writerOfCommentId,postId,cid,c);
         call.enqueue(callback);
     }
 }
