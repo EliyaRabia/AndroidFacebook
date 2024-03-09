@@ -85,20 +85,26 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             popupMenu.getMenuInflater().inflate(R.menu.option_menu_comments, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
-                if (id == R.id.action_edit_comment) {
 
-                    if (tvContent.getVisibility() == View.VISIBLE) {
-                        tvContent.setVisibility(View.GONE);
-                        editCommentTextView.setVisibility(View.VISIBLE);
-                        editCommentTextView.setText(tvContent.getText());
-                        btnCancelEdit.setVisibility(View.VISIBLE);
-                        btnSaveComment.setVisibility(View.VISIBLE);
+                if (id == R.id.action_edit_comment) {
+                    if (userLoggedIn.getId().equals(current.getIdUserName())) {
+                        if (tvContent.getVisibility() == View.VISIBLE) {
+                            tvContent.setVisibility(View.GONE);
+                            editCommentTextView.setVisibility(View.VISIBLE);
+                            editCommentTextView.setText(tvContent.getText());
+                            btnCancelEdit.setVisibility(View.VISIBLE);
+                            btnSaveComment.setVisibility(View.VISIBLE);
+                        } else {
+                            tvContent.setVisibility(View.VISIBLE);
+                            editCommentTextView.setVisibility(View.GONE);
+                        }
+                        return true;
                     } else {
-                        tvContent.setVisibility(View.VISIBLE);
-                        editCommentTextView.setVisibility(View.GONE);
+                        Toast.makeText(view.getContext(), "You cannot edit this comment because you are the owner of the post.", Toast.LENGTH_SHORT).show();
+                        return true;
                     }
-                    return true;
                 }
+
 
                 if(id == R.id.action_delete_comment){
 
