@@ -20,6 +20,8 @@ import androidx.room.Room;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.FriendsListAdapter;
+import com.example.androidfacebook.adapters.NotificationsListAdapter;
+import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
@@ -87,7 +89,7 @@ public class FriendListPage extends AppCompatActivity {
     public void getUser(){
         UserAPI userAPI = new UserAPI(ServerIP);
         token = DataHolder.getInstance().getToken();
-        String viewedFriendUserId = DataHolder.getInstance().getFriendProfileId();
+        String viewedFriendUserId = DataHolder.getInstance().getStackOfIDs().peek();
 
 
         userAPI.getUserData(token, viewedFriendUserId, new Callback<ClientUser>() {
@@ -96,42 +98,33 @@ public class FriendListPage extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     viewedFriendUser = response.body();
                     nameOfFriendTextView.setText(viewedFriendUser.getDisplayName() + "'s Friends");
-                    List<String> lif = viewedFriendUser.getFriendsList();
-                    List<ClientUser> friends = new ArrayList<>();
-                    AtomicInteger requestCount = new AtomicInteger(lif.size());
-                    for (String f : lif) {
-                        userAPI.getUserData(token, f, new Callback<ClientUser>() {
-                            @Override
-                            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
-                                if (response.isSuccessful()) {
-                                    ClientUser currentUser = response.body();
-                                    friends.add(currentUser);
-                                } else {
-                                    Toast.makeText(FriendListPage.this,
-                                            "failed to load this friend",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                if (requestCount.decrementAndGet() == 0) {
-                                    // All requests are completed, update UI
-                                    final FriendsListAdapter adapter = new FriendsListAdapter(FriendListPage.this);
-                                    RecyclerView lstFriends = findViewById(R.id.lstFriends);
-                                    lstFriends.setAdapter(adapter);
-                                    lstFriends.setLayoutManager(new LinearLayoutManager(FriendListPage.this));
-                                    viewModel.setUsers(friends);
-                                    viewModel.get().observe(FriendListPage.this, frie -> {
-                                        adapter.setFriends(frie,userLoggedIn,viewedFriendUser);
-                                    });
-                                }
-                            }
+                    userAPI.getFriends(token, viewedFriendUserId, new Callback<List<ClientUser>>() {
+                        @Override
+                        public void onResponse(Call<List<ClientUser>> call, Response<List<ClientUser>> response) {
+                            int statusCode = response.code();
+                            if(statusCode == 200){
+                                List<ClientUser> users =response.body();
+                                final FriendsListAdapter adapter = new FriendsListAdapter(FriendListPage.this);
+                                RecyclerView lstFriends = findViewById(R.id.lstFriends);
+                                lstFriends.setAdapter(adapter);
+                                lstFriends.setLayoutManager(new LinearLayoutManager(FriendListPage.this));
+                                viewModel.setUsers(users);
+                                viewModel.get().observe(FriendListPage.this, frie -> {
+                                    adapter.setFriends(frie,viewedFriendUser, userLoggedIn);
+                                });
 
-                            @Override
-                            public void onFailure(Call<ClientUser> call, Throwable t) {
-                                Toast.makeText(FriendListPage.this,
-                                        "Invalid call from server",
-                                        Toast.LENGTH_SHORT).show();
+
                             }
-                        });
-                    }
+                            else{
+                                Toast.makeText(FriendListPage.this, "Failed to get user friends list", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<ClientUser>> call, Throwable t) {
+                            Toast.makeText(FriendListPage.this, "Invalid call to server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
 

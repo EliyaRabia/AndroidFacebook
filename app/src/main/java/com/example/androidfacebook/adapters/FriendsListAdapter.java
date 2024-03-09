@@ -3,6 +3,7 @@ package com.example.androidfacebook.adapters;
 import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -19,8 +20,10 @@ import com.example.androidfacebook.R;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
+import com.example.androidfacebook.friends.ProfilePage;
 
 import java.util.List;
+import java.util.Stack;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -78,6 +81,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             String imgNotif = current.getPhoto();
             byte[] iconBytes = convertBase64ToByteArray(current.getPhoto());
             setImageViewWithBytes(holder.iconUser, iconBytes);
+            holder.iconUser.setOnClickListener(view -> {
+                Context context = view.getContext();
+                //DataHolder.getInstance().setFriendProfileId(current.getIdUserName());
+                Stack<String> s = DataHolder.getInstance().getStackOfIDs();
+                s.push(current.getId());
+                DataHolder.getInstance().setStackOfIDs(s);
+                Intent intent = new Intent(context, ProfilePage.class);
+                context.startActivity(intent);
+            });
 
         }
     }

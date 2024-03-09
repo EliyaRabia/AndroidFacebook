@@ -31,6 +31,7 @@ import com.example.androidfacebook.models.PostsViewModel;
 import com.example.androidfacebook.notification.NotificationPage;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
@@ -113,7 +114,7 @@ public class ProfilePage extends AppCompatActivity {
         }).start();
         UserAPI userAPI = new UserAPI(ServerIP);
         token = DataHolder.getInstance().getToken();
-        String friendUserId = DataHolder.getInstance().getFriendProfileId();
+        String friendUserId = DataHolder.getInstance().getStackOfIDs().peek();
 
 
         userAPI.getUserData(token, friendUserId, new Callback<ClientUser>() {
@@ -139,7 +140,7 @@ public class ProfilePage extends AppCompatActivity {
     public void getPosts(){
         UserAPI userAPI = new UserAPI(ServerIP);
         token = DataHolder.getInstance().getToken();
-        String friendUserId = DataHolder.getInstance().getFriendProfileId();
+        String friendUserId = DataHolder.getInstance().getStackOfIDs().peek();
 
         userAPI.getPostsByUser(token, friendUserId, new Callback<List<Post>>() {
             @Override
@@ -172,7 +173,10 @@ public class ProfilePage extends AppCompatActivity {
         });
     }
 
-    public void goToPid(View view) {
+    public void goBackFromHere(View view) {
+        Stack<String> s = DataHolder.getInstance().getStackOfIDs();
+        s.pop();
+        DataHolder.getInstance().setStackOfIDs(s);
         finish();
     }
 

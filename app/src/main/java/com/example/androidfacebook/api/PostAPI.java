@@ -1,5 +1,6 @@
 package com.example.androidfacebook.api;
 
+import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.Post;
 
 import java.util.List;
@@ -39,6 +40,13 @@ public class PostAPI {
             token = token.substring(1, token.length() - 1);
         }
         Call<List<Post>> call = webServiceAPI.getAllPosts(token);
+        call.enqueue(callback);
+    }
+    public void getAllComments(String token, String pid, Callback<List<Comment>> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<List<Comment>> call = webServiceAPI.getAllComments(token,pid);
         call.enqueue(callback);
     }
 
