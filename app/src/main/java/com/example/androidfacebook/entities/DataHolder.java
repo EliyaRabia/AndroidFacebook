@@ -1,6 +1,5 @@
 package com.example.androidfacebook.entities;
 
-import java.util.List;
 import java.util.Stack;
 
 /*

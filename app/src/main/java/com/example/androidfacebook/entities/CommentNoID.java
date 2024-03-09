@@ -1,6 +1,5 @@
 package com.example.androidfacebook.entities;
 
-import androidx.room.ColumnInfo;
 
 public class CommentNoID {
 

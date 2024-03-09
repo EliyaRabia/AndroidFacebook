@@ -2,11 +2,10 @@ package com.example.androidfacebook.adapters;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.provider.ContactsContract;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +17,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.example.androidfacebook.R;
-import com.example.androidfacebook.addspages.EditPost;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.CommentDao;
-import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
-import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
@@ -88,10 +85,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             popupMenu.getMenuInflater().inflate(R.menu.option_menu_comments, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
-                // Handle delete post action
-                // Implement the logic to delete the post here
                 if (id == R.id.action_edit_comment) {
-                    // Toggle between view modes (read-only and edit)
 
                     if (tvContent.getVisibility() == View.VISIBLE) {
                         tvContent.setVisibility(View.GONE);
@@ -99,12 +93,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         editCommentTextView.setText(tvContent.getText());
                         btnCancelEdit.setVisibility(View.VISIBLE);
                         btnSaveComment.setVisibility(View.VISIBLE);
-                        //current.setEditMode(true);
                     } else {
                         tvContent.setVisibility(View.VISIBLE);
                         editCommentTextView.setVisibility(View.GONE);
-                        // Save edited comment here
-                        //current.setEditMode(false);
                     }
                     return true;
                 }
@@ -115,8 +106,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     String token = DataHolder.getInstance().getToken();
                     UserAPI userAPI = new UserAPI(ServerIP);
                     userAPI.deleteComment(token, current.getIdUserName(), current.getIdPost(), current.get_id(), new Callback<ResponseBody>() {
+                        @SuppressLint("NotifyDataSetChanged")
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                             if(response.isSuccessful()) {
                                 comments.remove(current);
                                 Toast.makeText(context, "Comment deleted successfully", Toast.LENGTH_LONG).show();
@@ -138,7 +130,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                             Toast.makeText(context, "Invalid call from server", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -163,13 +155,14 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     public CommentListAdapter(Context context){mInflater=LayoutInflater.from(context);}
 
     // this method is used to create the view holder for the comments
+    @NonNull
     @Override
-    public CommentListAdapter.CommentViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public CommentListAdapter.CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View itemView = mInflater.inflate(R.layout.comment_item,parent,false);
         return new CommentListAdapter.CommentViewHolder(itemView);
     }
     // this method is used to bind the view holder with the comments
-    public void onBindViewHolder(CommentListAdapter.CommentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CommentListAdapter.CommentViewHolder holder, int position) {
         if (comments != null) {
             final Comment current = comments.get(position);
             holder.tvAuthor.setText(current.getFullname());
@@ -182,14 +175,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             else{
                 holder.CommentButtonOption.setVisibility(View.GONE);
             }
-            // Set OnClickListener for the option button
-            holder.CommentButtonOption.setOnClickListener(view -> {
-                holder.showPopupOptionMenu(view, current);
-            });
-            // Set OnClickListener for save button
+
+            holder.CommentButtonOption.setOnClickListener(view -> holder.showPopupOptionMenu(view, current));
+
             holder.btnSaveComment.setOnClickListener(v -> {
                 String editedComment = holder.editCommentTextView.getText().toString();
-                if(editedComment.length()==0){
+                if(editedComment.isEmpty()){
                     Toast.makeText(v.getContext(), "Comment can't be blank!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -200,8 +191,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 UserAPI userAPI = new UserAPI(ServerIP);
 
                 userAPI.updateComment(token, current.getIdUserName(), current.getIdPost(), current.get_id(), newC, new Callback<Comment>() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
-                    public void onResponse(Call<Comment> call, Response<Comment> response) {
+                    public void onResponse(@NonNull Call<Comment> call, @NonNull Response<Comment> response) {
                         int statusCode = response.code();
                         if(statusCode == 200){
                             List<String> lc = currentPost.getComments();
@@ -224,7 +216,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     }
 
                     @Override
-                    public void onFailure(Call<Comment> call, Throwable t) {
+                    public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
                         Toast.makeText(context, "Invalid call from Server", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -234,23 +226,21 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 holder.editCommentTextView.setVisibility(View.GONE);
                 holder.tvContent.setVisibility(View.VISIBLE);
             });
-            // Set OnClickListener for cancel edit button
+
             holder.btnCancelEdit.setOnClickListener(v -> {
-                // Hide the EditText and show the TextView
                 holder.tvContent.setVisibility(View.VISIBLE);
                 holder.editCommentTextView.setVisibility(View.GONE);
-                // Reset EditText to the original comment text
                 holder.editCommentTextView.setText(current.getText());
                 holder.btnCancelEdit.setVisibility(View.GONE);
                 holder.btnSaveComment.setVisibility(View.GONE);
-                //current.setEditMode(false);
             });
 
         }
     }
 
 
-    public void setComments(List<Comment> s,Post currentPost, ClientUser postUser,ClientUser userLoggedIn){
+    @SuppressLint("NotifyDataSetChanged")
+    public void setComments(List<Comment> s, Post currentPost, ClientUser postUser, ClientUser userLoggedIn){
         this.postUser = postUser;
         this.userLoggedIn=userLoggedIn;
         this.currentPost = currentPost;

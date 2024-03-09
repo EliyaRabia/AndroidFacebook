@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.androidfacebook.entities.Comment;
-import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.repositories.CommentsRepository;
-import com.example.androidfacebook.repositories.PostsRepository;
 
 import java.util.List;
 

@@ -2,32 +2,25 @@ package com.example.androidfacebook.adapters;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidfacebook.R;
-import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.UserAPI;
-import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
-import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.DataHolder;
-import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.notification.NotificationPage;
 
 import java.util.List;
 
@@ -78,83 +71,80 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
     public NotificationsListAdapter(Context context){mInflater=LayoutInflater.from(context);}
 
     // this method is used to create the view holder for the notifications
+    @NonNull
     @Override
-    public NotificationsListAdapter.NotificationViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public NotificationsListAdapter.NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View itemView = mInflater.inflate(R.layout.notification_item,parent,false);
         return new NotificationsListAdapter.NotificationViewHolder(itemView);
     }
     // this method is used to bind the view holder with the notifications
-    public void onBindViewHolder(NotificationsListAdapter.NotificationViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NotificationsListAdapter.NotificationViewHolder holder, int position) {
         if (notifications != null) {
             final ClientUser current = notifications.get(position);
             holder.tvAuthor.setText(current.getDisplayName());
-            String imgNotif = current.getPhoto();
             byte[] iconBytes = convertBase64ToByteArray(current.getPhoto());
             setImageViewWithBytes(holder.iconUser, iconBytes);
 
 
 
             // Approve Button Click Listener
-            holder.approveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Context context = view.getContext();
-                    UserAPI userAPI = new UserAPI(ServerIP);
-                    String token=DataHolder.getInstance().getToken();
-                    userAPI.acceptFriendRequest(token, userLoggedIn.getId(), current.getId(), new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            int statusCode = response.code();
-                            if(statusCode == 200){
-                                notifications.remove(current);
-                                Toast.makeText(context, "added to your friends successfully", Toast.LENGTH_SHORT).show();
-                                notifyDataSetChanged();
-                            }else{
-                                Toast.makeText(context, "Failed to accept friend!!!!", Toast.LENGTH_SHORT).show();
-                            }
+            holder.approveButton.setOnClickListener(view -> {
+                Context context = view.getContext();
+                UserAPI userAPI = new UserAPI(ServerIP);
+                String token=DataHolder.getInstance().getToken();
+                userAPI.acceptFriendRequest(token, userLoggedIn.getId(), current.getId(), new Callback<ResponseBody>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        int statusCode = response.code();
+                        if(statusCode == 200){
+                            notifications.remove(current);
+                            Toast.makeText(context, "added to your friends successfully", Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                        }else{
+                            Toast.makeText(context, "Failed to accept friend!!!!", Toast.LENGTH_SHORT).show();
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(context, "Failed to connect to server", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                        Toast.makeText(context, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
 
             // Decline Button Click Listener
-            holder.declineButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Context context = view.getContext();
-                    UserAPI userAPI = new UserAPI(ServerIP);
-                    String token=DataHolder.getInstance().getToken();
-                    userAPI.deleteFriendRequest(token, userLoggedIn.getId(), current.getId(), new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            int statusCode = response.code();
-                            if(statusCode == 200){
-                                notifications.remove(current);
-                                Toast.makeText(context, "declined successfully", Toast.LENGTH_SHORT).show();
-                                notifyDataSetChanged();
-                            }else{
-                                Toast.makeText(context, "Failed to decline friend!!!!", Toast.LENGTH_SHORT).show();
-                            }
+            holder.declineButton.setOnClickListener(view -> {
+                Context context = view.getContext();
+                UserAPI userAPI = new UserAPI(ServerIP);
+                String token=DataHolder.getInstance().getToken();
+                userAPI.deleteFriendRequest(token, userLoggedIn.getId(), current.getId(), new Callback<ResponseBody>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        int statusCode = response.code();
+                        if(statusCode == 200){
+                            notifications.remove(current);
+                            Toast.makeText(context, "declined successfully", Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                        }else{
+                            Toast.makeText(context, "Failed to decline friend!!!!", Toast.LENGTH_SHORT).show();
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(context, "Failed to connect to server", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                        Toast.makeText(context, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-                }
             });
 
         }
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setNotifications(List<ClientUser> s, ClientUser user){
         this.userLoggedIn = user;
         this.notifications = s;

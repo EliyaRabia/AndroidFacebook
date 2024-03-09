@@ -4,7 +4,6 @@ import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -30,15 +30,12 @@ import androidx.core.content.ContextCompat;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.api.UserAPI;
-import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.UpdatePost;
-import com.example.androidfacebook.pid.Pid;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -92,13 +89,10 @@ public class EditPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
-        // Get the user object from the intent and check if it is null
-        // also get the post from the Dataholder
+
        String token = DataHolder.getInstance().getToken();
        Post p = DataHolder.getInstance().getCurrentPost();
        pic = convertBase64ToByteArray(p.getPictures());
-
-
         // Get the views and set button click listeners
 
         Button btnDeleteEditPost = findViewById(R.id.btnDeleteEditPost);
@@ -107,7 +101,6 @@ public class EditPost extends AppCompatActivity {
         EditText TextShare = findViewById(R.id.editTextShareEditPost);
         setImageViewWithBytes(selectedImageView, pic);
         TextShare.setText(p.getInitialText());
-//        pic = p.getPictures();
         btnDeletePhoto = findViewById(R.id.btnPhotoDelEditPost);
         // Check if the post has a picture
         if(p.getPictures()==null){
@@ -132,7 +125,7 @@ public class EditPost extends AppCompatActivity {
         btnPostEditPost.setOnClickListener(v -> {
             String textString = TextShare.getText().toString();
             // Check if the text is empty
-            if(textString.length()==0){
+            if(textString.isEmpty()){
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -150,7 +143,7 @@ public class EditPost extends AppCompatActivity {
             }
             userApi.updatePost(token, up, p.getId(), p.getIdUserName(), new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
                         showCustomToast("Post updated successfully!");
@@ -166,7 +159,8 @@ public class EditPost extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    Toast.makeText(EditPost.this, "Invalid call from server", Toast.LENGTH_SHORT).show();
 
                 }
             });

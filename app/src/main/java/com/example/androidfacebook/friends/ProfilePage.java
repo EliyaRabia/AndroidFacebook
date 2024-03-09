@@ -3,7 +3,6 @@ package com.example.androidfacebook.friends;
 import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,15 +31,10 @@ import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.FriendID;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.entities.User;
-import com.example.androidfacebook.login.Login;
 import com.example.androidfacebook.models.PostsViewModel;
-import com.example.androidfacebook.notification.NotificationPage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.CountDownLatch;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -102,7 +97,7 @@ public class ProfilePage extends AppCompatActivity {
             UserAPI userAPI = new UserAPI(ServerIP);
             userAPI.acceptFriendRequest(token, user.getId(), friendUser.getId(), new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
                         Toast.makeText(ProfilePage.this, "added to your friends successfully", Toast.LENGTH_SHORT).show();
@@ -114,7 +109,7 @@ public class ProfilePage extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     Toast.makeText(ProfilePage.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -123,7 +118,7 @@ public class ProfilePage extends AppCompatActivity {
             UserAPI userAPI = new UserAPI(ServerIP);
             userAPI.deleteFriendRequest(token, user.getId(), friendUser.getId(), new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
                         Toast.makeText(ProfilePage.this, "Deleted from your friends successfully", Toast.LENGTH_SHORT).show();
@@ -135,7 +130,7 @@ public class ProfilePage extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     Toast.makeText(ProfilePage.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -145,7 +140,7 @@ public class ProfilePage extends AppCompatActivity {
             FriendID a = new FriendID(friendUser.getId());
             userAPI.addFriend(token, user.getId(), a, new Callback<ResponseBody>() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
                         Toast.makeText(ProfilePage.this, "Friend Request sent successfully!", Toast.LENGTH_SHORT).show();
@@ -157,7 +152,7 @@ public class ProfilePage extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     Toast.makeText(ProfilePage.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -191,7 +186,7 @@ public class ProfilePage extends AppCompatActivity {
         UserAPI usersApi = new UserAPI(ServerIP);
         usersApi.getUserData(token,userId, new Callback<ClientUser>() {
             @Override
-            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+            public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                 if (response.isSuccessful()) {
                     ClientUser currectUser = response.body();
                     user=currectUser;
@@ -200,15 +195,12 @@ public class ProfilePage extends AppCompatActivity {
                             .fallbackToDestructiveMigration()
                             .build();
                     userDao = appDB.userDao();
-                    new Thread(() -> {
-                        userDao.insert(currectUser);
-
-                    }).start();
+                    new Thread(() -> userDao.insert(currectUser)).start();
                     getFriendUser();
                 }
             }
             @Override
-            public void onFailure(Call<ClientUser> call, Throwable t) {
+            public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
                 Toast.makeText(ProfilePage.this,
                         "failed to load userloggedIn",
                         Toast.LENGTH_SHORT).show();
@@ -260,12 +252,14 @@ public class ProfilePage extends AppCompatActivity {
 
 
         userAPI.getUserData(token, friendUserId, new Callback<ClientUser>() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+            public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                 if (response.isSuccessful()) {
                     friendUser = response.body();
+                    assert friendUser != null;
                     editTextName.setText(friendUser.getDisplayName());
-                    editTextFriendsCount.setText("Friends " + String.valueOf(friendUser.getFriendsList().size()));
+                    editTextFriendsCount.setText(friendUser.getFriendsList().size()+ " Friends");
                     byte[] pictureBytes = convertBase64ToByteArray(friendUser.getPhoto());
                     setImageViewWithBytes(selectedImageView, pictureBytes);
                     setVisibility();
@@ -275,8 +269,10 @@ public class ProfilePage extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ClientUser> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
+                Toast.makeText(ProfilePage.this,
+                        "Invalid call from server",
+                        Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -289,14 +285,12 @@ public class ProfilePage extends AppCompatActivity {
 
         userAPI.getPostsByUser(token, friendUserId, new Callback<List<Post>>() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 if (response.isSuccessful()) {
                     FriendPostList = response.body();
                     if( FriendPostList != null){
                         for(Post p:FriendPostList){
-                            new Thread(() -> {
-                                postDao.insert(p);
-                            }).start();
+                            new Thread(() -> postDao.insert(p)).start();
                         }
                         final PostsListAdapter adapter = new PostsListAdapter(ProfilePage.this);
                         RecyclerView lstPosts = findViewById(R.id.lstPosts);
@@ -305,17 +299,17 @@ public class ProfilePage extends AppCompatActivity {
 
                         viewModel.setPosts(FriendPostList);
 
-                        viewModel.get().observe(ProfilePage.this, posts -> {
-                            adapter.setPosts(posts, user);
-                        });
+                        viewModel.get().observe(ProfilePage.this, posts -> adapter.setPosts(posts, user));
                     }
 
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
+                Toast.makeText(ProfilePage.this,
+                        "Invalid call from server",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

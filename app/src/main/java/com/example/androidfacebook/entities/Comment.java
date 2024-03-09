@@ -24,7 +24,7 @@ public class Comment {
     /*
     this class is used to store the comment's information
      */
-    public Comment(String id,String idUserName,String fullname,String icon,String idPost,String text){
+    public Comment(@NonNull String id, String idUserName, String fullname, String icon, String idPost, String text){
         this._id=id;
         this.idUserName=idUserName;
         this.fullname=fullname;

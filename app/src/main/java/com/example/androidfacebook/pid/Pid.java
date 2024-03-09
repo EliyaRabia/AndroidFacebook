@@ -5,7 +5,6 @@ import static com.example.androidfacebook.login.Login.ServerIP;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -92,26 +91,28 @@ public class Pid extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        user = currentUser[0];
-        if(user.getFriendRequests().size()!=0){
-            redCircle.setText(String.valueOf(user.getFriendRequests().size()));
-            redCircle.setVisibility(View.VISIBLE);
+        user = currentUser[0]; // now user is the userLogged in
+        if(user!=null){
+            if(!user.getFriendRequests().isEmpty()){
+                redCircle.setText(String.valueOf(user.getFriendRequests().size()));
+                redCircle.setVisibility(View.VISIBLE);
+            }
+            else{
+                redCircle.setVisibility(View.GONE);
+            }
         }
-        else{
-            redCircle.setVisibility(View.GONE);
-        }
+
 
         Button btnAddPost = findViewById(R.id.btnAddPost);
         // When the user clicks on the add post button,
         // the user will be redirected to the add post page
         btnAddPost.setOnClickListener(v -> {
             Intent i = new Intent(this, AddPost.class);
-//            DataHolder.getInstance().setPostList(postList);
-
             startActivity(i);
         });
+
         ImageButton menuIcon = findViewById(R.id.menuIcon);
-        menuIcon.setOnClickListener(v -> showPopupMenu(v));
+        menuIcon.setOnClickListener(this::showPopupMenu);
 
 
     }
@@ -129,26 +130,22 @@ public class Pid extends AppCompatActivity {
         }).start();
         postsApi.getAllPosts(token, new Callback<List<Post>>() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(@NonNull Call<List<Post>> call, @NonNull Response<List<Post>> response) {
                 postList = response.body();
                 postDao = appDB.postDao();
                 for(Post p:postList){
-                    new Thread(() -> {
-                        postDao.insert(p);
-                    }).start();
+                    new Thread(() -> postDao.insert(p)).start();
                 }
                 final PostsListAdapter adapter = new PostsListAdapter(Pid.this);
                 RecyclerView lstPosts = findViewById(R.id.lstPosts);
                 lstPosts.setAdapter(adapter);
                 lstPosts.setLayoutManager(new LinearLayoutManager(Pid.this));
                 viewModel.setPosts(postList);
-                viewModel.get().observe(Pid.this, posts -> {
-                    adapter.setPosts(posts, user);
-                });
+                viewModel.get().observe(Pid.this, posts -> adapter.setPosts(posts, user));
             }
 
             @Override
-            public void onFailure(retrofit2.Call<List<Post>> call, Throwable t) {
+            public void onFailure(@NonNull retrofit2.Call<List<Post>> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -157,7 +154,7 @@ public class Pid extends AppCompatActivity {
 
         usersApi.getUserData(token,userID, new Callback<ClientUser>() {
             @Override
-            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+            public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                 if(response.isSuccessful()){
                     ClientUser currectUser = response.body();
                     appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
@@ -170,7 +167,8 @@ public class Pid extends AppCompatActivity {
 
                     }).start();
                     user=currectUser;
-                    if(user.getFriendRequests().size()!=0){
+                    assert user != null;
+                    if(!user.getFriendRequests().isEmpty()){
                         redCircle.setText(String.valueOf(user.getFriendRequests().size()));
                         redCircle.setVisibility(View.VISIBLE);
                     }
@@ -183,7 +181,7 @@ public class Pid extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ClientUser> call, Throwable t) {
+            public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
                 Toast.makeText(Pid.this,
                         "failed to load this page",
                         Toast.LENGTH_SHORT).show();
@@ -192,15 +190,6 @@ public class Pid extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Clear Room database when the app is closing
-//        new Thread(() -> {
-//            userDao.deleteAllUsers();
-//            postDao.deleteAllPosts();
-//        }).start();
-    }
 
     @SuppressLint("MissingSuperCall")
     @Override
@@ -218,24 +207,20 @@ public class Pid extends AppCompatActivity {
         popupMenu.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.action_darkMode) {
-                // Handle dark mode action
                 int nightMode = AppCompatDelegate.getDefaultNightMode();
                 if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 } else {
-                    // Change to dark mode
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
                 return true;
             }
             if (id == R.id.edit_user) {
-                // Handle edit user action
                 Intent intent = new Intent(this, EditUser.class);
                 startActivity(intent);
                 return true;
             }
             if (id == R.id.action_logOut) {
-                // Handle logout action
                 new Thread(() -> {
                     if (userDao != null) {
                         userDao.deleteAllUsers();
@@ -272,7 +257,7 @@ public class Pid extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                         Toast.makeText(Pid.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -285,7 +270,6 @@ public class Pid extends AppCompatActivity {
     }
 
     public void goToMyProfile(View view) {
-        //DataHolder.getInstance().setFriendProfileId(user.getId());
         Stack<String> s = DataHolder.getInstance().getStackOfIDs();
         s.push(user.getId());
         DataHolder.getInstance().setStackOfIDs(s);

@@ -3,12 +3,12 @@ package com.example.androidfacebook.comments;
 import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,8 +17,6 @@ import androidx.room.Room;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.CommentListAdapter;
-import com.example.androidfacebook.adapters.PostsListAdapter;
-import com.example.androidfacebook.addspages.AddPost;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.CommentDao;
 import com.example.androidfacebook.api.PostAPI;
@@ -30,10 +28,7 @@ import com.example.androidfacebook.entities.CommentNoID;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.models.CommentsViewModel;
-import com.example.androidfacebook.models.PostsViewModel;
-import com.example.androidfacebook.pid.Pid;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -88,15 +83,14 @@ public class CommentPage extends AppCompatActivity {
 
         usersApi.getUserData(token,userPostId, new Callback<ClientUser>() {
             @Override
-            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+            public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                 if (response.isSuccessful()) {
-                    ClientUser currectUser = response.body();
 
-                    postUser = currectUser;
+                    postUser = response.body();
                 }
             }
             @Override
-            public void onFailure(Call<ClientUser> call, Throwable t) {
+            public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
                 Toast.makeText(CommentPage.this,
                         "Invalid Call from server",
                         Toast.LENGTH_SHORT).show();
@@ -117,7 +111,7 @@ public class CommentPage extends AppCompatActivity {
             EditText e = findViewById(R.id.commentTextView);
             String s = e.getText().toString();
             // Check if the comment is empty
-            if(s.length()==0){
+            if(s.isEmpty()){
                 Toast.makeText(CommentPage.this,
                         "You can't add a blank comment!",
                         Toast.LENGTH_SHORT).show();
@@ -127,15 +121,14 @@ public class CommentPage extends AppCompatActivity {
             CommentNoID cid = new CommentNoID(userLoggedInId,userLoggedIn.getDisplayName(),userLoggedIn.getPhoto(),currentPost.getId(),s);
             userAPI.createComment(token, cid, userLoggedInId, new Callback<Comment>() {
                 @Override
-                public void onResponse(Call<Comment> call, Response<Comment> response) {
+                public void onResponse(@NonNull Call<Comment> call, @NonNull Response<Comment> response) {
                     if(response.isSuccessful()){
                         Comment c = response.body();
 
                         Toast.makeText(CommentPage.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
-                        new Thread(() -> {
-                            appDB.commentDao().insert(c);
-                        }).start();
+                        new Thread(() -> appDB.commentDao().insert(c)).start();
                         List <String> s = currentPost.getComments();
+                        assert c != null;
                         s.add(c.get_id());
                         currentPost.setComments(s);
                         e.setText("");
@@ -147,7 +140,7 @@ public class CommentPage extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<Comment> call, Throwable t) {
+                public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
                     Toast.makeText(CommentPage.this, "Invalid Server Call", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -164,7 +157,7 @@ public class CommentPage extends AppCompatActivity {
 
         usersApi.getUserData(token,userID, new Callback<ClientUser>() {
             @Override
-            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+            public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                 if (response.isSuccessful()) {
                     ClientUser currectUser = response.body();
                     appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
@@ -172,10 +165,7 @@ public class CommentPage extends AppCompatActivity {
                             .fallbackToDestructiveMigration()
                             .build();
                     userDao = appDB.userDao();
-                    new Thread(() -> {
-                        userDao.insert(currectUser);
-
-                    }).start();
+                    new Thread(() -> userDao.insert(currectUser)).start();
                     userLoggedIn = currectUser;
 
 
@@ -183,7 +173,7 @@ public class CommentPage extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ClientUser> call, Throwable t) {
+            public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
                 Toast.makeText(CommentPage.this,
                         "failed to load this page",
                         Toast.LENGTH_SHORT).show();
@@ -194,32 +184,26 @@ public class CommentPage extends AppCompatActivity {
         commentDao = appDB.commentDao();
         token = DataHolder.getInstance().getToken();
         PostAPI postsApi = new PostAPI(ServerIP);
-        new Thread(() -> {
-            commentDao.deleteAllComments();
-        }).start();
+        new Thread(() -> commentDao.deleteAllComments()).start();
         postsApi.getAllComments(token,currentPost.getId(), new Callback<List<Comment>>() {
             @Override
-            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+            public void onResponse(@NonNull Call<List<Comment>> call, @NonNull Response<List<Comment>> response) {
                 comments = response.body();
                 commentDao = appDB.commentDao();
                 for (Comment c : comments) {
-                    new Thread(() -> {
-                        commentDao.insert(c);
-                    }).start();
+                    new Thread(() -> commentDao.insert(c)).start();
                 }
                 final CommentListAdapter adapter = new CommentListAdapter(CommentPage.this);
                 RecyclerView lstComments = findViewById(R.id.lstComments);
                 lstComments.setAdapter(adapter);
                 lstComments.setLayoutManager(new LinearLayoutManager(CommentPage.this));
                 viewModel.setComments(comments);
-                viewModel.get().observe(CommentPage.this, come -> {
-                    adapter.setComments(come, currentPost,postUser,userLoggedIn);
-                });
+                viewModel.get().observe(CommentPage.this, come -> adapter.setComments(come, currentPost,postUser,userLoggedIn));
             }
 
 
             @Override
-            public void onFailure(retrofit2.Call<List<Comment>> call, Throwable t) {
+            public void onFailure(@NonNull retrofit2.Call<List<Comment>> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
