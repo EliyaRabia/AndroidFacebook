@@ -2,6 +2,8 @@ package com.example.androidfacebook.api;
 
 import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.Comment;
+import com.example.androidfacebook.entities.CommentNoID;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.UpdatePost;
 import com.example.androidfacebook.entities.UpdateUser;
@@ -138,6 +140,13 @@ public class UserAPI {
             token = token.substring(1, token.length() - 1);
         }
         Call<ResponseBody> call = webServiceAPI.deleteFriendRequest(token, id, friendId);
+        call.enqueue(callback);
+    }
+    public void createComment(String token, CommentNoID comment, String userLoggedInId, Callback<Comment> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<Comment> call = webServiceAPI.createComment(token, comment, userLoggedInId,comment.getIdPost());
         call.enqueue(callback);
     }
 }

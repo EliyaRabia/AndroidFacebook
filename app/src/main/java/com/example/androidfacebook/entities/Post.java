@@ -48,19 +48,6 @@ public class Post implements Serializable {
         this.commentsNumber = commentsNumber;
         this.comments = comments;
     }
-    // Constructor for posts without pictures
-//    public Post(String id,String idUserName ,String fullname, String icon, String initialText, Date time,int commentsNumber, List<String> likes, List<String> comments) {
-//        this._id = id;
-//        this.idUserName = idUserName;
-//        this.fullname = fullname;
-//        this.icon = icon;
-//        this.initialText = initialText;
-//        this.time = time;
-//        this.pictures = "";
-//        this.likes = likes;
-//        this.commentsNumber = commentsNumber;
-//        this.comments = comments;
-//    }
     public void set_id(String id){
         this._id=id;
     }

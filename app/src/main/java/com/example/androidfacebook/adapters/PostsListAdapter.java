@@ -28,9 +28,10 @@ import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.entities.ProfilePage;
+import com.example.androidfacebook.friends.ProfilePage;
 
 import java.util.List;
+import java.util.Stack;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -172,7 +173,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             holder.tvNumComment.setText("comments: "+String.valueOf(current.getComments().size()));
             holder.tvNumLike.setText(String.valueOf(current.getLikes()));
             holder.tvAuthor.setText(current.getFullname());
-//            holder.tvDate.setText(current.getTime());
+            holder.tvDate.setText(current.getTime().toString());
             holder.tvContent.setText(current.getInitialText());
             holder.tvNumLike.setText(String.valueOf(current.getLikes().size()));
             // Set the image view with the bytes array
@@ -185,7 +186,10 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             setImageViewWithBytes(holder.iconUser,iconBytes);
             holder.iconUser.setOnClickListener(view -> {
                 Context context = view.getContext();
-                DataHolder.getInstance().setFriendProfileId(current.getIdUserName());
+                //DataHolder.getInstance().setFriendProfileId(current.getIdUserName());
+                Stack<String> s = DataHolder.getInstance().getStackOfIDs();
+                s.push(current.getIdUserName());
+                DataHolder.getInstance().setStackOfIDs(s);
                 Intent intent = new Intent(context, ProfilePage.class);
                 context.startActivity(intent);
             });
@@ -202,10 +206,11 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                 Context context = view.getContext();
                 Intent intent = new Intent(context, CommentPage.class);
 //                DataHolder.getInstance().setComments(current.getComments());
-                DataHolder.getInstance().setPostList(this.getPosts());
+                int indexPost = posts.indexOf(current);
                 DataHolder.getInstance().setCurrentPost(current);
-                intent.putExtra("USER", user);
                 context.startActivity(intent);
+                Post up = DataHolder.getInstance().getCurrentPost();
+                posts.add(indexPost,up);
             });
             holder.likeButton.setOnClickListener(view -> {
                 String token = DataHolder.getInstance().getToken();

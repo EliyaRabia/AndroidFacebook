@@ -1,6 +1,8 @@
 package com.example.androidfacebook.entities;
 
 import java.util.List;
+import java.util.Stack;
+
 /*
 this class is used to store the data that is used in the application
 like the posts, comments, and the current post and the user list
@@ -10,6 +12,8 @@ public class DataHolder {
     private String friendProfileId;
     private List<Post> postList;
     private List<Comment> comments;
+
+    private Stack<String> stackOfIDs;
     private Post currentPost;
     private Post editposter;
     private String token;
@@ -106,5 +110,12 @@ public class DataHolder {
     }
     public void setFriendProfileId(String friendProfileId) {
         this.friendProfileId = friendProfileId;
+    }
+    public Stack<String> getStackOfIDs() {
+        return stackOfIDs;
+    }
+
+    public void setStackOfIDs(Stack<String> stackOfIDs) {
+        this.stackOfIDs = stackOfIDs;
     }
 }

@@ -1,8 +1,9 @@
-package com.example.androidfacebook.entities;
+package com.example.androidfacebook.friends;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -23,10 +24,14 @@ import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
+import com.example.androidfacebook.entities.ClientUser;
+import com.example.androidfacebook.entities.DataHolder;
+import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.models.PostsViewModel;
+import com.example.androidfacebook.notification.NotificationPage;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import retrofit2.Call;
@@ -109,7 +114,7 @@ public class ProfilePage extends AppCompatActivity {
         }).start();
         UserAPI userAPI = new UserAPI(ServerIP);
         token = DataHolder.getInstance().getToken();
-        String friendUserId = DataHolder.getInstance().getFriendProfileId();
+        String friendUserId = DataHolder.getInstance().getStackOfIDs().peek();
 
 
         userAPI.getUserData(token, friendUserId, new Callback<ClientUser>() {
@@ -135,7 +140,7 @@ public class ProfilePage extends AppCompatActivity {
     public void getPosts(){
         UserAPI userAPI = new UserAPI(ServerIP);
         token = DataHolder.getInstance().getToken();
-        String friendUserId = DataHolder.getInstance().getFriendProfileId();
+        String friendUserId = DataHolder.getInstance().getStackOfIDs().peek();
 
         userAPI.getPostsByUser(token, friendUserId, new Callback<List<Post>>() {
             @Override
@@ -168,7 +173,15 @@ public class ProfilePage extends AppCompatActivity {
         });
     }
 
-    public void goToPid(View view) {
+    public void goBackFromHere(View view) {
+        Stack<String> s = DataHolder.getInstance().getStackOfIDs();
+        s.pop();
+        DataHolder.getInstance().setStackOfIDs(s);
         finish();
+    }
+
+    public void onMoveToFriendList(View view) {
+        Intent moveToFriendList = new Intent(this, FriendListPage.class);
+        startActivity(moveToFriendList);
     }
 }

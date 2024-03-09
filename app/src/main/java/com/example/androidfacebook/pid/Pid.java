@@ -5,6 +5,7 @@ import static com.example.androidfacebook.login.Login.ServerIP;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -31,11 +32,12 @@ import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
-import com.example.androidfacebook.entities.ProfilePage;
+import com.example.androidfacebook.friends.ProfilePage;
 import com.example.androidfacebook.models.PostsViewModel;
 import com.example.androidfacebook.notification.NotificationPage;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import okhttp3.ResponseBody;
@@ -62,6 +64,7 @@ public class Pid extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pid);
         viewModel= new ViewModelProvider(this).get(PostsViewModel.class);
+
         // Get the user that is in the pid now
 
         String userId = DataHolder.getInstance().getUserLoggedInID();
@@ -214,7 +217,9 @@ public class Pid extends AppCompatActivity {
             if (id == R.id.action_logOut) {
                 // Handle logout action
                 new Thread(() -> {
-                    userDao.deleteAllUsers();
+                    if (userDao != null) {
+                        userDao.deleteAllUsers();
+                    }
                     postDao.deleteAllPosts();
                 }).start();
                 finish();
@@ -229,7 +234,9 @@ public class Pid extends AppCompatActivity {
                         if(statusCode == 200){
                             Toast.makeText(Pid.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
                             new Thread(() -> {
-                                userDao.deleteAllUsers();
+                                if (userDao != null) {
+                                    userDao.deleteAllUsers();
+                                }
                                 postDao.deleteAllPosts();
                             }).start();
                             finish();
@@ -252,7 +259,10 @@ public class Pid extends AppCompatActivity {
     }
 
     public void goToMyProfile(View view) {
-        DataHolder.getInstance().setFriendProfileId(user.getId());
+        //DataHolder.getInstance().setFriendProfileId(user.getId());
+        Stack<String> s = DataHolder.getInstance().getStackOfIDs();
+        s.push(user.getId());
+        DataHolder.getInstance().setStackOfIDs(s);
         Intent intent = new Intent(this, ProfilePage.class);
         startActivity(intent);
     }

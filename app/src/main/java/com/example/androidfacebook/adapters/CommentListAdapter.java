@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,13 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             // Set a default image or leave it empty
             imageView.setImageDrawable(null);
         }
+    }
+    public byte[] convertBase64ToByteArray(String base64Image) {
+        if (base64Image != null && base64Image.startsWith("data:image/jpeg;base64,")) {
+            String base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
+            return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+        }
+        return null;
     }
     class CommentViewHolder extends RecyclerView.ViewHolder {
         private final ImageButton CommentButtonOption;
@@ -75,12 +83,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         editCommentTextView.setText(tvContent.getText());
                         btnCancelEdit.setVisibility(View.VISIBLE);
                         btnSaveComment.setVisibility(View.VISIBLE);
-                        current.setEditMode(true);
+                        //current.setEditMode(true);
                     } else {
                         tvContent.setVisibility(View.VISIBLE);
                         editCommentTextView.setVisibility(View.GONE);
                         // Save edited comment here
-                        current.setEditMode(false);
+                        //current.setEditMode(false);
                     }
                     return true;
                 }
@@ -90,14 +98,14 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     // Implement the logic to delete the post here
                     Context context = view.getContext();
                     Intent intent = new Intent(context, CommentPage.class);
-                    postList.get(postList.indexOf(currentPost)).setCommentsNumber(postList.get(postList.indexOf(currentPost)).getCommentsNumber()-1);
+                    //postList.get(postList.indexOf(currentPost)).setCommentsNumber(postList.get(postList.indexOf(currentPost)).getCommentsNumber()-1);
                     comments.remove(current);
                     // Set the updated comments list to the DataHolder
                     DataHolder.getInstance().setComments(comments);
-                    DataHolder.getInstance().setPostList(postList);
+                    //DataHolder.getInstance().setPostList(postList);
                     DataHolder.getInstance().setCurrentPost(currentPost);
-                    intent.putExtra("USER", user);
-                    context.startActivity(intent);
+                    //intent.putExtra("USER", user);
+                    //context.startActivity(intent);
                     return true;
                 }
                 return false;
@@ -112,9 +120,10 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     private final LayoutInflater mInflater;
     private List<Comment> comments;
-    private ClientUser user;
+    private ClientUser userLoggedIn;
+    private ClientUser postUser; //post writer
     private Post currentPost;
-    private List<Post> postList;
+
     public CommentListAdapter(Context context){mInflater=LayoutInflater.from(context);}
 
     // this method is used to create the view holder for the comments
@@ -129,7 +138,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             final Comment current = comments.get(position);
             holder.tvAuthor.setText(current.getFullname());
             holder.tvContent.setText(current.getText());
-            byte[] iconBytes = current.getIcon();
+            byte[] iconBytes = convertBase64ToByteArray(current.getIcon());
             setImageViewWithBytes(holder.iconUser, iconBytes);
             // Set OnClickListener for the option button
             holder.CommentButtonOption.setOnClickListener(view -> {
@@ -144,19 +153,18 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 }
                 // Save the edited comment
                 current.setText(editedComment);
-                current.setEditMode(false);
                 comments.set(comments.indexOf(current),current);
                 Context context = v.getContext();
                 Intent intent = new Intent(context, CommentPage.class);
                 // Set the updated comments list to the DataHolder
                 DataHolder.getInstance().setComments(comments);
-                DataHolder.getInstance().setPostList(postList);
+                //DataHolder.getInstance().setPostList(postList);
                 DataHolder.getInstance().setCurrentPost(currentPost);
-                intent.putExtra("USER", user);
+                //intent.putExtra("USER", user);
                 // Hide the EditText and show the TextView
                 holder.btnCancelEdit.setVisibility(View.GONE);
                 holder.btnSaveComment.setVisibility(View.GONE);
-                context.startActivity(intent);
+                //context.startActivity(intent);
             });
             // Set OnClickListener for cancel edit button
             holder.btnCancelEdit.setOnClickListener(v -> {
@@ -167,28 +175,19 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 holder.editCommentTextView.setText(current.getText());
                 holder.btnCancelEdit.setVisibility(View.GONE);
                 holder.btnSaveComment.setVisibility(View.GONE);
-                current.setEditMode(false);
+                //current.setEditMode(false);
             });
             // Set the visibility of the TextView and EditText based on the edit mode
-            if (current.isEditMode()) {
-                holder.tvContent.setVisibility(View.GONE);
-                holder.editCommentTextView.setVisibility(View.VISIBLE);
-                holder.editCommentTextView.setText(current.getText());
-                // Set OnClickListener for save button
-                // Set OnClickListener for cancel button
-            } else {
-                holder.tvContent.setVisibility(View.VISIBLE);
-                holder.editCommentTextView.setVisibility(View.GONE);
-            }
+
 
         }
     }
 
 
-    public void setComments(List<Comment> s, ClientUser user, Post currentPost, List<Post> postList){
-        this.user = user;
+    public void setComments(List<Comment> s,Post currentPost, ClientUser postUser,ClientUser userLoggedIn){
+        this.postUser = postUser;
+        this.userLoggedIn=userLoggedIn;
         this.currentPost = currentPost;
-        this.postList = postList;
         comments = s;
         notifyDataSetChanged();
     }

@@ -174,7 +174,10 @@ public class Login extends AppCompatActivity {
         super.onDestroy();
         // Clear Room database when the app is closing
         new Thread(() -> {
-            userDao.deleteAllUsers();
+
+            if (userDao != null) {
+                userDao.deleteAllUsers();
+            }
         }).start();
     }
     public void showCustomToast(String message) {

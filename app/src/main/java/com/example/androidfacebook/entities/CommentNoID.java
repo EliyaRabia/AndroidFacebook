@@ -1,36 +1,21 @@
 package com.example.androidfacebook.entities;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
-@Entity
-public class Comment {
-    @PrimaryKey
-    @NonNull
-    private String _id;
-    @ColumnInfo(name = "idUserName")
+public class CommentNoID {
+
     private String idUserName;
-    @ColumnInfo(name = "fullname")
     private String fullname;
-    @ColumnInfo(name = "icon")
     private String icon;
-    @ColumnInfo(name = "idPost")
     private String idPost;
-    @ColumnInfo(name = "text")
     private String text;
 
-    /*
-    this class is used to store the comment's information
-     */
-    public Comment(String id,String idUserName,String fullname,String icon,String idPost,String text){
-        this._id=id;
-        this.idUserName=idUserName;
-        this.fullname=fullname;
-        this.icon=icon;
-        this.idPost=idPost;
-        this.text=text;
+    public CommentNoID(String idUserName, String fullname, String icon, String idPost, String text) {
+        this.idUserName = idUserName;
+        this.fullname = fullname;
+        this.icon = icon;
+        this.idPost = idPost;
+        this.text = text;
     }
 
     public String getIdUserName() {
@@ -39,15 +24,6 @@ public class Comment {
 
     public void setIdUserName(String idUserName) {
         this.idUserName = idUserName;
-    }
-
-    @NonNull
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(@NonNull String _id) {
-        this._id = _id;
     }
 
     public String getFullname() {
