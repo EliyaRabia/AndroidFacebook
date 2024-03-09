@@ -63,6 +63,8 @@ public interface WebServiceAPI {
     Call<ResponseBody> deleteFriendRequest(@Header("Authorization") String token, @Path("id") String id, @Path("fid") String fid);
     @POST("users/{id}/posts/{pid}/comments")
     Call<Comment> createComment(@Header("Authorization") String token, @Body CommentNoID comment, @Path("id") String id,@Path("pid") String pid);
+    @DELETE("users/{id}/posts/{pid}/comments/{cid}")
+    Call<ResponseBody> deleteComment(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid,@Path("cid") String cid);
 
 
 
