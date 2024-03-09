@@ -25,6 +25,7 @@ import com.example.androidfacebook.adapters.PostsListAdapter;
 import com.example.androidfacebook.addspages.AddPost;
 import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.CommentDao;
 import com.example.androidfacebook.api.PostAPI;
 import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
@@ -54,6 +55,7 @@ public class Pid extends AppCompatActivity {
     private ClientUser user;
     private List<Post> postList;
     private PostDao postDao;
+    private CommentDao commentDao;
     private String token;
 
     private PostsViewModel viewModel;
@@ -109,9 +111,13 @@ public class Pid extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         postDao = appDB.postDao();
+        commentDao = appDB.commentDao();
         token = DataHolder.getInstance().getToken();
         PostAPI postsApi = new PostAPI(ServerIP);
         new Thread(() -> {
+            if(commentDao!=null){
+                commentDao.deleteAllComments();
+            }
             postDao.deleteAllPosts();
         }).start();
         postsApi.getAllPosts(token, new Callback<List<Post>>() {
@@ -220,6 +226,9 @@ public class Pid extends AppCompatActivity {
                     if (userDao != null) {
                         userDao.deleteAllUsers();
                     }
+                    if(commentDao!=null){
+                        commentDao.deleteAllComments();
+                    }
                     postDao.deleteAllPosts();
                 }).start();
                 finish();
@@ -236,6 +245,9 @@ public class Pid extends AppCompatActivity {
                             new Thread(() -> {
                                 if (userDao != null) {
                                     userDao.deleteAllUsers();
+                                }
+                                if(commentDao!=null){
+                                    commentDao.deleteAllComments();
                                 }
                                 postDao.deleteAllPosts();
                             }).start();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.room.Room;
 
 import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.CommentDao;
 import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.Comment;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity {
     private AppDB appDB;
     private UserDao userDao;
     private PostDao postDao;
+    private CommentDao commentDao;
     public List<User> userList;
 
 
@@ -54,6 +56,7 @@ public class MainActivity extends Activity {
         new Thread(() -> {
             userDao.deleteAllUsers();
             postDao.deleteAllPosts();
+            commentDao.deleteAllComments();
         }).start();
         // Create a new intent to start the Login activity
         userList = new ArrayList<>();

@@ -149,4 +149,11 @@ public class UserAPI {
         Call<Comment> call = webServiceAPI.createComment(token, comment, userLoggedInId,comment.getIdPost());
         call.enqueue(callback);
     }
+    public void deleteComment(String token,String writerOfCommentId,String postId,String cid,Callback<ResponseBody> callback){
+        if (token.startsWith("\"") && token.endsWith("\"")) {
+            token = token.substring(1, token.length() - 1);
+        }
+        Call<ResponseBody> call= webServiceAPI.deleteComment(token,writerOfCommentId,postId,cid);
+        call.enqueue(callback);
+    }
 }

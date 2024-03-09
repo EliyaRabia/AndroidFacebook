@@ -160,6 +160,7 @@ public class CommentPage extends AppCompatActivity {
         doTheRender();
         UserAPI usersApi = new UserAPI(ServerIP);
         String userID = DataHolder.getInstance().getUserLoggedInID();
+        currentPost=DataHolder.getInstance().getCurrentPost();
 
         usersApi.getUserData(token,userID, new Callback<ClientUser>() {
             @Override

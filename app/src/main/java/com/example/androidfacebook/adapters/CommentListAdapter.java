@@ -1,9 +1,12 @@
 package com.example.androidfacebook.adapters;
 
+import static com.example.androidfacebook.login.Login.ServerIP;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.ContactsContract;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.example.androidfacebook.R;
+import com.example.androidfacebook.api.AppDB;
+import com.example.androidfacebook.api.CommentDao;
+import com.example.androidfacebook.api.PostDao;
+import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.comments.CommentPage;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
@@ -25,6 +33,12 @@ import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /*
 this class is the adapter for the comments list
  */
@@ -92,20 +106,40 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     }
                     return true;
                 }
-                // Handle delete post action
+
                 if(id == R.id.action_delete_comment){
-                    // Handle delete post action
-                    // Implement the logic to delete the post here
+
                     Context context = view.getContext();
-                    Intent intent = new Intent(context, CommentPage.class);
-                    //postList.get(postList.indexOf(currentPost)).setCommentsNumber(postList.get(postList.indexOf(currentPost)).getCommentsNumber()-1);
-                    comments.remove(current);
-                    // Set the updated comments list to the DataHolder
-                    DataHolder.getInstance().setComments(comments);
-                    //DataHolder.getInstance().setPostList(postList);
-                    DataHolder.getInstance().setCurrentPost(currentPost);
-                    //intent.putExtra("USER", user);
-                    //context.startActivity(intent);
+                    String token = DataHolder.getInstance().getToken();
+                    UserAPI userAPI = new UserAPI(ServerIP);
+                    userAPI.deleteComment(token, current.getIdUserName(), current.getIdPost(), current.get_id(), new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if(response.isSuccessful()) {
+                                comments.remove(current);
+                                Toast.makeText(context, "Comment deleted successfully", Toast.LENGTH_LONG).show();
+                                notifyDataSetChanged();
+                                new Thread(() -> {
+                                    AppDB appDB = Room.databaseBuilder(context, AppDB.class, "facebookDB").build();
+                                    CommentDao commentDao = appDB.commentDao();
+                                    commentDao.delete(current);
+                                }).start();
+                                List<String> lc = currentPost.getComments();
+                                lc.remove(current.get_id());
+                                currentPost.setComments(lc);
+                                DataHolder.getInstance().setCurrentPost(currentPost);
+
+                            }
+                            else{
+                                Toast.makeText(context, "Can't delete this comment", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Toast.makeText(context, "Invalid call from server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     return true;
                 }
                 return false;
