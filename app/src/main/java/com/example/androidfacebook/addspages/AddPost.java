@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -92,7 +93,6 @@ public class AddPost extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // create the activity and get the user and post list
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
         String userId = DataHolder.getInstance().getUserLoggedInID();
@@ -143,7 +143,7 @@ public class AddPost extends AppCompatActivity {
         // set the btnPost listener to post the post
         btnPost.setOnClickListener(v -> {
             String textString = TextShare.getText().toString();
-            if(textString.length()==0){
+            if(textString.isEmpty()){
                 Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -166,35 +166,24 @@ public class AddPost extends AppCompatActivity {
                 String image = convertByteArrayToBase64(selectedImageByteArray);
                 p.setPictures(image);
             }
-//            Post p = new Post(userId,user.getDisplayName(),null,textString,currentDateTime,0,0,l);
-//            if(selectedImageByteArray!=null){
-//                p.setPictures(selectedImageByteArray);
-//            }
-//            postList.add(0,p);
             UserAPI usersApi = new UserAPI(ServerIP);
             usersApi.createPost(token, p, userId, new Callback<Post>() {
                 @Override
-                public void onResponse(Call<Post> call, Response<Post> response) {
+                public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
                     if(response.isSuccessful()){
                         currentPost = response.body();
 
                         Toast.makeText(AddPost.this, "Post created successfully", Toast.LENGTH_SHORT).show();
-                        new Thread(() -> {
-                            appDB.postDao().insert(currentPost);
-                        }).start();
+                        new Thread(() -> appDB.postDao().insert(currentPost)).start();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Post> call, Throwable t) {
+                public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
                     Toast.makeText(AddPost.this, "Failed to create the post", Toast.LENGTH_SHORT).show();
                 }
             });
 
-
-//            Intent inte = new Intent(this, Pid.class);
-//            DataHolder.getInstance().setPostList(postList);
-//            startActivity(inte);
             finish();
         });
 
@@ -224,9 +213,5 @@ public class AddPost extends AppCompatActivity {
     @Override
     public void onBackPressed() {
     }
-
-
-
-
 
 }

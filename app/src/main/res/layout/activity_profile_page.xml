@@ -57,19 +57,67 @@
 
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonAddfriend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/colorPrimaryLight"
-        android:text="Button"
+        android:text="Add Friend"
         android:textColor="@color/colorAccentDark"
         app:layout_constraintBottom_toTopOf="@+id/lstPosts"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.218"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/editText2"
         app:layout_constraintVertical_bias="1.0" />
+    <Button
+        android:id="@+id/buttonDeleteFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:text="Delete Friend"
+        android:textColor="@color/colorAccentDark"
+        app:layout_constraintBottom_toTopOf="@+id/lstPosts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.218"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/editText2"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/buttonApproveFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:text="Approve Friend"
+        android:textColor="@color/colorAccentDark"
+        app:layout_constraintBottom_toTopOf="@+id/lstPosts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.218"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/editText2"
+        app:layout_constraintVertical_bias="1.0" />
+    <TextView
+        android:id="@+id/friendWait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@color/colorPrimaryLight"
+        android:text=" Friend request sent"
+        app:layout_constraintBottom_toTopOf="@+id/lstPosts"
+        android:textSize="22sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.218"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@id/editText2"
+        app:layout_constraintVertical_bias="1.0"/>
 
     <Button
         android:id="@+id/button2"
@@ -81,13 +129,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.874"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/button"
+        app:layout_constraintTop_toTopOf="@+id/buttonAddfriend"
         app:layout_constraintVertical_bias="1.0"
         android:clickable="true"
         android:onClick="goBackFromHere"
         android:textColor="@color/colorAccentDark"
         android:backgroundTint="@color/colorPrimaryLight"
         />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lstPosts"

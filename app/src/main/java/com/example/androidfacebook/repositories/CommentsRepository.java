@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.androidfacebook.api.CommentDao;
 import com.example.androidfacebook.api.PostAPI;
-import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.entities.Comment;
-import com.example.androidfacebook.entities.Post;
 
 import java.util.ArrayList;
 import java.util.List;

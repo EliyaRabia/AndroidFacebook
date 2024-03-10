@@ -8,7 +8,6 @@ import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.entities.Post;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PostsRepository {

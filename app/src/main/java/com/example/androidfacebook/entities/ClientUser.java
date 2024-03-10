@@ -86,7 +86,7 @@ public class ClientUser implements Serializable {
     /*
     this class is used to store the user's information
      */
-    public ClientUser(String _id,String username, String displayName, String photo,
+    public ClientUser(@NonNull String _id, String username, String displayName, String photo,
                       List<String> postList, List<String> friendsList, List<String> friendRequests,
                       List<String>  friendRequestsSent, List<String>  likes, List<String>  comments){
         this._id=_id;
@@ -101,20 +101,6 @@ public class ClientUser implements Serializable {
         this.comments = comments;
     }
 
-//    public ClientUser(String _id,String username, String displayName, String photo,
-//                      String[] postList, String []friendsList, String[] friendRequests,
-//                      String[]  friendRequestsSent, String[]  likes, String[]  comments){
-//        this._id=_id;
-//        this.username = username;
-//        this.displayName = displayName;
-//        this.photo = photo;
-//        this.postList = postList;
-//        this.friendsList = friendsList;
-//        this.friendRequests = friendRequests;
-//        this.friendRequestsSent = friendRequestsSent;
-//        this.likes = likes;
-//        this.comments = comments;
-//    }
 
     public String getId() {
         return this._id;
@@ -148,52 +134,5 @@ public class ClientUser implements Serializable {
         this.displayName = displayName;
     }
 
-//    public String[] getPostList() {
-//        return postList;
-//    }
-//
-//    public void setPostList(String[] postList) {
-//        this.postList = postList;
-//    }
-//
-//    public String[] getFriendsList() {
-//        return friendsList;
-//    }
-//
-//    public void setFriendsList(String[] friendsList) {
-//        this.friendsList = friendsList;
-//    }
-//
-//    public String[] getFriendRequests() {
-//        return friendRequests;
-//    }
-//
-//    public void setFriendRequests(String[] friendRequests) {
-//        this.friendRequests = friendRequests;
-//    }
-//
-//    public String[] getFriendRequestsSent() {
-//        return friendRequestsSent;
-//    }
-//
-//    public void setFriendRequestsSent(String[] friendRequestsSent) {
-//        this.friendRequestsSent = friendRequestsSent;
-//    }
-//
-//    public String[] getLikes() {
-//        return likes;
-//    }
-//
-//    public void setLikes(String[] likes) {
-//        this.likes = likes;
-//    }
-//
-//    public String[] getComments() {
-//        return comments;
-//    }
-//
-//    public void setComments(String[] comments) {
-//        this.comments = comments;
-//    }
 }
 

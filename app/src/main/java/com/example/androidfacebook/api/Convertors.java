@@ -2,7 +2,6 @@ package com.example.androidfacebook.api;
 
 import androidx.room.TypeConverter;
 
-import com.example.androidfacebook.entities.ClientUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -12,25 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Convertors {
-    // From User to string
-    @TypeConverter
-    public String fromUser(ClientUser user) {
-        if (user == null) {
-            return null;
-        }
-        Gson gson = new Gson();
-        return gson.toJson(user);
-    }
-
-    // Back to User
-    @TypeConverter
-    public ClientUser toUser(String userString) {
-        if (userString == null) {
-            return null;
-        }
-        Gson gson = new Gson();
-        return gson.fromJson(userString, ClientUser.class);
-    }
     static Gson gson = new Gson();
     @TypeConverter
     public static String fromList(List<String> list) {

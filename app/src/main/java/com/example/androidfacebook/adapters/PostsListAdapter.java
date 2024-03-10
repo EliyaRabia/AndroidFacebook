@@ -2,6 +2,7 @@ package com.example.androidfacebook.adapters;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
@@ -30,7 +32,9 @@ import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.friends.ProfilePage;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
 
 import okhttp3.ResponseBody;
@@ -94,18 +98,18 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             popupMenu.show();
         }
         // Show the popup menu when the option button is clicked
-        private void showPopupOptionMenu(View view,Post current ) {
+        @SuppressLint("NotifyDataSetChanged")
+        private void showPopupOptionMenu(View view, Post current ) {
             PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
             popupMenu.getMenuInflater().inflate(R.menu.option_menu, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 int id = item.getItemId();
-                // Handle edit post action
+
                 if (id == R.id.action_edit_post) {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, EditPost.class);
                     int indexPost = posts.indexOf(current);
                     DataHolder.getInstance().setCurrentPost(current);
-                    // Set the post list and the current post to the DataHolder
                     context.startActivity(intent);
                     Post pNew = DataHolder.getInstance().getCurrentPost();
                     posts.add(indexPost,pNew);
@@ -114,14 +118,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
                     return true;
                 }
-                // Handle delete post action
+
                 if(id == R.id.action_delete_post){
                     Context context = view.getContext();
                     String token = DataHolder.getInstance().getToken();
                     UserAPI userAPI = new UserAPI(ServerIP);
                     userAPI.deletePost(token, user.getId(), current.getId(), new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                             if(response.isSuccessful()) {
                                 posts.remove(current);
                                 Toast.makeText(context, "Post deleted successfully", Toast.LENGTH_LONG).show();
@@ -140,7 +144,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                             Toast.makeText(context, "Something got wrong!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -160,33 +164,35 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
     public PostsListAdapter(Context context){mInflater=LayoutInflater.from(context);}
 
+    @NonNull
     @Override
     // Create the view holder
-    public PostViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
+    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
         View itemView = mInflater.inflate(R.layout.post_item,parent,false);
         return new PostViewHolder(itemView);
     }
-    public void onBindViewHolder(PostViewHolder holder,int position){
+    @SuppressLint("SetTextI18n")
+    public void onBindViewHolder(@NonNull PostViewHolder holder, int position){
         // Bind the data to the view holder
         if(posts!=null){
             final Post current = posts.get(position);
-            holder.tvNumComment.setText("comments: "+String.valueOf(current.getComments().size()));
+            holder.tvNumComment.setText("comments: "+current.getComments().size());
             holder.tvNumLike.setText(String.valueOf(current.getLikes()));
             holder.tvAuthor.setText(current.getFullname());
-            holder.tvDate.setText(current.getTime().toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault());
+            String formattedDate = dateFormat.format(current.getTime());
+            holder.tvDate.setText(formattedDate);
             holder.tvContent.setText(current.getInitialText());
             holder.tvNumLike.setText(String.valueOf(current.getLikes().size()));
-            // Set the image view with the bytes array
+            // Set the image view with the bytes array of picture
             byte[] pictureBytes = convertBase64ToByteArray(current.getPictures());
-//            byte[] pictureBytes = current.getPictures();
             setImageViewWithBytes(holder.ivPic, pictureBytes);
-            // Set the image view with the bytes array
+            // Set the image view with the bytes array of icon
             byte[] iconBytes = convertBase64ToByteArray(current.getIcon());
-//            byte[] iconBytes= current.getIcon();
             setImageViewWithBytes(holder.iconUser,iconBytes);
+
             holder.iconUser.setOnClickListener(view -> {
                 Context context = view.getContext();
-                //DataHolder.getInstance().setFriendProfileId(current.getIdUserName());
                 Stack<String> s = DataHolder.getInstance().getStackOfIDs();
                 s.push(current.getIdUserName());
                 DataHolder.getInstance().setStackOfIDs(s);
@@ -196,32 +202,23 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
             if(current.getLikes().contains(user.getId())){
                 holder.likeButton.setImageResource(R.drawable.like_icon);
-
             }
             else{
                 holder.likeButton.setImageResource(R.drawable.like_svgrepo_com);
             }
-            // Set the onClickListener for the comment button
-            holder.commentButton.setOnClickListener(view -> {
-                Context context = view.getContext();
-                Intent intent = new Intent(context, CommentPage.class);
-//                DataHolder.getInstance().setComments(current.getComments());
-                int indexPost = posts.indexOf(current);
-                DataHolder.getInstance().setCurrentPost(current);
-                context.startActivity(intent);
-                Post up = DataHolder.getInstance().getCurrentPost();
-                posts.add(indexPost,up);
-            });
+
             holder.likeButton.setOnClickListener(view -> {
                 String token = DataHolder.getInstance().getToken();
                 UserAPI userAPI = new UserAPI(ServerIP);
                 userAPI.addOrRemoveLike(token, user.getId(), current.getId(), new Callback<Post>() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
-                    public void onResponse(Call<Post> call, Response<Post> response) {
+                    public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
                         Context context = view.getContext();
                         if(response.isSuccessful()){
                             Post likedP = response.body();
                             int numOriginal = current.getLikes().size();
+                            assert likedP != null;
                             current.setLikes(likedP.getLikes());
                             int numNew = current.getLikes().size();
                             if(numOriginal<numNew){
@@ -239,7 +236,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                     }
 
                     @Override
-                    public void onFailure(Call<Post> call, Throwable t) {
+                    public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
                         Context context = view.getContext();
                         Toast.makeText(context, "something wrong with this like", Toast.LENGTH_SHORT).show();
 
@@ -248,11 +245,19 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
             });
 
-            // Set the onClickListener for the share button
-            holder.btnShare.setOnClickListener(view -> {
-                // Show the popup menu when the share button is clicked
-                holder.showPopupShareMenu(view);
+            holder.commentButton.setOnClickListener(view -> {
+                Context context = view.getContext();
+                Intent intent = new Intent(context, CommentPage.class);
+                int indexPost = posts.indexOf(current);
+                DataHolder.getInstance().setCurrentPost(current);
+                context.startActivity(intent);
+                Post up = DataHolder.getInstance().getCurrentPost();
+                posts.add(indexPost,up);
             });
+
+            // Set the onClickListener for the share button
+            // Show the popup menu when the share button is clicked
+            holder.btnShare.setOnClickListener(holder::showPopupShareMenu);
 
             if (current.getIdUserName().equals(user.getId())) {
                 holder.dotsButton.setVisibility(View.VISIBLE);
@@ -268,6 +273,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         }
     }
     // Set the posts and the user
+    @SuppressLint("NotifyDataSetChanged")
     public void setPosts(List<Post> s, ClientUser u){
         posts = s;
         user = u;

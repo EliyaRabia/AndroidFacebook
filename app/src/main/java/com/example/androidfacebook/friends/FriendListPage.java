@@ -8,11 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,20 +17,15 @@ import androidx.room.Room;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.FriendsListAdapter;
-import com.example.androidfacebook.adapters.NotificationsListAdapter;
-import com.example.androidfacebook.addspages.EditUser;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.models.UsersViewModel;
-import com.example.androidfacebook.notification.NotificationPage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,9 +69,7 @@ public class FriendListPage extends AppCompatActivity {
         }
         userLoggedIn = currentUser[0];
         Button goBack = findViewById(R.id.goBackButton);
-        goBack.setOnClickListener(view -> {
-            finish();
-        });
+        goBack.setOnClickListener(view -> finish());
     }
     @SuppressLint("SetTextI18n")
     protected void onResume() {
@@ -93,14 +83,16 @@ public class FriendListPage extends AppCompatActivity {
 
 
         userAPI.getUserData(token, viewedFriendUserId, new Callback<ClientUser>() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+            public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                 if (response.isSuccessful()) {
                     viewedFriendUser = response.body();
+                    assert viewedFriendUser != null;
                     nameOfFriendTextView.setText(viewedFriendUser.getDisplayName() + "'s Friends");
                     userAPI.getFriends(token, viewedFriendUserId, new Callback<List<ClientUser>>() {
                         @Override
-                        public void onResponse(Call<List<ClientUser>> call, Response<List<ClientUser>> response) {
+                        public void onResponse(@NonNull Call<List<ClientUser>> call, @NonNull Response<List<ClientUser>> response) {
                             int statusCode = response.code();
                             if(statusCode == 200){
                                 List<ClientUser> users =response.body();
@@ -109,9 +101,7 @@ public class FriendListPage extends AppCompatActivity {
                                 lstFriends.setAdapter(adapter);
                                 lstFriends.setLayoutManager(new LinearLayoutManager(FriendListPage.this));
                                 viewModel.setUsers(users);
-                                viewModel.get().observe(FriendListPage.this, frie -> {
-                                    adapter.setFriends(frie,viewedFriendUser, userLoggedIn);
-                                });
+                                viewModel.get().observe(FriendListPage.this, frie -> adapter.setFriends(frie,viewedFriendUser, userLoggedIn));
 
 
                             }
@@ -121,7 +111,7 @@ public class FriendListPage extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<List<ClientUser>> call, Throwable t) {
+                        public void onFailure(@NonNull Call<List<ClientUser>> call, @NonNull Throwable t) {
                             Toast.makeText(FriendListPage.this, "Invalid call to server", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -129,8 +119,8 @@ public class FriendListPage extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ClientUser> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
+                Toast.makeText(FriendListPage.this, "Invalid call to server", Toast.LENGTH_SHORT).show();
             }
 
         });

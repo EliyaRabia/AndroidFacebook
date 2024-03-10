@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
@@ -47,7 +48,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //List<User>userList=DataHolder.getInstance().getUserList();
 
         // get what the user has entered in the email and password fields
         EditText emailOrPhoneEditText = findViewById(R.id.editText);
@@ -58,36 +58,35 @@ public class Login extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
             String emailOrPhone = emailOrPhoneEditText.getText().toString();
             String password = passwordEditText.getText().toString();
-            if(emailOrPhone.length()==0 || password.length()==0){
+            if(emailOrPhone.isEmpty() || password.isEmpty()){
                 showCustomToast("You must fill all the boxes");
+                return;
             }
             UserAPI usersApi = new UserAPI(ServerIP);
             Intent intent2 = new Intent(this, Pid.class);
             usersApi.loginServer(emailOrPhone, password, new Callback<ResponseBody>() {
 
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     if (response.isSuccessful()) {
                         String status = String.valueOf(response.code());
                         String userID="";
                         String token="";
                         try {
+                            assert response.body() != null;
                             String responseBody = response.body().string();
                             JSONObject jsonResponse = new JSONObject(responseBody);
                             userID = jsonResponse.getString("userId");
                             token = jsonResponse.getString("token");
-                            // Now you have the user ID, you can use it as needed
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
-                            // Handle JSON parsing exception or IO exception
                         }
-                            //String token = response.body().string();
                             if (status.equals("200")) {
 
                                 String finalToken = token;
                                 usersApi.getUserData(token,userID, new Callback<ClientUser>() {
                                     @Override
-                                    public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+                                    public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                                         if(response.isSuccessful()){
                                             ClientUser currectUser = response.body();
                                             appDB = Room.databaseBuilder(getApplicationContext(), AppDB.class, "facebookDB")
@@ -95,13 +94,10 @@ public class Login extends AppCompatActivity {
                                                     .fallbackToDestructiveMigration()
                                                     .build();
                                             userDao= appDB.userDao();
-                                                new Thread(() -> {
-                                                    userDao.insert(currectUser);
-
-                                                }).start();
+                                                new Thread(() -> userDao.insert(currectUser)).start();
 
                                             DataHolder.getInstance().setToken(finalToken);
-//                                            DataHolder.getInstance().setUserLoggedIn(currectUser);
+                                            assert currectUser != null;
                                             DataHolder.getInstance().setUserLoggedInID(currectUser.getId());
                                             startActivity(intent2);
 
@@ -109,7 +105,7 @@ public class Login extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(Call<ClientUser> call, Throwable t) {
+                                    public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
                                         Toast.makeText(Login.this,
                                                 "failed to load this user",
                                                 Toast.LENGTH_SHORT).show();
@@ -118,49 +114,20 @@ public class Login extends AppCompatActivity {
 
                             }
                             else {
-                                // Handle the case when the status is not 200
                                 showCustomToast("Login request failed 404");
                             }
 
                     } else {
-                        // Handle unsuccessful response
                         showCustomToast("invalid username or password");
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     showCustomToast("Invalid server call!");
                 }
             });
-            // check if the user has entered the correct email and password
-            /*
-            boolean isAuthenticated = false;
-            ClientUser u=null;
-            // loop through the list of users to check if the user has entered the correct username
-            // and password
-            for (User user : userList) {
-                if (user.getUsername().equals(emailOrPhone)
-                        && user.getPassword().equals(password)) {
-                    // if the user has entered the correct username and password
-                    isAuthenticated = true;
-                    // save the user details in u
-                    u=new ClientUser(user.getUsername(),user.getDisplayName(),user.getPhoto());
-                    break;
-                }
-            }
-            // if the user has entered the correct username and password
-            if (isAuthenticated) {
-                // Successful login, need to change to Pid
-                Intent i = new Intent(this, Pid.class);
-                i.putExtra("USER", u);
-                startActivity(i);
-            } else {
-                // Invalid inputs
-                Toast.makeText(Login.this,
-                        "Invalid email or password",
-                        Toast.LENGTH_SHORT).show();
-            }*/
+
         });
         // when the user clicks the sign up button
         btnSignUp.setOnClickListener(v -> {

@@ -28,12 +28,10 @@ import androidx.core.content.ContextCompat;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.api.UserAPI;
-import com.example.androidfacebook.entities.DataHolder;
 import com.example.androidfacebook.entities.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -84,13 +82,10 @@ public class SignUp extends AppCompatActivity {
 
 
     @SuppressLint("WrongThread")
-    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        // Get the user list from the DataHolder
-        List<User> userList= DataHolder.getInstance().getUserList();
         username = findViewById(R.id.textView3);
         password = findViewById(R.id.editTextTextPassword2);
         confirmPassword = findViewById(R.id.editTextTextPassword4);
@@ -98,10 +93,10 @@ public class SignUp extends AppCompatActivity {
         Button btnGoBack = findViewById(R.id.btnGoBack);
         Button btnSignUp = findViewById(R.id.btnSignUp);
         Button btnUploadImage = findViewById(R.id.btnSelectPhoto);
+
         // Go back to the login page
-        btnGoBack.setOnClickListener(v -> {
-            finish();
-        });
+        btnGoBack.setOnClickListener(v -> finish());
+
         btnUploadImage.setOnClickListener(v -> {
             // Check for camera permission
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -164,38 +159,13 @@ public class SignUp extends AppCompatActivity {
                     }
                 }
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                     showCustomToast("Failed to connect to server");
                 }
             });
 
         });
-
-            /*
-            // Check if the username already exists
-            for (User user : userList){
-                if(usernameStr.equals(user.getUsername())){
-                    Toast.makeText(this,"User already exists",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
-
-
-
-            // sign up the user.
-            User newU = new User(usernameStr,passwordStr,displayNameStr,selectedImageByteArray);
-            // Add the new user to the user list
-            userList.add(newU);
-            Intent i = new Intent(this, Login.class);
-            // update the user list in the DataHolder
-            DataHolder.getInstance().setUserList(userList);
-            Toast.makeText(this, "User created successfully", Toast.LENGTH_SHORT).show();
-            startActivity(i);
-            */
-
-
-    };
+    }
     public void showCustomToast(String message) {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.toast_warning,

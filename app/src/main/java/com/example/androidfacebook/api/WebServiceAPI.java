@@ -4,6 +4,7 @@ import com.example.androidfacebook.entities.ClientPost;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.CommentNoID;
+import com.example.androidfacebook.entities.FriendID;
 import com.example.androidfacebook.entities.Post;
 import com.example.androidfacebook.entities.UpdatePost;
 import com.example.androidfacebook.entities.UpdateUser;
@@ -56,7 +57,7 @@ public interface WebServiceAPI {
     @GET("users/{id}/friends")
     Call<List<ClientUser>> getFriends(@Header("Authorization") String token, @Path("id") String id);
     @POST("users/{id}/friends")
-    Call<ResponseBody> addFriend(@Header("Authorization") String token, @Path("id") String id, @Body String friendId);
+    Call<ResponseBody> addFriend(@Header("Authorization") String token, @Path("id") String id, @Body FriendID friendId);
     @PUT("users/{id}/friends/{fid}")
     Call<ResponseBody> acceptFriendRequest(@Header("Authorization") String token, @Path("id") String id, @Path("fid") String fid);
     @DELETE("users/{id}/friends/{fid}")
@@ -65,6 +66,9 @@ public interface WebServiceAPI {
     Call<Comment> createComment(@Header("Authorization") String token, @Body CommentNoID comment, @Path("id") String id,@Path("pid") String pid);
     @DELETE("users/{id}/posts/{pid}/comments/{cid}")
     Call<ResponseBody> deleteComment(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid,@Path("cid") String cid);
+    @PUT("users/{id}/posts/{pid}/comments/{cid}")
+    Call<Comment> updateComment(@Header("Authorization") String token,@Path("id") String id,@Path("pid") String pid,@Path("cid") String cid,@Body Comment comment);
+
 
 
 

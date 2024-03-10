@@ -36,7 +36,7 @@ public class Post implements Serializable {
     this class is used to store the post's information
      */
     // Constructor for posts with pictures
-    public Post(String id,String idUserName ,String fullname, String icon, String initialText, String pictures, Date time,int commentsNumber, List<String> likes, List<String> comments) {
+    public Post(@NonNull String id, String idUserName , String fullname, String icon, String initialText, String pictures, Date time, int commentsNumber, List<String> likes, List<String> comments) {
         this._id = id;
         this.idUserName = idUserName;
         this.fullname = fullname;
@@ -48,7 +48,7 @@ public class Post implements Serializable {
         this.commentsNumber = commentsNumber;
         this.comments = comments;
     }
-    public void set_id(String id){
+    public void set_id(@NonNull String id){
         this._id=id;
     }
     public void setFullname(String fullname){

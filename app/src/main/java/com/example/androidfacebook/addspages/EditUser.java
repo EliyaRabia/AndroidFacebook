@@ -57,7 +57,6 @@ public class EditUser extends AppCompatActivity {
     private ImageView selectedImageView;
     private Button btnDeletePhoto;
     private Button btnSubmit;
-    private Button btnDeleteUser;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
     // ActivityResultLauncher for selecting an image from the gallery
     private final ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
@@ -190,7 +189,7 @@ public class EditUser extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Toast.makeText(EditUser.this, "Failed to update user", Toast.LENGTH_SHORT).show();
             }
         });

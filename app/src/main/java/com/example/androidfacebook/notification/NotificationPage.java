@@ -7,11 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,16 +16,13 @@ import androidx.room.Room;
 
 import com.example.androidfacebook.R;
 import com.example.androidfacebook.adapters.NotificationsListAdapter;
-import com.example.androidfacebook.adapters.PostsListAdapter;
 import com.example.androidfacebook.api.AppDB;
 import com.example.androidfacebook.api.PostDao;
 import com.example.androidfacebook.api.UserAPI;
 import com.example.androidfacebook.api.UserDao;
 import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.DataHolder;
-import com.example.androidfacebook.models.PostsViewModel;
 import com.example.androidfacebook.models.UsersViewModel;
-import com.example.androidfacebook.pid.Pid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +81,7 @@ public class NotificationPage extends AppCompatActivity {
         for (String f : lif) {
             userAPI.getUserData(token, f, new Callback<ClientUser>() {
                 @Override
-                public void onResponse(Call<ClientUser> call, Response<ClientUser> response) {
+                public void onResponse(@NonNull Call<ClientUser> call, @NonNull Response<ClientUser> response) {
                     if (response.isSuccessful()) {
                         ClientUser currentUser = response.body();
                         notifications.add(currentUser);
@@ -103,14 +97,12 @@ public class NotificationPage extends AppCompatActivity {
                         lstNotifications.setAdapter(adapter);
                         lstNotifications.setLayoutManager(new LinearLayoutManager(NotificationPage.this));
                         viewModel.setUsers(notifications);
-                        viewModel.get().observe(NotificationPage.this, notifs -> {
-                            adapter.setNotifications(notifs, user);
-                        });
+                        viewModel.get().observe(NotificationPage.this, notifs -> adapter.setNotifications(notifs, user));
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ClientUser> call, Throwable t) {
+                public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
                     Toast.makeText(NotificationPage.this,
                             "Invalid call from server",
                             Toast.LENGTH_SHORT).show();
@@ -121,9 +113,7 @@ public class NotificationPage extends AppCompatActivity {
                         lstNotifications.setAdapter(adapter);
                         lstNotifications.setLayoutManager(new LinearLayoutManager(NotificationPage.this));
                         viewModel.setUsers(notifications);
-                        viewModel.get().observe(NotificationPage.this, notifs -> {
-                            adapter.setNotifications(notifs, user);
-                        });
+                        viewModel.get().observe(NotificationPage.this, notifs -> adapter.setNotifications(notifs, user));
                     }
                 }
             });
@@ -132,26 +122,13 @@ public class NotificationPage extends AppCompatActivity {
 
 
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // Clear Room database when the app is closing
-//        new Thread(() -> {
-//            userDao.deleteAllUsers();
-//            postDao.deleteAllPosts();
-//        }).start();
-    }
-
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
     }
 
     public void onBackToPid(View view) {
-        new Thread(() -> {
-            postDao.deleteAllPosts();
-        }).start();
+        new Thread(() -> postDao.deleteAllPosts()).start();
         finish();
     }
 }
