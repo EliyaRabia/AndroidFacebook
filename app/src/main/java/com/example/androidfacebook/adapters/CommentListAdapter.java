@@ -52,9 +52,16 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         }
     }
     public byte[] convertBase64ToByteArray(String base64Image) {
-        if (base64Image != null && base64Image.startsWith("data:image/jpeg;base64,")) {
-            String base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
-            return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+        if (base64Image != null) {
+            String base64EncodedImage = null;
+            if (base64Image.startsWith("data:image/jpeg;base64,")) {
+                base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
+            } else if (base64Image.startsWith("data:image/png;base64,")) {
+                base64EncodedImage = base64Image.substring("data:image/png;base64,".length());
+            }
+            if (base64EncodedImage != null) {
+                return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+            }
         }
         return null;
     }
