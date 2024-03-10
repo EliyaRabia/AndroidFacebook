@@ -133,13 +133,15 @@ public class EditPost extends AppCompatActivity {
 
             UserAPI userApi = new UserAPI(ServerIP);
             UpdatePost up;
-            if(selectedImageByteArray==null){
+            if(selectedImageByteArray==null && pic==null){
                 up = new UpdatePost(textString,null);
 
             }
-            else{
+            else if(selectedImageByteArray!=null){
                 up= new UpdatePost(textString,convertByteArrayToBase64(selectedImageByteArray));
-
+            }
+            else{
+                up= new UpdatePost(textString,convertByteArrayToBase64(pic));
             }
             userApi.updatePost(token, up, p.getId(), p.getIdUserName(), new Callback<ResponseBody>() {
                 @Override
@@ -201,9 +203,16 @@ public class EditPost extends AppCompatActivity {
         }
     }
     public byte[] convertBase64ToByteArray(String base64Image) {
-        if (base64Image != null && base64Image.startsWith("data:image/jpeg;base64,")) {
-            String base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
-            return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+        if (base64Image != null) {
+            String base64EncodedImage = null;
+            if (base64Image.startsWith("data:image/jpeg;base64,")) {
+                base64EncodedImage = base64Image.substring("data:image/jpeg;base64,".length());
+            } else if (base64Image.startsWith("data:image/png;base64,")) {
+                base64EncodedImage = base64Image.substring("data:image/png;base64,".length());
+            }
+            if (base64EncodedImage != null) {
+                return Base64.decode(base64EncodedImage, Base64.DEFAULT);
+            }
         }
         return null;
     }

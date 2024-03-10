@@ -26,8 +26,6 @@ public class Post implements Serializable {
     private String pictures;
     @ColumnInfo(name = "time")
     private Date time;
-    @ColumnInfo(name = "commentsNumber")
-    private int commentsNumber;
     @ColumnInfo(name = "likes")
     private List<String> likes;
     @ColumnInfo(name = "comments")
@@ -36,7 +34,7 @@ public class Post implements Serializable {
     this class is used to store the post's information
      */
     // Constructor for posts with pictures
-    public Post(@NonNull String id, String idUserName , String fullname, String icon, String initialText, String pictures, Date time, int commentsNumber, List<String> likes, List<String> comments) {
+    public Post(@NonNull String id, String idUserName , String fullname, String icon, String initialText, String pictures, Date time, List<String> likes, List<String> comments) {
         this._id = id;
         this.idUserName = idUserName;
         this.fullname = fullname;
@@ -45,7 +43,6 @@ public class Post implements Serializable {
         this.time = time;
         this.pictures = pictures;
         this.likes = likes;
-        this.commentsNumber = commentsNumber;
         this.comments = comments;
     }
     public void set_id(@NonNull String id){
@@ -108,14 +105,6 @@ public class Post implements Serializable {
 
     public void setPictures(String pictures) {
         this.pictures = pictures;
-    }
-
-    public int getCommentsNumber() {
-        return commentsNumber;
-    }
-
-    public void setCommentsNumber(int commentsNumber) {
-        this.commentsNumber = commentsNumber;
     }
 
     public List<String> getComments() {

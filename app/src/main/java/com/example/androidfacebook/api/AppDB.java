@@ -8,7 +8,7 @@ import com.example.androidfacebook.entities.ClientUser;
 import com.example.androidfacebook.entities.Comment;
 import com.example.androidfacebook.entities.Post;
 
-@Database(entities = {ClientUser.class, Post.class, Comment.class},version =3)
+@Database(entities = {ClientUser.class, Post.class, Comment.class},version =4)
 @TypeConverters(Convertors.class)
 public abstract class AppDB extends RoomDatabase {
 
