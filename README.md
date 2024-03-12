@@ -1,4 +1,4 @@
-
+this is part 2 of the project, for part 3 change the branch to Part3ConnectServer, or click here: https://github.com/EliyaRabia/AndroidFacebook/tree/Part3ConnectServer
 # Welcome to our facebook android app project BIU Advanced Programming Course
 
 to get started with the project, clone the repository.
