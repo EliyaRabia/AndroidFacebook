@@ -209,9 +209,9 @@ public class AddPost extends AppCompatActivity {
                     .show();
         }
     }
-    @SuppressLint("MissingSuperCall")
-    @Override
-    public void onBackPressed() {
-    }
+//    @SuppressLint("MissingSuperCall")
+//    @Override
+//    public void onBackPressed() {
+//    }
 
 }

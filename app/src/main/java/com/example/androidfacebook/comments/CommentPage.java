@@ -210,8 +210,8 @@ public class CommentPage extends AppCompatActivity {
 
     }
 
-    @SuppressLint("MissingSuperCall")
-    @Override
-    public void onBackPressed() {
-    }
+//    @SuppressLint("MissingSuperCall")
+//    @Override
+//    public void onBackPressed() {
+//    }
 }

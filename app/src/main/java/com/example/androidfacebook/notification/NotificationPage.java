@@ -122,10 +122,10 @@ public class NotificationPage extends AppCompatActivity {
 
 
 
-    @SuppressLint("MissingSuperCall")
-    @Override
-    public void onBackPressed() {
-    }
+//    @SuppressLint("MissingSuperCall")
+//    @Override
+//    public void onBackPressed() {
+//    }
 
     public void onBackToPid(View view) {
         new Thread(() -> postDao.deleteAllPosts()).start();
