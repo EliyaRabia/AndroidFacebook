@@ -230,9 +230,9 @@ public class EditPost extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
     }
-    @SuppressLint("MissingSuperCall")
-    @Override
-    public void onBackPressed() {
-    }
+//    @SuppressLint("MissingSuperCall")
+//    @Override
+//    public void onBackPressed() {
+//    }
 
 }
