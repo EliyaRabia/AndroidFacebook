@@ -1,6 +1,7 @@
 package com.example.androidfacebook.pid;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -182,9 +182,9 @@ public class Pid extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                Toast.makeText(Pid.this,
-                        "failed to load this page",
-                        Toast.LENGTH_SHORT).show();
+
+                showCustomToastYellow(Pid.this,
+                        "failed to load this page");
             }
         });
 
@@ -240,7 +240,7 @@ public class Pid extends AppCompatActivity {
                     public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                         int statusCode = response.code();
                         if(statusCode == 200){
-                            Toast.makeText(Pid.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(Pid.this, "User deleted successfully");
                             new Thread(() -> {
                                 if (userDao != null) {
                                     userDao.deleteAllUsers();
@@ -252,13 +252,15 @@ public class Pid extends AppCompatActivity {
                             }).start();
                             finish();
                         }else{
-                            Toast.makeText(Pid.this, "Failed to delete user!!!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(Pid.this, "Failed to delete user!!!!", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(Pid.this, "Failed to delete user!");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                        Toast.makeText(Pid.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Pid.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(Pid.this, "Invalid server call");
                     }
                 });
                 return true;

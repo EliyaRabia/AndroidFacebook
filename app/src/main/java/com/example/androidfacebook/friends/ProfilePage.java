@@ -1,6 +1,7 @@
 package com.example.androidfacebook.friends;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -107,17 +107,17 @@ public class ProfilePage extends AppCompatActivity {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
-                        Toast.makeText(ProfilePage.this, "added to your friends successfully", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(ProfilePage.this, "added to your friends successfully");
                         getEverythingFromServer();
 
                     }else{
-                        Toast.makeText(ProfilePage.this, "Failed to accept friend!!!!", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(ProfilePage.this, "Failed to accept friend!");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Toast.makeText(ProfilePage.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(ProfilePage.this, "Failed to connect to server");
                 }
             });
         });
@@ -128,17 +128,17 @@ public class ProfilePage extends AppCompatActivity {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
-                        Toast.makeText(ProfilePage.this, "Deleted from your friends successfully", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(ProfilePage.this, "Deleted from your friends successfully");
                         finish();
 
                     }else{
-                        Toast.makeText(ProfilePage.this, "Failed to delete friend!!!!", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(ProfilePage.this, "Failed to delete friend!");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Toast.makeText(ProfilePage.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(ProfilePage.this, "Failed to connect to server");
                 }
             });
         });
@@ -150,17 +150,17 @@ public class ProfilePage extends AppCompatActivity {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
-                        Toast.makeText(ProfilePage.this, "Friend Request sent successfully!", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(ProfilePage.this, "Friend Request sent successfully!");
                         getEverythingFromServer();
 
                     }else{
-                        Toast.makeText(ProfilePage.this, "Failed to request to friend!!!!", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(ProfilePage.this, "Failed to request to friend!!!!");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Toast.makeText(ProfilePage.this, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(ProfilePage.this, "Failed to connect to server");
                 }
             });
 
@@ -208,9 +208,8 @@ public class ProfilePage extends AppCompatActivity {
             }
             @Override
             public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                Toast.makeText(ProfilePage.this,
-                        "failed to load userloggedIn",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(ProfilePage.this,
+                        "failed to load userloggedIn");
             }
         });
     }
@@ -277,9 +276,8 @@ public class ProfilePage extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                Toast.makeText(ProfilePage.this,
-                        "Invalid call from server",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(ProfilePage.this,
+                        "Invalid call from server");
             }
 
         });
@@ -314,9 +312,8 @@ public class ProfilePage extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable t) {
-                Toast.makeText(ProfilePage.this,
-                        "Invalid call from server",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(ProfilePage.this,
+                        "Invalid call from server");
             }
         });
     }

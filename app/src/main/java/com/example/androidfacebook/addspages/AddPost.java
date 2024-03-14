@@ -1,9 +1,9 @@
 package com.example.androidfacebook.addspages;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -144,7 +143,7 @@ public class AddPost extends AppCompatActivity {
         btnPost.setOnClickListener(v -> {
             String textString = TextShare.getText().toString();
             if(textString.isEmpty()){
-                Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(this, "You have to write something to get it post!");
                 return;
             }
             // get the current date and time
@@ -173,14 +172,17 @@ public class AddPost extends AppCompatActivity {
                     if(response.isSuccessful()){
                         currentPost = response.body();
 
-                        Toast.makeText(AddPost.this, "Post created successfully", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(AddPost.this, "Post created successfully");
                         new Thread(() -> appDB.postDao().insert(currentPost)).start();
+                    }
+                    else{
+                        showCustomToastYellow(AddPost.this, "Failed to create the post");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
-                    Toast.makeText(AddPost.this, "Failed to create the post", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(AddPost.this, "Invalid server call");
                 }
             });
 
@@ -209,9 +211,5 @@ public class AddPost extends AppCompatActivity {
                     .show();
         }
     }
-//    @SuppressLint("MissingSuperCall")
-//    @Override
-//    public void onBackPressed() {
-//    }
 
 }

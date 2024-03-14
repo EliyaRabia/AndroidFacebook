@@ -1,24 +1,20 @@
 package com.example.androidfacebook.addspages;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -126,7 +122,7 @@ public class EditPost extends AppCompatActivity {
             String textString = TextShare.getText().toString();
             // Check if the text is empty
             if(textString.isEmpty()){
-                Toast.makeText(this, "You have to write something to get it post!", Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(this, "You have to write something to get it post!");
                 return;
             }
             // Update the post and go back to the previous activity
@@ -148,7 +144,7 @@ public class EditPost extends AppCompatActivity {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if(statusCode == 200){
-                        showCustomToast("Post updated successfully!");
+                        showCustomToastYellow(EditPost.this,"Post updated successfully!");
                         if(selectedImageByteArray!=null){
                             p.setPictures(convertByteArrayToBase64(selectedImageByteArray));
                         }
@@ -156,13 +152,13 @@ public class EditPost extends AppCompatActivity {
                         DataHolder.getInstance().setCurrentPost(p);
                         finish();
                     }else{
-                        Toast.makeText(EditPost.this, "Failed to update user!!!!", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(EditPost.this,"Failed to update post!");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    Toast.makeText(EditPost.this, "Invalid call from server", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(EditPost.this, "Invalid call from server");
 
                 }
             });
@@ -216,23 +212,6 @@ public class EditPost extends AppCompatActivity {
         }
         return null;
     }
-    public void showCustomToast(String message) {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_warning,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
 
-        TextView text = layout.findViewById(R.id.toast_text);
-        text.setText(message);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.TOP, 0, 32);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(layout);
-        toast.show();
-    }
-//    @SuppressLint("MissingSuperCall")
-//    @Override
-//    public void onBackPressed() {
-//    }
 
 }

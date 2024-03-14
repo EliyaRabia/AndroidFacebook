@@ -1,12 +1,12 @@
 package com.example.androidfacebook.login;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -59,7 +59,7 @@ public class Login extends AppCompatActivity {
             String emailOrPhone = emailOrPhoneEditText.getText().toString();
             String password = passwordEditText.getText().toString();
             if(emailOrPhone.isEmpty() || password.isEmpty()){
-                showCustomToast("You must fill all the boxes");
+                showCustomToastYellow(this,"You must fill all the boxes");
                 return;
             }
             UserAPI usersApi = new UserAPI(ServerIP);
@@ -106,25 +106,23 @@ public class Login extends AppCompatActivity {
 
                                     @Override
                                     public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                                        Toast.makeText(Login.this,
-                                                "failed to load this user",
-                                                Toast.LENGTH_SHORT).show();
+                                        showCustomToastYellow(Login.this,"failed to load this user");
                                     }
                                 });
 
                             }
                             else {
-                                showCustomToast("Login request failed 404");
+                                showCustomToastYellow(Login.this,"Login request failed 404");
                             }
 
                     } else {
-                        showCustomToast("invalid username or password");
+                        showCustomToastYellow(Login.this,"invalid username or password");
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    showCustomToast("Invalid server call!");
+                    showCustomToastYellow(Login.this,"Invalid server call!");
                 }
             });
 
@@ -147,20 +145,21 @@ public class Login extends AppCompatActivity {
             }
         }).start();
     }
-    public void showCustomToast(String message) {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_warning,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+    public static void showCustomToastYellow(Context context, String message) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View layout = inflater.inflate(R.layout.toast_warning, null);
 
         TextView text = layout.findViewById(R.id.toast_text);
         text.setText(message);
 
-        Toast toast = new Toast(getApplicationContext());
+        Toast toast = new Toast(context);
         toast.setGravity(Gravity.TOP, 0, 32);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
     }
+
     @SuppressLint("MissingSuperCall")
     @Override
     public void onBackPressed() {
