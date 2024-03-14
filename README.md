@@ -115,10 +115,14 @@ then click again on the menu -> build -> rebuild project.
 
 ## And that's it! please enjoy using our app!
 
-Written by:
+Written by: 
+
+Ofek Yemini
+
+Eliya Rabia
 
 Or Shmuel 
 
-Eliya Rabia 
+ 
 
-Ofek Yemini
+
