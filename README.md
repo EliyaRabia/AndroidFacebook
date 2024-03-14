@@ -29,7 +29,7 @@ https://www.youtube.com/watch?v=onclwdYc8EU
 
 ## first of all you need to register a user
 
-New users can create an account by navigating to the Sign Up page by clicking "Sign Up for Facebook. They will need to provide a username, password (your password must contains at least 8 characters capital letter and a sign ), display name (the name that you and your friends will see in posts, comments and your profile page) , and a profile picture. u must fill all the inputs to create a user. after you are ready press Sign-Up.
+New users can create an account by navigating to the Sign Up page by clicking "Sign Up for Facebook. They will need to provide a username, password (your password must contains at least 8 characters capital letter and a sign ), display name (the name that you and your friends will see in posts, comments and your profile page) , and a profile picture. u must fill all the inputs to create a user. after you are ready press Sign-Up. When you are chosing a profile picture make sure you pick from the gallery a photo in PNG or JPEG format and in size up to 2mb, you can also choose to open the camera.
 
 ## now you can login to your account!
 
@@ -57,7 +57,8 @@ You can also click on the Profile Picture of one of the posts writers to navigat
 
 ## What can you do in the Add Post page? 
 
-If you want to add a post to the posts list in the server this is the right place, first of all you can see in the text box that your name is in it and it will asks you to write what do you want to share. you can write there the text of your post you want to upload, also you can add a picture by clicking on the img icon ("picture or vide", also click on the icon itself not the text!) you will have the option to upload an img from gallery or by opening your camera. after you choose your pic you will see a preview for it and button for option to delete this pic if you regret. Now when your post is ready you can click on the "post" button in the top left and you will navigate back to the feed page and you will see your post in the posts list!
+If you want to add a post to the posts list in the server this is the right place, first of all you can see in the text box that your name is in it and it will asks you to write what do you want to share. you can write there the text of your post you want to upload, also you can add a picture by clicking on the img icon ("picture or vide", also click on the icon itself not the text!) you will have the option to upload an img from gallery or by opening your camera, When you are chosing a picture from the gallery make sure you pick a photo in PNG or JPEG format and in size up to 2mb, you can also choose to open the camera.
+After you choose your pic you will see a preview for it and button for option to delete this pic if you regret. Now when your post is ready you can click on the "post" button in the top left and you will navigate back to the feed page and you will see your post in the posts list!
 you also have a "go back" button if you change your mind and don't want to add the post. 
 
 ## What can you do in the Edit Post page? 
@@ -102,6 +103,7 @@ You can navigate back into the feed page by clicking the Home button on the top 
 ## What can you do in the Edit User page? 
 
 If you are looking to change your user details this is the right place! Here you can change your username/password/display-name/picture if you want. 
+When you are chosing a picture from the gallery make sure you pick a photo in PNG or JPEG format and in size up to 2mb, you can also choose to open the camera.
 When your details are ready you can click on submit and you will go back to the feed page and you will see the changes that you just did! 
 If you changed your mind and don't want to edit the user details, press on the cancel button and you will back to the feed page without any change.
 
@@ -113,10 +115,16 @@ then click again on the menu -> build -> rebuild project.
 
 ## And that's it! please enjoy using our app!
 
-Written by:
+Written by: 
+
+Ofek Yemini
 
 Or Shmuel 
 
-Eliya Rabia 
+Eliya Rabia
 
-Ofek Yemini
+
+
+ 
+
+
