@@ -1,6 +1,7 @@
 package com.example.androidfacebook.adapters;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -106,16 +106,16 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
                         int statusCode = response.code();
                         if(statusCode == 200){
                             notifications.remove(current);
-                            Toast.makeText(context, "added to your friends successfully", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context, "added to your friends successfully");
                             notifyDataSetChanged();
                         }else{
-                            Toast.makeText(context, "Failed to accept friend!!!!", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context, "Failed to accept friend!!!!");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                        Toast.makeText(context, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(context, "Failed to connect to server");
                     }
                 });
             });
@@ -132,16 +132,16 @@ public class NotificationsListAdapter extends RecyclerView.Adapter<Notifications
                         int statusCode = response.code();
                         if(statusCode == 200){
                             notifications.remove(current);
-                            Toast.makeText(context, "declined successfully", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context, "declined friend request successfully");
                             notifyDataSetChanged();
                         }else{
-                            Toast.makeText(context, "Failed to decline friend!!!!", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context, "Failed to decline friend!!!!");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                        Toast.makeText(context, "Failed to connect to server", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(context, "Failed to connect to server");
                     }
                 });
 

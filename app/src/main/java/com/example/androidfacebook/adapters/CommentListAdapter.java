@@ -1,6 +1,7 @@
 package com.example.androidfacebook.adapters;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -107,7 +107,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         }
                         return true;
                     } else {
-                        Toast.makeText(view.getContext(), "You cannot edit this comment because you are the owner of the post.", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(view.getContext(), "You cannot edit this comment because you are the owner of the post.", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(view.getContext(),"You cannot edit this comment because you are not the owner of this comment!.");
                         return true;
                     }
                 }
@@ -124,7 +125,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                             if(response.isSuccessful()) {
                                 comments.remove(current);
-                                Toast.makeText(context, "Comment deleted successfully", Toast.LENGTH_LONG).show();
+                                showCustomToastYellow(context,"Comment deleted successfully");
                                 notifyDataSetChanged();
                                 new Thread(() -> {
                                     AppDB appDB = Room.databaseBuilder(context, AppDB.class, "facebookDB").build();
@@ -138,13 +139,13 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
                             }
                             else{
-                                Toast.makeText(context, "Can't delete this comment", Toast.LENGTH_SHORT).show();
+                                showCustomToastYellow(context,"Can't delete this comment");
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                            Toast.makeText(context, "Invalid call from server", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context,"Invalid call from Server");
                         }
                     });
                     return true;
@@ -194,7 +195,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             holder.btnSaveComment.setOnClickListener(v -> {
                 String editedComment = holder.editCommentTextView.getText().toString();
                 if(editedComment.isEmpty()){
-                    Toast.makeText(v.getContext(), "Comment can't be blank!", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(v.getContext(), "Comment can't be blank!");
                     return;
                 }
                 // Save the edited comment
@@ -222,15 +223,17 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                 CommentDao commentDao = appDB.commentDao();
                                 commentDao.insert(current);
                             }).start();
+                            showCustomToastYellow(context,"comment updated!");
                             notifyDataSetChanged();
                         }else{
-                            Toast.makeText(context, "Failed to update comment!!!!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Failed to update comment!!!!", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context,"Failed to update comment");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
-                        Toast.makeText(context, "Invalid call from Server", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(context,"Invalid call from Server");
                     }
                 });
 
@@ -250,7 +253,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
         }
     }
-
 
     @SuppressLint("NotifyDataSetChanged")
     public void setComments(List<Comment> s, Post currentPost, ClientUser postUser, ClientUser userLoggedIn){

@@ -1,6 +1,7 @@
 package com.example.androidfacebook.signup;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -9,14 +10,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -127,20 +122,19 @@ public class SignUp extends AppCompatActivity {
             // Check if any of the fields are empty
             if (usernameStr.isEmpty() || passwordStr.isEmpty() || confirmPasswordStr.isEmpty() || displayNameStr.isEmpty() || selectedImageByteArray == null) {
                 // show error message.
-                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(this, "All fields are required");
                 return;
             }
             // Check if the password meets the criteria
             String passwordPattern = "^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
             if (!passwordStr.matches(passwordPattern)) {
-                Toast.makeText(this, "Password must be at least 8 characters long," +
-                                " include a capital letter and a special character",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(this,"Password must be at least 8 characters long," +
+                        " include a capital letter and a special character");
                 return;
             }
             // Check if the passwords and confirm password match
             if (!passwordStr.equals(confirmPasswordStr)) {
-                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(this, "Passwords do not match");
                 return;
             }
             UserAPI reigsterUserAPI = new UserAPI(ServerIP);
@@ -151,38 +145,21 @@ public class SignUp extends AppCompatActivity {
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     int statusCode = response.code();
                     if (statusCode == 200) {
+                        showCustomToastYellow(SignUp.this,"User Registered successfully!");
                         finish();
                     }
                     else {
-                        showCustomToast("User already exist");
+                        showCustomToastYellow(SignUp.this,"User already exist");
 
                     }
                 }
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    showCustomToast("Failed to connect to server");
+                    showCustomToastYellow(SignUp.this,"Failed to connect to server");
                 }
             });
 
         });
     }
-    public void showCustomToast(String message) {
-        LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.toast_warning,
-                (ViewGroup) findViewById(R.id.custom_toast_container));
 
-        TextView text = layout.findViewById(R.id.toast_text);
-        text.setText(message);
-
-        Toast toast = new Toast(getApplicationContext());
-        toast.setGravity(Gravity.TOP, 0, 32);
-        toast.setDuration(Toast.LENGTH_SHORT);
-        toast.setView(layout);
-        toast.show();
-    }
-
-//    @SuppressLint("MissingSuperCall")
-//    @Override
-//    public void onBackPressed() {
-//    }
 }

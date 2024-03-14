@@ -1,12 +1,11 @@
 package com.example.androidfacebook.comments;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -88,12 +87,16 @@ public class CommentPage extends AppCompatActivity {
 
                     postUser = response.body();
                 }
+                else{
+                    showCustomToastYellow(CommentPage.this,
+                            "failed to load user");
+
+                }
             }
             @Override
             public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                Toast.makeText(CommentPage.this,
-                        "Invalid Call from server",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(CommentPage.this,
+                        "Invalid Call from server");
             }
         });
 
@@ -112,9 +115,8 @@ public class CommentPage extends AppCompatActivity {
             String s = e.getText().toString();
             // Check if the comment is empty
             if(s.isEmpty()){
-                Toast.makeText(CommentPage.this,
-                        "You can't add a blank comment!",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(CommentPage.this,
+                        "You can't add a blank comment!");
                 return;
             }
             UserAPI userAPI = new UserAPI(ServerIP);
@@ -125,7 +127,7 @@ public class CommentPage extends AppCompatActivity {
                     if(response.isSuccessful()){
                         Comment c = response.body();
 
-                        Toast.makeText(CommentPage.this, "Comment added successfully", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(CommentPage.this, "Comment added successfully");
                         new Thread(() -> appDB.commentDao().insert(c)).start();
                         List <String> s = currentPost.getComments();
                         assert c != null;
@@ -135,13 +137,16 @@ public class CommentPage extends AppCompatActivity {
                         doTheRender();
 
                     }
+                    else{
+                        showCustomToastYellow(CommentPage.this, "Failed to add comment");
+                    }
 
 
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Comment> call, @NonNull Throwable t) {
-                    Toast.makeText(CommentPage.this, "Invalid Server Call", Toast.LENGTH_SHORT).show();
+                    showCustomToastYellow(CommentPage.this, "Invalid Server Call");
                 }
             });
 
@@ -170,13 +175,15 @@ public class CommentPage extends AppCompatActivity {
 
 
                 }
+                else{
+                    showCustomToastYellow(CommentPage.this, "failed to load this page");
+
+                }
             }
 
             @Override
             public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                Toast.makeText(CommentPage.this,
-                        "failed to load this page",
-                        Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(CommentPage.this, "invalid server call");
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.example.androidfacebook.adapters;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -120,7 +120,6 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                     context.startActivity(intent);
                     Post pNew = DataHolder.getInstance().getCurrentPost();
                     posts.add(indexPost,pNew);
-                    Toast.makeText(context, "Post updated successfully", Toast.LENGTH_LONG).show();
                     notifyDataSetChanged();
 
                     return true;
@@ -135,7 +134,7 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
                         public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                             if(response.isSuccessful()) {
                                 posts.remove(current);
-                                Toast.makeText(context, "Post deleted successfully", Toast.LENGTH_LONG).show();
+                                showCustomToastYellow(context, "Post deleted successfully");
                                 notifyDataSetChanged();
                                 new Thread(() -> {
                                     AppDB appDB = Room.databaseBuilder(context, AppDB.class, "facebookDB").build();
@@ -145,14 +144,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
                             }
                             else{
-                                Toast.makeText(context, "Can't delete this post", Toast.LENGTH_SHORT).show();
+                                showCustomToastYellow(context, "Can't delete this post");
                             }
 
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                            Toast.makeText(context, "Something got wrong!", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context, "Something got wrong!");
                         }
                     });
 
@@ -238,14 +237,14 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
 
                         }
                         else{
-                            Toast.makeText(context, "something wrong with this like", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(context, "something wrong with this like");
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<Post> call, @NonNull Throwable t) {
                         Context context = view.getContext();
-                        Toast.makeText(context, "something wrong with this like", Toast.LENGTH_SHORT).show();
+                        showCustomToastYellow(context, "something wrong with this like");
 
                     }
                 });

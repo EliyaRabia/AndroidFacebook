@@ -1,12 +1,12 @@
 package com.example.androidfacebook.friends;
 
 import static com.example.androidfacebook.login.Login.ServerIP;
+import static com.example.androidfacebook.login.Login.showCustomToastYellow;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -106,13 +106,13 @@ public class FriendListPage extends AppCompatActivity {
 
                             }
                             else{
-                                Toast.makeText(FriendListPage.this, "Failed to get user friends list", Toast.LENGTH_SHORT).show();
+                                showCustomToastYellow(FriendListPage.this, "Failed to get user friends list");
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<List<ClientUser>> call, @NonNull Throwable t) {
-                            Toast.makeText(FriendListPage.this, "Invalid call to server", Toast.LENGTH_SHORT).show();
+                            showCustomToastYellow(FriendListPage.this, "Invalid call to server");
                         }
                     });
                 }
@@ -120,7 +120,7 @@ public class FriendListPage extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<ClientUser> call, @NonNull Throwable t) {
-                Toast.makeText(FriendListPage.this, "Invalid call to server", Toast.LENGTH_SHORT).show();
+                showCustomToastYellow(FriendListPage.this, "Invalid call to server");
             }
 
         });
