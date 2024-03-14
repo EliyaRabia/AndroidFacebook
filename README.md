@@ -9,7 +9,11 @@ this is the link to our server: https://github.com/orshmuel9/FacebookServer
 
 After you have done it, you can start with cloning this repository.
 
-git clone https://github.com/EliyaRabia/AndroidFacebook on Android studio
+git clone -b Part3ConnectServer https://github.com/EliyaRabia/AndroidFacebook.git 
+
+(on Android studio terminal)
+
+and then, go to the software menu choose "open" and pick the cloned repository "AndroidFacebook".
 
 Now, pay attention that the server ip that the code is using right now is 10.0.2.2 that is working with the android studio emulators, 
 if you are interested in running this app on your own
