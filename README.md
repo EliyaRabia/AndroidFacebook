@@ -102,7 +102,8 @@ If you are here, you can see your notifications of friends request, if you curre
 * Plus Button - will approve this user as your friend and he will add into your friends list.
 * Cancel Button - will decline his request and you won't be friends.
 After you choose one of these options the notification will be deleted.
-You can navigate back into the feed page by clicking the Home button on the top bar.
+You can navigate back into the feed page by clicking the Home button on the navigation bar that is on the top.
+(Pay attention that all others icons on the navigation bar will not work from the notification page, you can only use the home button here!) 
 
 ## What can you do in the Edit User page? 
 
