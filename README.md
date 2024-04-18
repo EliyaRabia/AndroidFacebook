@@ -1,15 +1,21 @@
-This branch is for Step 3 of the project. if you want to see Part 2 go to the main branch
+This branch is for Step 4 of the project. if you want to see Part 2 go to the main branch and for part 3 go to Part3ConnectToServer branch.
 
 # Welcome to our Facebook Android App Project as part of the BIU Advanced Programming Course!
 
 The Android app was developed in Android Studio software and it is connected to a Node Js server that we link here down below so make sure you already clone the server,
 follow its instructions and run it before you open this app because it won't work without it! if you already done it continue...
 
-this is the link to our server: https://github.com/orshmuel9/FacebookServer
+this is the link to our server: https://github.com/orshmuel9/FacebookServer/tree/part4 
+
+you also need to run the tcp server that is running the bloom filter of the valid urls, you can see its instructions here: 
+
+https://github.com/ofekyem87biu/ex1/tree/part4 
+
+if you want to read more about the bloom filter tcp server or the node js server please enter their repos and read their ReadMe files!
 
 After you have done it, you can start with cloning this repository.
 
-git clone -b Part3ConnectServer https://github.com/EliyaRabia/AndroidFacebook.git 
+git clone -b part4 https://github.com/EliyaRabia/AndroidFacebook.git 
 
 (on Android studio terminal)
 
@@ -65,10 +71,14 @@ If you want to add a post to the posts list in the server this is the right plac
 After you choose your pic you will see a preview for it and button for option to delete this pic if you regret. Now when your post is ready you can click on the "post" button in the top left and you will navigate back to the feed page and you will see your post in the posts list!
 you also have a "go back" button if you change your mind and don't want to add the post. 
 
+*for part 4* - notice that if you want to post some url in your text the url must be valid, meaning that it must be inside the bloom filter. the valid links are in the env file of the node js server repo you can look there and see which url is valid. if you will try to upload a post with invalid urls your post will not be uploaded!
+
 ## What can you do in the Edit Post page? 
 
 If you want to edit your post this is the right place, this page looks exactly like the add post page and have the same features, but you can notice that when you enter the old text and pic are
-already shown and you can edit them, you can also add/delete pic from the post. when you are ready click "post" and you will navigate back to feed page and you can see your post updated. you also have here a go back button if you change your mind about the editing. 
+already shown and you can edit them, you can also add/delete pic from the post. when you are ready click "post" and you will navigate back to feed page and you can see your post updated. you also have here a go back button if you change your mind about the editing.  
+
+*for part 4* - notice that if you want to edit a post and put some urls in your text the url must be valid, meaning that it must be inside the bloom filter. the valid links are in the env file of the node js server repo you can look there and see which url is valid. if you will try to edit a post and put some invalid urls in it, your post will not be edited!
 
 ## What can you do in the Comments Page?
 
