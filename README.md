@@ -9,7 +9,9 @@ this is the link to our server: https://github.com/orshmuel9/FacebookServer/tree
 
 you also need to run the tcp server that is running the bloom filter of the valid urls, you can see its instructions here: 
 
-https://github.com/ofekyem87biu/ex1/tree/part4
+https://github.com/ofekyem87biu/ex1/tree/part4 
+
+if you want to read more about the bloom filter tcp server or the node js server please enter their repos and read their ReadMe files!
 
 After you have done it, you can start with cloning this repository.
 
