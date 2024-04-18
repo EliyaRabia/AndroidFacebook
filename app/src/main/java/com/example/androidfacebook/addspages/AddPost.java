@@ -169,13 +169,15 @@ public class AddPost extends AppCompatActivity {
             usersApi.createPost(token, p, userId, new Callback<Post>() {
                 @Override
                 public void onResponse(@NonNull Call<Post> call, @NonNull Response<Post> response) {
-                    if(response.isSuccessful()){
+                    int statusCode = response.code();
+                    if(statusCode == 200){
                         currentPost = response.body();
 
                         showCustomToastYellow(AddPost.this, "Post created successfully");
                         new Thread(() -> appDB.postDao().insert(currentPost)).start();
-                    }
-                    else{
+                    } else if(statusCode == 300){
+                        showCustomToastYellow(AddPost.this, "The url is not in the BloomFilter");
+                    } else{
                         showCustomToastYellow(AddPost.this, "Failed to create the post");
                     }
                 }

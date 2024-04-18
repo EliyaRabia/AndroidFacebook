@@ -151,7 +151,9 @@ public class EditPost extends AppCompatActivity {
                         p.setInitialText(textString);
                         DataHolder.getInstance().setCurrentPost(p);
                         finish();
-                    }else{
+                    } else if(statusCode == 300){
+                        showCustomToastYellow(EditPost.this,"The url is not on the BloomFilter!");
+                    } else{
                         showCustomToastYellow(EditPost.this,"Failed to update post!");
                     }
                 }
