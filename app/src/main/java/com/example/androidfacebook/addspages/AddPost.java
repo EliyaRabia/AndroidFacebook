@@ -176,7 +176,7 @@ public class AddPost extends AppCompatActivity {
                         showCustomToastYellow(AddPost.this, "Post created successfully");
                         new Thread(() -> appDB.postDao().insert(currentPost)).start();
                     } else if(statusCode == 300){
-                        showCustomToastYellow(AddPost.this, "The url is not in the BloomFilter");
+                        showCustomToastYellow(AddPost.this, "The url is in the BloomFilter");
                     } else{
                         showCustomToastYellow(AddPost.this, "Failed to create the post");
                     }
