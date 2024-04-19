@@ -42,6 +42,7 @@ public class PostAPI {
         Call<List<Post>> call = webServiceAPI.getAllPosts(token);
         call.enqueue(callback);
     }
+
     public void getAllComments(String token, String pid, Callback<List<Comment>> callback){
         if (token.startsWith("\"") && token.endsWith("\"")) {
             token = token.substring(1, token.length() - 1);
