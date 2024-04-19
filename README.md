@@ -104,6 +104,8 @@ If you are here, you can see your notifications of friends request, if you curre
 After you choose one of these options the notification will be deleted.
 You can navigate back into the feed page by clicking the Home button on the top bar.
 
+Pay attention, that if you are in the notification page you can't press on any other buttons of the navigation bar. so if you want to, please click on the home button and go back to the feed page where you can click on each button you like to.
+
 ## What can you do in the Edit User page? 
 
 If you are looking to change your user details this is the right place! Here you can change your username/password/display-name/picture if you want. 
