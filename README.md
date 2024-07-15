@@ -5,7 +5,7 @@ This branch is for Step 4 of the project. if you want to see Part 2 go to the ma
 The Android app was developed in Android Studio software and it is connected to a Node Js server that we link here down below so make sure you already clone the server,
 follow its instructions and run it before you open this app because it won't work without it! if you already done it continue...
 
-this is the link to our server: https://github.com/orshmuel9/FacebookServer/tree/part4 
+this is the link to our server: https://github.com/EliyaRabia/FacebookServer/tree/part4 
 
 you also need to run the tcp server that is running the bloom filter of the valid urls, you can see its instructions here: 
 
